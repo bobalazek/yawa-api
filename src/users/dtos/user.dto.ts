@@ -26,6 +26,5 @@ export class UserDto extends AbstractDto {
 
   @ApiProperty()
   @IsDate()
-  @IsNotEmpty()
-  readonly emailConfirmedAt: Date;
+  readonly emailConfirmedAt?: Date;
 }

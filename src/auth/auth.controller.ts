@@ -1,8 +1,10 @@
-import { Controller, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 
 import { AuthService } from './auth.service';
+import { LoginDto } from './dtos/login.dto';
+import { RegisterDto } from './dtos/register.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 
 @ApiTags('Auth')
@@ -12,19 +14,17 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Req() req: Request) {
+  async login(@Body() loginDto: LoginDto, @Req() req: Request) {
     return req.user;
   }
 
   @Post('register')
-  async register(@Req() req: Request) {
-    // TODO: register DTO
-
-    return null;
+  async register(@Body() registerDto: RegisterDto, @Req() req: Request) {
+    return this._authService.registerUser(registerDto);
   }
 
   @Post('request-reset-password')
-  async resetPasswordRequest(@Req() req: Request) {
+  async requestResetPassword(@Req() req: Request) {
     // TODO: reset password request DTO
 
     return null;

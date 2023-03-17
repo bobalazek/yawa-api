@@ -10,5 +10,6 @@ import { LocalStrategy } from './strategies/local.strategy';
   imports: [UsersModule, PassportModule],
   providers: [AuthService, LocalStrategy],
   controllers: [AuthController],
+  exports: [AuthService],
 })
 export class AuthModule {}
