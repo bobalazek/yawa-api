@@ -5,34 +5,26 @@ export class User {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column({
-    type: 'varchar',
-  })
+  @Column()
   email!: string;
 
-  @Column({
-    type: 'varchar',
-  })
+  @Column()
   password!: string;
 
   @Column({
-    type: 'varchar',
     default: 'en',
   })
   languageCode!: string;
 
   @Column({
-    type: 'varchar',
     default: 'metric',
   })
   measurementSystem!: string;
 
-  @Column({
-    type: 'varchar',
-  })
+  @Column()
   firstName!: string;
 
-  @Column({ type: 'datetime' })
+  @Column()
   emailConfirmedAt!: Date;
 
   @CreateDateColumn()

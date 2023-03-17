@@ -20,6 +20,7 @@ export class AuthService {
       throw new Error(`The password you provided is incorrect`);
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password, ...strippedUser } = user;
 
     return strippedUser;
