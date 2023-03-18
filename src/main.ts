@@ -16,9 +16,6 @@ async function bootstrap() {
   const SESSION_SECRET = configService.get<string>('SESSION_SECRET');
   const IS_DEVELOPMENT = configService.get('NODE_ENV') === 'development';
 
-  // Global prefix
-  app.setGlobalPrefix('api/v1');
-
   // Validation
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
@@ -38,7 +35,7 @@ async function bootstrap() {
   if (IS_DEVELOPMENT) {
     const config = new DocumentBuilder().setTitle('YAWA').build();
     const document = SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup('api', app, document);
+    SwaggerModule.setup('api-docs', app, document);
   }
 
   await app.listen(PORT);

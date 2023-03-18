@@ -52,7 +52,7 @@ export class AuthService {
 
       const BASE_URL = this._configService.get('BASE_URL');
       const { emailConfirmationCode } = user;
-      const emailConfirmationUrl = `${BASE_URL}/auth/confirm-email?code=${emailConfirmationCode}`;
+      const emailConfirmationUrl = `${BASE_URL}/api/v1/auth/confirm-email?code=${emailConfirmationCode}`;
 
       await this._mailerService.sendMail({
         to: user.email,
@@ -133,7 +133,7 @@ export class AuthService {
     if (settingsDto.email) {
       const BASE_URL = this._configService.get('BASE_URL');
       const { newEmailConfirmationCode } = user;
-      const emailConfirmationUrl = `${BASE_URL}/auth/confirm-new-email?code=${newEmailConfirmationCode}`;
+      const emailConfirmationUrl = `${BASE_URL}/api/v1/auth/confirm-new-email?code=${newEmailConfirmationCode}`;
 
       await this._mailerService.sendMail({
         to: user.email,
