@@ -51,7 +51,8 @@ export class AuthService {
       });
 
       const BASE_URL = this._configService.get('BASE_URL');
-      const emailConfirmationUrl = `${BASE_URL}/auth/confirm-email?code=${user.emailConfirmationCode}`;
+      const { emailConfirmationCode } = user;
+      const emailConfirmationUrl = `${BASE_URL}/auth/confirm-email?code=${emailConfirmationCode}`;
 
       await this._mailerService.sendMail({
         to: user.email,
@@ -60,6 +61,7 @@ export class AuthService {
         context: {
           user,
           emailConfirmationUrl,
+          emailConfirmationCode,
         },
       });
 
@@ -102,7 +104,14 @@ export class AuthService {
 
     await this._usersService.save(user);
 
-    // TODO: send confirmation email
+    await this._mailerService.sendMail({
+      to: user.email,
+      subject: 'Email confirmation success',
+      template: 'email-confirmation-success',
+      context: {
+        user,
+      },
+    });
 
     return true;
   }
@@ -113,8 +122,6 @@ export class AuthService {
     if (settingsDto.email) {
       user.newEmail = settingsDto.email;
       user.newEmailConfirmationCode = this._randomCode(8);
-
-      // TODO: send new email confirmation
     }
 
     if (settingsDto.firstName) {
@@ -122,6 +129,23 @@ export class AuthService {
     }
 
     await this._usersService.save(user);
+
+    if (settingsDto.email) {
+      const BASE_URL = this._configService.get('BASE_URL');
+      const { newEmailConfirmationCode } = user;
+      const emailConfirmationUrl = `${BASE_URL}/auth/confirm-new-email?code=${newEmailConfirmationCode}`;
+
+      await this._mailerService.sendMail({
+        to: user.email,
+        subject: 'New email confirmation',
+        template: 'new-email-confirmation',
+        context: {
+          user,
+          emailConfirmationUrl,
+          emailConfirmationCode: newEmailConfirmationCode,
+        },
+      });
+    }
 
     return user;
   }
