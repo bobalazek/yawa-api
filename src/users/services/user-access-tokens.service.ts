@@ -13,7 +13,7 @@ export class UserAccessTokensService {
   }
 
   findOneByToken(token: string): Promise<UserAccessToken | null> {
-    return this._userAccessTokensRepository.findOneBy({ token });
+    return this._userAccessTokensRepository.findOne({ where: { token }, relations: ['user'] });
   }
 
   save(userAccessToken: DeepPartial<UserAccessToken>) {

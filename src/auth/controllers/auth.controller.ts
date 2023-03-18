@@ -1,5 +1,5 @@
 import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiHeader, ApiTags } from '@nestjs/swagger';
 import { plainToClass } from 'class-transformer';
 import { Request } from 'express';
 
@@ -25,10 +25,8 @@ export class AuthController {
   }
 
   @Post('/logout')
-  async logout(@Req() req: Request): Promise<{ message: string }> {
-    req.session.destroy(() => {
-      // Nothing to do
-    });
+  async logout(): Promise<{ message: string }> {
+    // TODO: do we need to do anything?
 
     return { message: 'User successfully logged out' };
   }
@@ -40,6 +38,14 @@ export class AuthController {
     return plainToClass(UserDto, createdUser);
   }
 
+  @ApiHeader({
+    name: 'X-Authorization',
+    required: true,
+    schema: {
+      type: 'string',
+      example: 'Bearer e737c47f-8ec5-4ddc-b414-d93975ffd297',
+    },
+  })
   @UseGuards(AuthenticatedGuard)
   @Post('/confirm-email')
   async confirmEmail(@Body() confirmEmailDto: CodeDto, @Req() req: Request): Promise<{ message: string }> {
@@ -48,6 +54,14 @@ export class AuthController {
     return { message: 'Email successfully confirmed' };
   }
 
+  @ApiHeader({
+    name: 'X-Authorization',
+    required: true,
+    schema: {
+      type: 'string',
+      example: 'Bearer e737c47f-8ec5-4ddc-b414-d93975ffd297',
+    },
+  })
   @UseGuards(AuthenticatedGuard)
   @Post('/confirm-new-email')
   async confirmNewEmail(@Body() confirmEmailDto: CodeDto, @Req() req: Request): Promise<{ message: string }> {
@@ -56,6 +70,14 @@ export class AuthController {
     return { message: 'New email successfully confirmed' };
   }
 
+  @ApiHeader({
+    name: 'X-Authorization',
+    required: true,
+    schema: {
+      type: 'string',
+      example: 'Bearer e737c47f-8ec5-4ddc-b414-d93975ffd297',
+    },
+  })
   @UseGuards(AuthenticatedGuard)
   @Post('/profile')
   async profile(@Req() req: Request): Promise<UserDto> {
@@ -64,10 +86,18 @@ export class AuthController {
     return plainToClass(UserDto, user);
   }
 
+  @ApiHeader({
+    name: 'X-Authorization',
+    required: true,
+    schema: {
+      type: 'string',
+      example: 'Bearer e737c47f-8ec5-4ddc-b414-d93975ffd297',
+    },
+  })
   @UseGuards(AuthenticatedGuard)
   @Post('/settings')
   async settings(@Body() settingsDto: SettingsDto, @Req() req: Request): Promise<UserDto> {
-    const user = this._authService.updateUser((req.user as UserDto).id, settingsDto);
+    const user = this._authService.updateUser(req.user?.id, settingsDto);
 
     return plainToClass(UserDto, user);
   }
