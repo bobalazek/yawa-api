@@ -2,10 +2,10 @@ import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 
-import { UserDto } from '../users/dtos/user.dto';
-import { UsersService } from '../users/users.service';
-import { LoginDto } from './dtos/login.dto';
-import { RegisterDto } from './dtos/register.dto';
+import { UserDto } from '../../users/dtos/user.dto';
+import { UsersService } from '../../users/services/users.service';
+import { LoginDto } from '../dtos/login.dto';
+import { RegisterDto } from '../dtos/register.dto';
 
 @Injectable()
 export class AuthService {

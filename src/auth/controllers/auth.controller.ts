@@ -3,13 +3,13 @@ import { ApiTags } from '@nestjs/swagger';
 import { plainToClass } from 'class-transformer';
 import { Request } from 'express';
 
-import { UserDto } from '../users/dtos/user.dto';
-import { AuthService } from './auth.service';
-import { ConfirmEmailDto } from './dtos/confirm-email.dto';
-import { LoginDto } from './dtos/login.dto';
-import { RegisterDto } from './dtos/register.dto';
-import { AuthenticatedGuard } from './guards/authenticated.guard';
-import { LocalAuthGuard } from './guards/local-auth.guard';
+import { UserDto } from '../../users/dtos/user.dto';
+import { ConfirmEmailDto } from '../dtos/confirm-email.dto';
+import { LoginDto } from '../dtos/login.dto';
+import { RegisterDto } from '../dtos/register.dto';
+import { AuthenticatedGuard } from '../guards/authenticated.guard';
+import { LocalAuthGuard } from '../guards/local-auth.guard';
+import { AuthService } from '../services/auth.service';
 
 @ApiTags('Auth')
 @Controller('auth')
