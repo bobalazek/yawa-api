@@ -8,6 +8,7 @@ import * as Joi from 'joi';
 import { AuthModule } from '../auth/auth.module';
 import { DatabaseModule } from '../database/database.module';
 import { MailerModule } from '../mailer/mailer.module';
+import { QueuesModule } from '../queues/queues.module';
 import { UsersModule } from '../users/users.module';
 
 @Module({
@@ -19,6 +20,7 @@ import { UsersModule } from '../users/users.module';
         BASE_URL: Joi.string().required(),
         SESSION_SECRET: Joi.string().required(),
         POSTGRESQL_URL: Joi.string().required(),
+        REDIS_URL: Joi.string().required(),
         SMTP_TRANSPORT_URL: Joi.string().required(),
         SMTP_FROM: Joi.string().required(),
       }),
@@ -29,6 +31,7 @@ import { UsersModule } from '../users/users.module';
     }),
     DatabaseModule,
     MailerModule,
+    QueuesModule,
     AuthModule,
     UsersModule,
   ],
