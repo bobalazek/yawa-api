@@ -7,7 +7,7 @@ import { AuthService } from './auth.service';
 import { LocalStrategy } from './strategies/local.strategy';
 
 @Module({
-  imports: [UsersModule, PassportModule],
+  imports: [UsersModule, PassportModule.register({ session: true })],
   providers: [AuthService, LocalStrategy],
   controllers: [AuthController],
   exports: [AuthService],

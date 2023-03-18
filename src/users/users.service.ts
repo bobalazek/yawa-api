@@ -12,7 +12,7 @@ export class UsersService {
     return this._usersRepository.find();
   }
 
-  findOne(id: string): Promise<User> {
+  findOneById(id: string): Promise<User> {
     return this._usersRepository.findOneBy({ id });
   }
 
@@ -20,11 +20,11 @@ export class UsersService {
     return this._usersRepository.findOneBy({ email });
   }
 
-  remove(id: string) {
+  delete(id: string) {
     return this._usersRepository.delete(id);
   }
 
-  create(user: DeepPartial<User>) {
+  save(user: DeepPartial<User>) {
     return this._usersRepository.save(user);
   }
 }

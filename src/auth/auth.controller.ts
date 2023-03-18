@@ -1,8 +1,11 @@
 import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
+import { plainToClass } from 'class-transformer';
 import { Request } from 'express';
 
+import { UserDto } from '../users/dtos/user.dto';
 import { AuthService } from './auth.service';
+import { ConfirmEmailDto } from './dtos/confirm-email.dto';
 import { LoginDto } from './dtos/login.dto';
 import { RegisterDto } from './dtos/register.dto';
 import { LocalAuthGuard } from './guards/local-auth.guard';
@@ -15,14 +18,23 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@Body() loginDto: LoginDto, @Req() req: Request) {
-    return req.user;
+    return plainToClass(UserDto, req.user);
   }
 
   @Post('register')
-  async register(@Body() registerDto: RegisterDto, @Req() req: Request) {
-    return this._authService.registerUser(registerDto);
+  async register(@Body() registerDto: RegisterDto): Promise<UserDto> {
+    const createdUser = await this._authService.registerUser(registerDto);
+    return plainToClass(UserDto, createdUser);
   }
 
+  @UseGuards(LocalAuthGuard)
+  @Post('confirm-email')
+  async confirmEmail(@Body() confirmEmailDto: ConfirmEmailDto, @Req() req: Request): Promise<string> {
+    await this._authService.confirmUserEmail((req.user as UserDto).id, confirmEmailDto.code);
+    return 'Email successfully confirmed';
+  }
+
+  /*
   @Post('request-reset-password')
   async requestResetPassword(@Req() req: Request) {
     // TODO: reset password request DTO
@@ -36,4 +48,5 @@ export class AuthController {
 
     return null;
   }
+  */
 }

@@ -25,10 +25,23 @@ export class User {
   @Column()
   firstName!: string;
 
+  @Column()
+  emailConfirmationCode!: string;
+
+  @Column({
+    nullable: true,
+  })
+  passwordResetCode?: string;
+
   @Column({
     nullable: true,
   })
   emailConfirmedAt?: Date;
+
+  @Column({
+    nullable: true,
+  })
+  lastPasswordResetRequestedAt?: Date;
 
   @CreateDateColumn()
   createdAt!: Date;

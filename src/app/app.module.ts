@@ -1,5 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
+import { ThrottlerModule } from '@nestjs/throttler';
+import { ThrottlerGuard } from '@nestjs/throttler/dist/throttler.guard';
 import * as Joi from 'joi';
 
 import { AuthModule } from '../auth/auth.module';
@@ -15,9 +18,19 @@ import { UsersModule } from '../users/users.module';
         POSTGRESQL_URL: Joi.string(),
       }),
     }),
+    ThrottlerModule.forRoot({
+      ttl: 60,
+      limit: 30,
+    }),
     DatabaseModule,
     AuthModule,
     UsersModule,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
   ],
 })
 export class AppModule {}
