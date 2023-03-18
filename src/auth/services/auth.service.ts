@@ -1,9 +1,8 @@
-import { MailerService } from '@nestjs-modules/mailer';
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 
+import { MailService } from '../../mail/services/mail.service';
 import { UserDto } from '../../users/dtos/user.dto';
 import { UsersService } from '../../users/services/users.service';
 import { LoginDto } from '../dtos/login.dto';
@@ -12,11 +11,7 @@ import { SettingsDto } from '../dtos/settings.dto';
 
 @Injectable()
 export class AuthService {
-  constructor(
-    private _usersService: UsersService,
-    private _configService: ConfigService,
-    private _mailerService: MailerService
-  ) {}
+  constructor(private _usersService: UsersService, private _mailService: MailService) {}
 
   async validateUser(loginDto: LoginDto): Promise<UserDto> {
     const user = await this._usersService.findOneByEmail(loginDto.email);
@@ -50,28 +45,13 @@ export class AuthService {
         emailConfirmationCode: this._randomCode(8),
       });
 
-      const BASE_URL = this._configService.get('BASE_URL');
-      const { emailConfirmationCode } = user;
-      const emailConfirmationUrl = `${BASE_URL}/api/v1/auth/confirm-email?code=${emailConfirmationCode}`;
-
-      await this._mailerService.sendMail({
-        to: user.email,
-        subject: 'Email confirmation',
-        template: 'email-confirmation',
-        context: {
-          user,
-          emailConfirmationUrl,
-          emailConfirmationCode,
-        },
-      });
+      await this._mailService.sendEmailConfirmationEmail(user);
 
       return user;
     } catch (err) {
       if (err.code === '23505') {
         throw new BadRequestException('A user with this email already exists');
       }
-
-      console.log(err);
 
       throw new BadRequestException('Something went wrong while creating the user');
     }
@@ -104,14 +84,7 @@ export class AuthService {
 
     await this._usersService.save(user);
 
-    await this._mailerService.sendMail({
-      to: user.email,
-      subject: 'Email confirmation success',
-      template: 'email-confirmation-success',
-      context: {
-        user,
-      },
-    });
+    await this._mailService.sendEmailConfirmationSuccessEmail(user);
 
     return true;
   }
@@ -131,20 +104,7 @@ export class AuthService {
     await this._usersService.save(user);
 
     if (settingsDto.email) {
-      const BASE_URL = this._configService.get('BASE_URL');
-      const { newEmailConfirmationCode } = user;
-      const emailConfirmationUrl = `${BASE_URL}/api/v1/auth/confirm-new-email?code=${newEmailConfirmationCode}`;
-
-      await this._mailerService.sendMail({
-        to: user.email,
-        subject: 'New email confirmation',
-        template: 'new-email-confirmation',
-        context: {
-          user,
-          emailConfirmationUrl,
-          emailConfirmationCode: newEmailConfirmationCode,
-        },
-      });
+      await this._mailService.sendNewEmailConfirmationEmail(user);
     }
 
     return user;
