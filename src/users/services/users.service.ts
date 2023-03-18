@@ -20,6 +20,10 @@ export class UsersService {
     return this._usersRepository.findOneBy({ email });
   }
 
+  findOneBy(field: string, value: string): Promise<User | null> {
+    return this._usersRepository.findOneBy({ [field]: value });
+  }
+
   delete(id: string) {
     return this._usersRepository.delete(id);
   }

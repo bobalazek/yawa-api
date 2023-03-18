@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { plainToClass } from 'class-transformer';
 import { Request } from 'express';
@@ -12,7 +12,7 @@ import { AuthenticatedGuard } from '../guards/authenticated.guard';
 import { LocalAuthGuard } from '../guards/local-auth.guard';
 import { AuthService } from '../services/auth.service';
 
-@ApiTags('Auth')
+@ApiTags('Auth (API v1)')
 @Controller('/api/v1/auth')
 export class AuthController {
   constructor(private readonly _authService: AuthService) {}
@@ -50,25 +50,9 @@ export class AuthController {
   }
 
   @UseGuards(AuthenticatedGuard)
-  @Get('/confirm-email')
-  async confirmEmailGet(@Query('code') code: string, @Req() req: Request): Promise<{ message: string }> {
-    await this._authService.confirmUserEmail((req.user as UserDto).id, code);
-
-    return { message: 'Email successfully confirmed' };
-  }
-
-  @UseGuards(AuthenticatedGuard)
   @Post('/confirm-new-email')
   async confirmNewEmail(@Body() confirmEmailDto: ConfirmEmailDto, @Req() req: Request): Promise<{ message: string }> {
     await this._authService.confirmUserEmail((req.user as UserDto).id, confirmEmailDto.code, true);
-
-    return { message: 'New email successfully confirmed' };
-  }
-
-  @UseGuards(AuthenticatedGuard)
-  @Get('/confirm-new-email')
-  async confirmNewEmailGet(@Query('code') code: string, @Req() req: Request): Promise<{ message: string }> {
-    await this._authService.confirmUserEmail((req.user as UserDto).id, code, true);
 
     return { message: 'New email successfully confirmed' };
   }

@@ -5,7 +5,9 @@ export class User {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Index({ unique: true })
+  @Index({
+    unique: true,
+  })
   @Column()
   email!: string;
 
@@ -33,10 +35,26 @@ export class User {
   @Column()
   emailConfirmationCode!: string;
 
+  // This use is used when confirming it via the email
+  @Index({
+    unique: true,
+  })
+  @Column()
+  emailConfirmationToken!: string;
+
   @Column({
     nullable: true,
   })
   newEmailConfirmationCode?: string;
+
+  // This use is used when confirming it via the email
+  @Index({
+    unique: true,
+  })
+  @Column({
+    nullable: true,
+  })
+  newEmailConfirmationToken?: string;
 
   @Column({
     nullable: true,

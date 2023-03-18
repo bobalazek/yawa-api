@@ -1,9 +1,11 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
+import { v4 as uuidv4 } from 'uuid';
 
 import { MailService } from '../../mail/services/mail.service';
 import { UserDto } from '../../users/dtos/user.dto';
+import { User } from '../../users/entities/user.entity';
 import { UsersService } from '../../users/services/users.service';
 import { LoginDto } from '../dtos/login.dto';
 import { RegisterDto } from '../dtos/register.dto';
@@ -43,6 +45,7 @@ export class AuthService {
         ...processedRegisterDto,
         password: await this._generateHash(processedRegisterDto.password),
         emailConfirmationCode: this._randomCode(8),
+        emailConfirmationToken: uuidv4(),
       });
 
       await this._mailService.sendEmailConfirmationEmail(user);
@@ -57,8 +60,21 @@ export class AuthService {
     }
   }
 
-  async confirmUserEmail(userId: string, code: string, isNewEmail: boolean = false) {
-    const user = await this._usersService.findOneById(userId);
+  async confirmUserEmailByToken(token: string, isNewEmail: boolean = false) {
+    const user = await this._usersService.findOneBy(
+      isNewEmail ? 'newEmailConfirmationToken' : 'emailConfirmationToken',
+      token
+    );
+
+    return this.confirmUserEmail(
+      user,
+      user ? (isNewEmail ? user.newEmailConfirmationCode : user.emailConfirmationCode) : '',
+      isNewEmail
+    );
+  }
+
+  async confirmUserEmail(userIdOrUser: string | User, code: string, isNewEmail: boolean = false) {
+    const user = typeof userIdOrUser === 'string' ? await this._usersService.findOneById(userIdOrUser) : userIdOrUser;
     if (!user) {
       throw new BadRequestException(`User not found`);
     }
@@ -78,6 +94,7 @@ export class AuthService {
       user.email = user.newEmail;
       user.newEmail = null;
       user.newEmailConfirmationCode = null;
+      user.newEmailConfirmationToken = null;
     }
 
     user.emailConfirmedAt = new Date();
@@ -95,6 +112,7 @@ export class AuthService {
     if (settingsDto.email) {
       user.newEmail = settingsDto.email;
       user.newEmailConfirmationCode = this._randomCode(8);
+      user.newEmailConfirmationToken = uuidv4();
     }
 
     if (settingsDto.firstName) {

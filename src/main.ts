@@ -1,15 +1,17 @@
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as cookieParser from 'cookie-parser';
 import * as session from 'express-session';
 import * as passport from 'passport';
+import { join } from 'path';
 
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   const configService = app.get(ConfigService);
   const PORT = +configService.get('PORT');
@@ -30,6 +32,11 @@ async function bootstrap() {
   app.use(cookieParser());
   app.use(passport.initialize());
   app.use(passport.session());
+
+  // Templating
+  app.setViewEngine('ejs');
+  app.useStaticAssets(join(__dirname, '..', 'public'));
+  app.setBaseViewsDir(join(__dirname, '..', 'assets', 'templates', 'pages'));
 
   // Swagger documentation
   if (IS_DEVELOPMENT) {

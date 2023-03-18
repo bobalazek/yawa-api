@@ -1,0 +1,8 @@
+<%- include('_header'); -%>
+  <% if (locals.error) { %>
+    <p class="display-4 text-center"><%= locals.error %></p>
+  <% } %>
+  <% if (locals.message) { %>
+    <p class="display-4 text-center"><%= locals.message %></p>
+  <% } %>
+<%- include('_footer'); -%>

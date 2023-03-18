@@ -18,7 +18,7 @@ import { MailService } from './services/mail.service';
           from: configService.get('SMTP_FROM'),
         },
         template: {
-          dir: resolve(join(__dirname, '..', '..', 'assets', 'emails')),
+          dir: resolve(join(__dirname, '..', '..', 'assets', 'templates', 'emails')),
           adapter: new EjsAdapter(),
           options: {
             strict: true,
