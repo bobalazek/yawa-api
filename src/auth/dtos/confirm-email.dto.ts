@@ -5,5 +5,5 @@ export class ConfirmEmailDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  readonly code: string;
+  readonly code!: string;
 }

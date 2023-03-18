@@ -9,6 +9,11 @@ export class User {
   @Column()
   email!: string;
 
+  @Column({
+    nullable: true,
+  })
+  newEmail?: string;
+
   @Column()
   password!: string;
 
@@ -27,6 +32,11 @@ export class User {
 
   @Column()
   emailConfirmationCode!: string;
+
+  @Column({
+    nullable: true,
+  })
+  newEmailConfirmationCode?: string;
 
   @Column({
     nullable: true,

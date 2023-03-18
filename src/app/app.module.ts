@@ -7,6 +7,7 @@ import * as Joi from 'joi';
 
 import { AuthModule } from '../auth/auth.module';
 import { DatabaseModule } from '../database/database.module';
+import { MailerModule } from '../mailer/mailer.module';
 import { UsersModule } from '../users/users.module';
 
 @Module({
@@ -15,8 +16,11 @@ import { UsersModule } from '../users/users.module';
       validationSchema: Joi.object({
         NODE_ENV: Joi.string().valid('development', 'production', 'test').default('development'),
         PORT: Joi.number().default(3000),
-        POSTGRESQL_URL: Joi.string(),
+        BASE_URL: Joi.string().required(),
         SESSION_SECRET: Joi.string().required(),
+        POSTGRESQL_URL: Joi.string().required(),
+        SMTP_TRANSPORT_URL: Joi.string().required(),
+        SMTP_FROM: Joi.string().required(),
       }),
     }),
     ThrottlerModule.forRoot({
@@ -24,6 +28,7 @@ import { UsersModule } from '../users/users.module';
       limit: 30,
     }),
     DatabaseModule,
+    MailerModule,
     AuthModule,
     UsersModule,
   ],

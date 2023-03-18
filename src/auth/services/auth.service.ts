@@ -1,4 +1,6 @@
+import { MailerService } from '@nestjs-modules/mailer';
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
 
@@ -6,10 +8,15 @@ import { UserDto } from '../../users/dtos/user.dto';
 import { UsersService } from '../../users/services/users.service';
 import { LoginDto } from '../dtos/login.dto';
 import { RegisterDto } from '../dtos/register.dto';
+import { SettingsDto } from '../dtos/settings.dto';
 
 @Injectable()
 export class AuthService {
-  constructor(private _usersService: UsersService) {}
+  constructor(
+    private _usersService: UsersService,
+    private _configService: ConfigService,
+    private _mailerService: MailerService
+  ) {}
 
   async validateUser(loginDto: LoginDto): Promise<UserDto> {
     const user = await this._usersService.findOneByEmail(loginDto.email);
@@ -28,7 +35,7 @@ export class AuthService {
     return returnedUser;
   }
 
-  async registerUser(registerDto: RegisterDto): Promise<UserDto> {
+  async registerUser(registerDto: RegisterDto) {
     const password = await this._generateHash(registerDto.password);
     const processedRegisterDto = {
       password,
@@ -36,40 +43,91 @@ export class AuthService {
     };
 
     try {
-      return await this._usersService.save({
+      const user = await this._usersService.save({
         // We need to await it, else it's not caught and it's caught as unexpectedException
         ...processedRegisterDto,
         password: await this._generateHash(processedRegisterDto.password),
-        emailConfirmationCode: crypto.randomBytes(16).toString('hex').slice(0, 8),
+        emailConfirmationCode: this._randomCode(8),
       });
+
+      const BASE_URL = this._configService.get('BASE_URL');
+      const emailConfirmationUrl = `${BASE_URL}/auth/confirm-email?code=${user.emailConfirmationCode}`;
+
+      await this._mailerService.sendMail({
+        to: user.email,
+        subject: 'Email confirmation',
+        template: 'email-confirmation',
+        context: {
+          user,
+          emailConfirmationUrl,
+        },
+      });
+
+      return user;
     } catch (err) {
       if (err.code === '23505') {
         throw new BadRequestException('A user with this email already exists');
       }
 
+      console.log(err);
+
       throw new BadRequestException('Something went wrong while creating the user');
     }
   }
 
-  async confirmUserEmail(userId: string, code: string): Promise<true> {
+  async confirmUserEmail(userId: string, code: string, isNewEmail: boolean = false) {
     const user = await this._usersService.findOneById(userId);
     if (!user) {
       throw new BadRequestException(`User not found`);
     }
 
-    if (user.emailConfirmedAt) {
+    if (!isNewEmail && user.emailConfirmedAt) {
       throw new BadRequestException(`Email already confirmed`);
     }
 
-    if (user.emailConfirmationCode !== code) {
+    if (
+      (!isNewEmail && user.emailConfirmationCode !== code) ||
+      (isNewEmail && user.newEmailConfirmationCode !== code)
+    ) {
       throw new BadRequestException(`Provided code is not correct`);
+    }
+
+    if (isNewEmail) {
+      user.email = user.newEmail;
+      user.newEmail = null;
+      user.newEmailConfirmationCode = null;
     }
 
     user.emailConfirmedAt = new Date();
 
     await this._usersService.save(user);
 
+    // TODO: send confirmation email
+
     return true;
+  }
+
+  async updateUser(userId: string, settingsDto: SettingsDto) {
+    const user = await this.getById(userId);
+
+    if (settingsDto.email) {
+      user.newEmail = settingsDto.email;
+      user.newEmailConfirmationCode = this._randomCode(8);
+
+      // TODO: send new email confirmation
+    }
+
+    if (settingsDto.firstName) {
+      user.firstName = settingsDto.firstName;
+    }
+
+    await this._usersService.save(user);
+
+    return user;
+  }
+
+  async getById(id: string) {
+    return this._usersService.findOneById(id);
   }
 
   private async _generateHash(password: string): Promise<string> {
@@ -78,5 +136,9 @@ export class AuthService {
 
   private async _compareHash(password: string, hash: string): Promise<boolean> {
     return bcrypt.compare(password, hash);
+  }
+
+  private _randomCode(length: number = 8) {
+    return crypto.randomBytes(16).toString('hex').toLowerCase().slice(0, length);
   }
 }

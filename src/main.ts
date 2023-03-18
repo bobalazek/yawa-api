@@ -2,6 +2,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as cookieParser from 'cookie-parser';
 import * as session from 'express-session';
 import * as passport from 'passport';
 
@@ -29,6 +30,7 @@ async function bootstrap() {
       saveUninitialized: false,
     })
   );
+  app.use(cookieParser());
   app.use(passport.initialize());
   app.use(passport.session());
 

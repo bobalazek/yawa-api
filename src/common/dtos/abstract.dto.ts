@@ -8,17 +8,17 @@ export class AbstractDto {
   @Expose()
   @IsString()
   @IsNotEmpty()
-  readonly id: string;
+  readonly id!: string;
 
   @ApiProperty()
   @Expose()
   @IsDate()
   @IsNotEmpty()
-  readonly createdAt: Date;
+  readonly createdAt!: Date;
 
   @ApiProperty()
   @Expose()
   @IsDate()
   @IsNotEmpty()
-  readonly updatedAt: Date;
+  readonly updatedAt!: Date;
 }

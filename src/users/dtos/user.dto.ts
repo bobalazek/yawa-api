@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Expose } from 'class-transformer';
-import { IsDate, IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { IsDate, IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 import { AbstractDto } from '../../common/dtos/abstract.dto';
 
@@ -10,28 +10,41 @@ export class UserDto extends AbstractDto {
   @Expose()
   @IsEmail()
   @IsNotEmpty()
-  readonly email: string;
+  readonly email!: string;
+
+  @ApiProperty()
+  @Expose()
+  @IsEmail()
+  @IsOptional()
+  readonly newEmail?: string;
 
   @ApiProperty()
   @Expose()
   @IsString()
   @IsNotEmpty()
-  readonly languageCode: string;
+  readonly languageCode!: string;
 
   @ApiProperty()
   @Expose()
   @IsString()
   @IsNotEmpty()
-  readonly measurementSystem: string;
+  readonly measurementSystem!: string;
 
   @ApiProperty()
   @Expose()
   @IsString()
   @IsNotEmpty()
-  readonly firstName: string;
+  readonly firstName!: string;
 
   @ApiProperty()
   @Expose()
   @IsDate()
+  @IsOptional()
   readonly emailConfirmedAt?: Date;
+
+  @ApiProperty()
+  @Expose()
+  @IsDate()
+  @IsOptional()
+  readonly lastPasswordResetRequestedAt?: Date;
 }
