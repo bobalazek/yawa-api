@@ -2,6 +2,8 @@ import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as session from 'express-session';
+import * as passport from 'passport';
 
 import { AppModule } from './app/app.module';
 
@@ -10,12 +12,28 @@ async function bootstrap() {
 
   const configService = app.get(ConfigService);
   const PORT = +configService.get('PORT');
+  const SESSION_SECRET = configService.get<string>('SESSION_SECRET');
+  const IS_DEVELOPMENT = configService.get('NODE_ENV') === 'development';
 
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
-
+  // Global prefix
   app.setGlobalPrefix('api/v1');
 
-  if (configService.get('NODE_ENV') === 'development') {
+  // Validation
+  app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+
+  // Session
+  app.use(
+    session({
+      secret: SESSION_SECRET,
+      resave: false,
+      saveUninitialized: false,
+    })
+  );
+  app.use(passport.initialize());
+  app.use(passport.session());
+
+  // Swagger documentation
+  if (IS_DEVELOPMENT) {
     const config = new DocumentBuilder().setTitle('YAWA').build();
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('api', app, document);

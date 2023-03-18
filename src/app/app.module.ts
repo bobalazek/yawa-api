@@ -16,6 +16,7 @@ import { UsersModule } from '../users/users.module';
         NODE_ENV: Joi.string().valid('development', 'production', 'test').default('development'),
         PORT: Joi.number().default(3000),
         POSTGRESQL_URL: Joi.string(),
+        SESSION_SECRET: Joi.string().required(),
       }),
     }),
     ThrottlerModule.forRoot({
