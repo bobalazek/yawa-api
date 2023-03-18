@@ -5,11 +5,11 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { ThrottlerGuard } from '@nestjs/throttler/dist/throttler.guard';
 import * as Joi from 'joi';
 
-import { AuthModule } from '../auth/auth.module';
-import { DatabaseModule } from '../database/database.module';
-import { MailModule } from '../mail/mail.module';
-import { QueuesModule } from '../queues/queues.module';
-import { UsersModule } from '../users/users.module';
+import { AuthModule } from './auth/auth.module';
+import { DatabaseModule } from './database/database.module';
+import { MailModule } from './mail/mail.module';
+import { QueuesModule } from './queues/queues.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
