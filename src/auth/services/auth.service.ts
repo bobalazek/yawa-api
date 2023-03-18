@@ -1,10 +1,10 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
+import { UserAccessTokensService } from 'src/users/services/user-access-tokens.service';
 import { v4 as uuidv4 } from 'uuid';
 
 import { MailService } from '../../mail/services/mail.service';
-import { UserDto } from '../../users/dtos/user.dto';
 import { User } from '../../users/entities/user.entity';
 import { UsersService } from '../../users/services/users.service';
 import { LoginDto } from '../dtos/login.dto';
@@ -13,9 +13,29 @@ import { SettingsDto } from '../dtos/settings.dto';
 
 @Injectable()
 export class AuthService {
-  constructor(private _usersService: UsersService, private _mailService: MailService) {}
+  constructor(
+    private _usersService: UsersService,
+    private _userAccessTokensService: UserAccessTokensService,
+    private _mailService: MailService
+  ) {}
 
-  async validateUser(loginDto: LoginDto): Promise<UserDto> {
+  async login(loginDto: LoginDto): Promise<string> {
+    const user = await this.validateUser(loginDto);
+
+    try {
+      const userAccessToken = await this._userAccessTokensService.save({
+        user,
+        token: uuidv4(),
+      });
+
+      return userAccessToken.token;
+    } catch (err) {
+      // In the very, VERY unlikely scenario the uuid would be a duplicate, just prompt the user to login again
+      throw new BadRequestException(`Something went wrong. Try logging in again`);
+    }
+  }
+
+  async validateUser(loginDto: LoginDto) {
     const user = await this._usersService.findOneByEmail(loginDto.email);
     if (!user) {
       throw new UnauthorizedException(`User with this username or email was not found`);
@@ -26,17 +46,14 @@ export class AuthService {
       throw new UnauthorizedException(`The password you provided is incorrect`);
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password, ...returnedUser } = user;
-
-    return returnedUser;
+    return user;
   }
 
   async registerUser(registerDto: RegisterDto) {
     const password = await this._generateHash(registerDto.password);
     const processedRegisterDto = {
-      password,
       ...registerDto,
+      password,
     };
 
     try {
@@ -53,10 +70,10 @@ export class AuthService {
       return user;
     } catch (err) {
       if (err.code === '23505') {
-        throw new BadRequestException('A user with this email already exists');
+        throw new BadRequestException(`A user with this email already exists`);
       }
 
-      throw new BadRequestException('Something went wrong while creating the user');
+      throw new BadRequestException(`Something went wrong while creating the user`);
     }
   }
 
@@ -107,7 +124,7 @@ export class AuthService {
   }
 
   async updateUser(userId: string, settingsDto: SettingsDto) {
-    const user = await this.getById(userId);
+    const user = await this.getUserById(userId);
 
     if (settingsDto.email) {
       user.newEmail = settingsDto.email;
@@ -128,8 +145,17 @@ export class AuthService {
     return user;
   }
 
-  async getById(id: string) {
+  async getUserById(id: string) {
     return this._usersService.findOneById(id);
+  }
+
+  async getUserByAccessToken(accessToken: string): Promise<User> {
+    const userAccessToken = await this._userAccessTokensService.findOneByToken(accessToken);
+    if (!userAccessToken) {
+      throw new BadRequestException(`A user with this access token not found`);
+    }
+
+    return userAccessToken.user;
   }
 
   private async _generateHash(password: string): Promise<string> {

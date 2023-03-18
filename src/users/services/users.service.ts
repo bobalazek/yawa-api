@@ -8,10 +8,6 @@ import { User } from '../entities/user.entity';
 export class UsersService {
   constructor(@InjectRepository(User) private _usersRepository: Repository<User>) {}
 
-  findAll(): Promise<User[]> {
-    return this._usersRepository.find();
-  }
-
   findOneById(id: string): Promise<User | null> {
     return this._usersRepository.findOneBy({ id });
   }
@@ -22,10 +18,6 @@ export class UsersService {
 
   findOneBy(field: string, value: string): Promise<User | null> {
     return this._usersRepository.findOneBy({ [field]: value });
-  }
-
-  delete(id: string) {
-    return this._usersRepository.delete(id);
   }
 
   save(user: DeepPartial<User>) {

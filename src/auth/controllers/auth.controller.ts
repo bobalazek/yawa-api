@@ -4,12 +4,12 @@ import { plainToClass } from 'class-transformer';
 import { Request } from 'express';
 
 import { UserDto } from '../../users/dtos/user.dto';
-import { ConfirmEmailDto } from '../dtos/confirm-email.dto';
+import { AccessTokenDto } from '../dtos/access-token.dto';
+import { CodeDto } from '../dtos/code.dto';
 import { LoginDto } from '../dtos/login.dto';
 import { RegisterDto } from '../dtos/register.dto';
 import { SettingsDto } from '../dtos/settings.dto';
 import { AuthenticatedGuard } from '../guards/authenticated.guard';
-import { LocalAuthGuard } from '../guards/local-auth.guard';
 import { AuthService } from '../services/auth.service';
 
 @ApiTags('Auth (API v1)')
@@ -17,12 +17,11 @@ import { AuthService } from '../services/auth.service';
 export class AuthController {
   constructor(private readonly _authService: AuthService) {}
 
-  @UseGuards(LocalAuthGuard)
   @Post('/login')
-  async login(@Body() loginDto: LoginDto, @Req() req: Request): Promise<UserDto> {
-    // req.user seems to already convert the id only into a full object,
-    // probably by the validate method in the local strategy?
-    return plainToClass(UserDto, req.user);
+  async login(@Body() loginDto: LoginDto): Promise<AccessTokenDto> {
+    const accessToken = await this._authService.login(loginDto);
+
+    return { accessToken };
   }
 
   @Post('/logout')
@@ -43,7 +42,7 @@ export class AuthController {
 
   @UseGuards(AuthenticatedGuard)
   @Post('/confirm-email')
-  async confirmEmail(@Body() confirmEmailDto: ConfirmEmailDto, @Req() req: Request): Promise<{ message: string }> {
+  async confirmEmail(@Body() confirmEmailDto: CodeDto, @Req() req: Request): Promise<{ message: string }> {
     await this._authService.confirmUserEmail((req.user as UserDto).id, confirmEmailDto.code);
 
     return { message: 'Email successfully confirmed' };
@@ -51,7 +50,7 @@ export class AuthController {
 
   @UseGuards(AuthenticatedGuard)
   @Post('/confirm-new-email')
-  async confirmNewEmail(@Body() confirmEmailDto: ConfirmEmailDto, @Req() req: Request): Promise<{ message: string }> {
+  async confirmNewEmail(@Body() confirmEmailDto: CodeDto, @Req() req: Request): Promise<{ message: string }> {
     await this._authService.confirmUserEmail((req.user as UserDto).id, confirmEmailDto.code, true);
 
     return { message: 'New email successfully confirmed' };
@@ -60,7 +59,7 @@ export class AuthController {
   @UseGuards(AuthenticatedGuard)
   @Post('/profile')
   async profile(@Req() req: Request): Promise<UserDto> {
-    const user = this._authService.getById((req.user as UserDto).id);
+    const user = this._authService.getUserById((req.user as UserDto).id);
 
     return plainToClass(UserDto, user);
   }

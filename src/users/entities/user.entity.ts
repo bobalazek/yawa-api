@@ -1,4 +1,6 @@
-import { Column, CreateDateColumn, Entity, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, Index, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+
+import { UserAccessToken } from './user-access-token.entity';
 
 @Entity('users')
 export class User {
@@ -76,4 +78,7 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt!: Date;
+
+  @OneToMany(() => UserAccessToken, (userAccessToken) => userAccessToken.user)
+  userAccessTokens: UserAccessToken[];
 }
