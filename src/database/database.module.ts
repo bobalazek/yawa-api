@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { RunMigration } from './commands/run-migration.command';
+
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
@@ -15,5 +17,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       }),
     }),
   ],
+  providers: [RunMigration],
 })
 export class DatabaseModule {}

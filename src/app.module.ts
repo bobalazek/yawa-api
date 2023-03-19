@@ -4,6 +4,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { ThrottlerGuard } from '@nestjs/throttler/dist/throttler.guard';
 import * as Joi from 'joi';
+import { LoggerModule } from 'nestjs-pino';
 
 import { AuthModule } from './auth/auth.module';
 import { AuthMiddleware } from './auth/middlewares/auth.middleware';
@@ -29,6 +30,7 @@ import { UsersModule } from './users/users.module';
       ttl: 60,
       limit: 30,
     }),
+    LoggerModule.forRoot(),
     DatabaseModule,
     MailModule,
     QueuesModule,

@@ -12,7 +12,7 @@ export class UserAccessTokensService {
     return this._userAccessTokensRepository.findOneBy({ id });
   }
 
-  findOneByToken(token: string): Promise<UserAccessToken | null> {
+  findOneByTokenWithUser(token: string): Promise<UserAccessToken | null> {
     return this._userAccessTokensRepository.findOne({ where: { token }, relations: ['user'] });
   }
 

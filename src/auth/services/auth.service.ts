@@ -150,7 +150,7 @@ export class AuthService {
   }
 
   async getUserByAccessToken(accessToken: string): Promise<User> {
-    const userAccessToken = await this._userAccessTokensService.findOneByToken(accessToken);
+    const userAccessToken = await this._userAccessTokensService.findOneByTokenWithUser(accessToken);
     if (!userAccessToken) {
       throw new BadRequestException(`A user with this access token not found`);
     }
