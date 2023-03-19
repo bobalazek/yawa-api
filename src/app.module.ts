@@ -8,6 +8,7 @@ import { LoggerModule } from 'nestjs-pino';
 
 import { AuthModule } from './auth/auth.module';
 import { AuthMiddleware } from './auth/middlewares/auth.middleware';
+import { CommonModule } from './common/common.module';
 import { DatabaseModule } from './database/database.module';
 import { MailModule } from './mail/mail.module';
 import { QueuesModule } from './queues/queues.module';
@@ -34,6 +35,7 @@ import { UsersModule } from './users/users.module';
     DatabaseModule,
     MailModule,
     QueuesModule,
+    CommonModule,
     AuthModule,
     UsersModule,
   ],

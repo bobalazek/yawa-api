@@ -155,6 +155,11 @@ export class AuthService {
       throw new BadRequestException(`A user with this access token not found`);
     }
 
+    const now = new Date();
+    if (userAccessToken.expiresAt && userAccessToken.expiresAt < now) {
+      throw new BadRequestException(`The access token has expired`);
+    }
+
     return userAccessToken.user;
   }
 

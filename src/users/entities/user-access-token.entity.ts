@@ -13,12 +13,6 @@ export class UserAccessToken {
   @Column()
   token!: string;
 
-  @Column()
-  userId!: string;
-
-  @ManyToOne(() => User, (user) => user.userAccessTokens)
-  user!: User;
-
   @Column({
     nullable: true,
   })
@@ -29,4 +23,10 @@ export class UserAccessToken {
 
   @UpdateDateColumn()
   updatedAt!: Date;
+
+  @Column()
+  userId!: string;
+
+  @ManyToOne(() => User, (user) => user.userAccessTokens)
+  user!: User;
 }

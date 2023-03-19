@@ -1,0 +1,131 @@
+- key: improve_physical_health
+  name: Improve physical health
+  areas: [ physical_wellbeing ]
+
+- key: improve_fitness
+  name: Improve fitness
+  areas: [ physical_wellbeing ]
+
+- key: improve_pain_resilliance
+  name: Improve pain ressiliance
+  areas: [ physical_wellbeing ]
+
+- key: improve_sleep
+  name: Improve sleep
+  areas: [ physical_wellbeing ]
+
+- key: reduce_weight
+  name: Reduce weight
+  areas: [ physical_wellbeing ]
+
+- key: improve_social_life
+  name: Improve social life
+  areas: [ social_wellbeing, emotional_wellbeing ]
+
+- key: improve_love_life
+  name: Improve love life
+  areas: [ social_wellbeing, emotional_wellbeing ]
+
+- key: improve_family_life
+  name: Improve family life
+  areas: [ social_wellbeing, emotional_wellbeing ]
+
+- key: improve_mental_health
+  name: Improve mental health
+  areas: [ emotional_wellbeing ]
+
+- key: increase_happiness
+  name: Increase happiness
+  areas: [ emotional_wellbeing ]
+
+- key: improve_self_esteem
+  name: Improve self esteem
+  areas: [ emotional_wellbeing ]
+
+- key: improve_self_worth
+  name: Improve self worth
+  areas: [ emotional_wellbeing ]
+
+- key: improve_self_confidence
+  name: Improve self confidence
+  areas: [ emotional_wellbeing ]
+
+- key: improve_anxiety_symptoms
+  name: Improve anxiety symptoms
+  areas: [ emotional_wellbeing ]
+
+- key: improve_depression_symptoms
+  name: Improve depression symptoms
+  areas: [ emotional_wellbeing ]
+
+- key: improve_panic_attack_symptoms
+  name: Improve panic attack symptoms
+  areas: [ emotional_wellbeing ]
+
+- key: improve_addiction_symptoms
+  name: Improve addiction symptoms
+  areas: [ emotional_wellbeing ]
+
+- key: reduce_worrying
+  name: Reduce worrying
+  areas: [ emotional_wellbeing ]
+
+- key: reduce_overthinking
+  name: Reduce overthinking
+  areas: [ emotional_wellbeing ]
+
+- key: reduce_worrying
+  name: Reduce worrying
+  areas: [ emotional_wellbeing ]
+
+- key: reduce_overthinking
+  name: Reduce overthinking
+  areas: [ emotional_wellbeing ]
+
+- key: improve_stress_resillience
+  name: Improve stress resilliance
+  areas: [ emotional_wellbeing ]
+
+- key: improve_pressure_handling
+  name: Improve pressure_handling
+  areas: [ emotional_wellbeing ]
+
+- key: improve_imposter_syndrome
+  name: Improve imposter syndrome
+  areas: [ emotional_wellbeing ]
+
+- key: improve_decision_making
+  name: Improve decision making
+  areas: [ emotional_wellbeing ]
+
+- key: improve_self_growth
+  name: Improve self growth
+  areas: [ emotional_wellbeing, occupational_wellbeing ]
+
+- key: improve_productivity
+  name: Improve productivity
+  areas: [ occupational_wellbeing ]
+
+- key: improve_time_managament
+  name: Improve time managament
+  areas: [ occupational_wellbeing ]
+
+- key: improve_knowledge
+  name: Improve knowledge
+  areas: [ occupational_wellbeing, intellectual_wellbeing ]
+
+- key: improve_skills
+  name: Improve skills
+  areas: [ occupational_wellbeing, intellectual_wellbeing ]
+
+- key: improve_focus
+  name: Improve focus
+  areas: [ occupational_wellbeing ]
+
+- key: improve_concentration
+  name: Improve concentration
+  areas: [ occupational_wellbeing ]
+
+- key: improve_financial_situation
+  name: Improve financial situation
+  areas: [ financial_wellbeing ]

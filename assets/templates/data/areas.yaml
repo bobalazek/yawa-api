@@ -1,0 +1,39 @@
+- key: physical_wellbeing
+  name: Physical wellbeing
+  subheading: Health and fitness
+  description: Recognizing the need for physical activity, healthy food and sleep
+
+- key: emotional_wellbeing
+  name: Emotional wellbeing
+  subheading: Mind and relationships
+  description: Coping effectively with your mental state, and life and creating satisfying relationships
+
+- key: social_wellbeing
+  name: Social wellbeing
+  subheading: Family and friends
+  description: Developing a sense of connection, belonging and a well-developed support system
+
+- key: intellectual_wellbeing
+  name: Intellectual wellbeing
+  subheading: Skills and knowledge
+  description: Recognizing creative abilities and finding ways to expand knowledge and skills
+
+- key: financial_wellbeing
+  name: Financial wellbeing
+  subheading: Financial stability
+  description: Feeling satisfied with current and future financial situations
+
+- key: occupational_wellbeing
+  name: Occupational wellbeing
+  subheading: Career and education
+  description: Creating personal satisfaction and enrichment from one's work
+
+- key: spiritual_wellbeing
+  name: Spiritual wellbeing
+  subheading: Personal beliefs and identity
+  description: Expanding a sense of purpose and meaning in life
+
+- key: environmental_wellbeing
+  name: Environmental wellbeing
+  subheading: Home and environment
+  description: Living in an pleasant environment that supports your wellbeing

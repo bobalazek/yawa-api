@@ -1,5 +1,7 @@
 import { Column, CreateDateColumn, Entity, Index, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
+import { Action } from '../../common/entities/action.entity';
+import { Goal } from '../../common/entities/goal.entity';
 import { UserAccessToken } from './user-access-token.entity';
 
 @Entity('users')
@@ -81,4 +83,10 @@ export class User {
 
   @OneToMany(() => UserAccessToken, (userAccessToken) => userAccessToken.user)
   userAccessTokens: UserAccessToken[];
+
+  @OneToMany(() => Goal, (goal) => goal.user)
+  goals: Goal[];
+
+  @OneToMany(() => Action, (action) => action.user)
+  actions: Action[];
 }

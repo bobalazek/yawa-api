@@ -9,6 +9,6 @@ import { UsersService } from './services/users.service';
 @Module({
   imports: [TypeOrmModule.forFeature([User, UserAccessToken])],
   providers: [UsersService, UserAccessTokensService],
-  exports: [TypeOrmModule, UsersService, UserAccessTokensService],
+  exports: [UsersService, UserAccessTokensService],
 })
 export class UsersModule {}
