@@ -9,6 +9,6 @@ config();
 export default new DataSource({
   type: 'postgres',
   url: process.env.POSTGRESQL_URL,
-  entities: ['**/*.entity.{ts,js}'],
+  entities: ['**/*.entity.{ts,js}'], // TODO: not really working
   migrations: ['**/*.migration.{ts,js}'],
 });
