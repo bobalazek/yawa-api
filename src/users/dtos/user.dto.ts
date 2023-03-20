@@ -46,5 +46,5 @@ export class UserDto extends AbstractDto {
   @Expose()
   @IsDate()
   @IsOptional()
-  readonly lastPasswordResetRequestedAt?: Date;
+  readonly passwordResetLastRequestedAt?: Date;
 }

@@ -39,19 +39,12 @@ export class User {
   @Column()
   emailConfirmationCode!: string;
 
-  // This use is used when confirming it via the email
   @Index({
     unique: true,
   })
   @Column()
   emailConfirmationToken!: string;
 
-  @Column({
-    nullable: true,
-  })
-  newEmailConfirmationCode?: string;
-
-  // This use is used when confirming it via the email
   @Index({
     unique: true,
   })
@@ -60,10 +53,13 @@ export class User {
   })
   newEmailConfirmationToken?: string;
 
+  @Index({
+    unique: true,
+  })
   @Column({
     nullable: true,
   })
-  passwordResetCode?: string;
+  passwordResetToken?: string;
 
   @Column({
     nullable: true,
@@ -73,7 +69,12 @@ export class User {
   @Column({
     nullable: true,
   })
-  lastPasswordResetRequestedAt?: Date;
+  passwordResetLastRequestedAt?: Date;
+
+  @Column({
+    nullable: true,
+  })
+  passwordResetLastRequestExpiresAt?: Date;
 
   @CreateDateColumn()
   createdAt!: Date;
