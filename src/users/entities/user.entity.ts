@@ -36,9 +36,6 @@ export class User {
   @Column()
   firstName!: string;
 
-  @Column()
-  emailConfirmationCode!: string;
-
   @Index({
     unique: true,
   })

@@ -10,7 +10,7 @@ export class MailService {
 
   async sendEmailConfirmationEmail(user: User) {
     const BASE_URL = this._configService.get('BASE_URL');
-    const { emailConfirmationCode, emailConfirmationToken } = user;
+    const { emailConfirmationToken } = user;
     const emailConfirmationUrl = `${BASE_URL}/auth/confirm-email?token=${emailConfirmationToken}`;
 
     return this._mailerService.sendMail({
@@ -20,7 +20,6 @@ export class MailService {
       context: {
         user,
         emailConfirmationUrl,
-        emailConfirmationCode,
       },
     });
   }
@@ -38,7 +37,7 @@ export class MailService {
 
   async sendNewEmailConfirmationEmail(user: User) {
     const BASE_URL = this._configService.get('BASE_URL');
-    const { newEmailConfirmationCode, newEmailConfirmationToken } = user;
+    const { newEmailConfirmationToken } = user;
     const emailConfirmationUrl = `${BASE_URL}/auth/confirm-new-email?token=${newEmailConfirmationToken}`;
 
     return this._mailerService.sendMail({
@@ -48,7 +47,6 @@ export class MailService {
       context: {
         user,
         emailConfirmationUrl,
-        emailConfirmationCode: newEmailConfirmationCode,
       },
     });
   }

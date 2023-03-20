@@ -5,10 +5,10 @@ import { Request } from 'express';
 
 import { UserDto } from '../../users/dtos/user.dto';
 import { AccessTokenDto } from '../dtos/access-token.dto';
-import { CodeDto } from '../dtos/code.dto';
 import { LoginDto } from '../dtos/login.dto';
 import { RegisterDto } from '../dtos/register.dto';
 import { SettingsDto } from '../dtos/settings.dto';
+import { TokenDto } from '../dtos/token.dto';
 import { AuthenticatedGuard } from '../guards/authenticated.guard';
 import { AuthService } from '../services/auth.service';
 
@@ -48,8 +48,8 @@ export class AuthController {
   })
   @UseGuards(AuthenticatedGuard)
   @Post('/confirm-email')
-  async confirmEmail(@Body() confirmEmailDto: CodeDto, @Req() req: Request): Promise<{ message: string }> {
-    await this._authService.confirmUserEmail((req.user as UserDto).id, confirmEmailDto.code);
+  async confirmEmail(@Body() tokenDto: TokenDto): Promise<{ message: string }> {
+    await this._authService.confirmUserEmail(tokenDto.token);
 
     return { message: 'Email successfully confirmed' };
   }
@@ -64,8 +64,8 @@ export class AuthController {
   })
   @UseGuards(AuthenticatedGuard)
   @Post('/confirm-new-email')
-  async confirmNewEmail(@Body() confirmEmailDto: CodeDto, @Req() req: Request): Promise<{ message: string }> {
-    await this._authService.confirmUserEmail((req.user as UserDto).id, confirmEmailDto.code, true);
+  async confirmNewEmail(@Body() tokenDto: TokenDto): Promise<{ message: string }> {
+    await this._authService.confirmUserEmail(tokenDto.token, true);
 
     return { message: 'New email successfully confirmed' };
   }

@@ -12,7 +12,7 @@ export class AuthPagesController {
   @Get('/confirm-email')
   async confirmEmailGet(@Query('token') token: string) {
     try {
-      await this._authService.confirmUserEmailByToken(token);
+      await this._authService.confirmUserEmail(token);
 
       return { message: 'Email successfully confirmed' };
     } catch (err) {
@@ -25,7 +25,7 @@ export class AuthPagesController {
   @Render('auth-confirm-new-email')
   @Get('/confirm-new-email')
   async confirmNewEmailGet(@Query('token') token: string) {
-    await this._authService.confirmUserEmailByToken(token, true);
+    await this._authService.confirmUserEmail(token, true);
 
     return { message: 'New email successfully confirmed' };
   }

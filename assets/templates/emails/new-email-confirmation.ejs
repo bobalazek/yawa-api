@@ -1,7 +1,3 @@
 <p>Hi <%= locals.user.firstName %>,</p>
 <p>Since you have requested an email change, you will need to confirm your new email with the link below:</p>
 <p><a href="<%= locals.emailConfirmationUrl %>"><%= locals.emailConfirmationUrl %></a></p>
-<p>
-  In case the confirmation URL does not work for you, please use the following code inside the application to confirm
-  your email: <b><%= locals.emailConfirmationCode %></b>
-</p>

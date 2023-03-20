@@ -1,6 +1,5 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import * as crypto from 'crypto';
 import { UserAccessTokensService } from 'src/users/services/user-access-tokens.service';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -61,7 +60,6 @@ export class AuthService {
         // We need to await it, else it's not caught and it's caught as unexpectedException
         ...processedRegisterDto,
         password: await this._generateHash(processedRegisterDto.password),
-        emailConfirmationCode: this._randomCode(8),
         emailConfirmationToken: uuidv4(),
       });
 
@@ -77,21 +75,11 @@ export class AuthService {
     }
   }
 
-  async confirmUserEmailByToken(token: string, isNewEmail: boolean = false) {
+  async confirmUserEmail(token: string, isNewEmail: boolean = false) {
     const user = await this._usersService.findOneBy(
       isNewEmail ? 'newEmailConfirmationToken' : 'emailConfirmationToken',
       token
     );
-
-    return this.confirmUserEmail(
-      user,
-      user ? (isNewEmail ? user.newEmailConfirmationCode : user.emailConfirmationCode) : '',
-      isNewEmail
-    );
-  }
-
-  async confirmUserEmail(userIdOrUser: string | User, code: string, isNewEmail: boolean = false) {
-    const user = typeof userIdOrUser === 'string' ? await this._usersService.findOneById(userIdOrUser) : userIdOrUser;
     if (!user) {
       throw new BadRequestException(`User not found`);
     }
@@ -100,17 +88,9 @@ export class AuthService {
       throw new BadRequestException(`Email already confirmed`);
     }
 
-    if (
-      (!isNewEmail && user.emailConfirmationCode !== code) ||
-      (isNewEmail && user.newEmailConfirmationCode !== code)
-    ) {
-      throw new BadRequestException(`Provided code is not correct`);
-    }
-
     if (isNewEmail) {
       user.email = user.newEmail;
       user.newEmail = null;
-      user.newEmailConfirmationCode = null;
       user.newEmailConfirmationToken = null;
     }
 
@@ -128,7 +108,6 @@ export class AuthService {
 
     if (settingsDto.email) {
       user.newEmail = settingsDto.email;
-      user.newEmailConfirmationCode = this._randomCode(8);
       user.newEmailConfirmationToken = uuidv4();
     }
 
@@ -169,9 +148,5 @@ export class AuthService {
 
   private async _compareHash(password: string, hash: string): Promise<boolean> {
     return bcrypt.compare(password, hash);
-  }
-
-  private _randomCode(length: number = 8) {
-    return crypto.randomBytes(16).toString('hex').toLowerCase().slice(0, length);
   }
 }
