@@ -15,6 +15,9 @@ export class User {
   @Column()
   email!: string;
 
+  @Index({
+    unique: true,
+  })
   @Column({
     nullable: true,
   })
