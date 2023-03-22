@@ -8,10 +8,11 @@ import { LoggerModule } from 'nestjs-pino';
 
 import { AuthModule } from './auth/auth.module';
 import { AuthMiddleware } from './auth/middlewares/auth.middleware';
-import { CommonModule } from './common/common.module';
 import { DatabaseModule } from './database/database.module';
+import environmentVariables from './environment-variables';
 import { MailModule } from './mail/mail.module';
 import { QueuesModule } from './queues/queues.module';
+import { ResourcesModule } from './resources/resources.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
@@ -26,6 +27,7 @@ import { UsersModule } from './users/users.module';
         SMTP_TRANSPORT_URL: Joi.string().required(),
         SMTP_FROM: Joi.string().required(),
       }),
+      load: [environmentVariables],
     }),
     ThrottlerModule.forRoot({
       ttl: 60,
@@ -35,7 +37,7 @@ import { UsersModule } from './users/users.module';
     DatabaseModule,
     MailModule,
     QueuesModule,
-    CommonModule,
+    ResourcesModule,
     AuthModule,
     UsersModule,
   ],
