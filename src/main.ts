@@ -6,7 +6,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { join } from 'path';
 
 import { AppModule } from './app.module';
-import { APP_NAME } from './constants';
+import { env } from './env';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -25,7 +25,7 @@ async function bootstrap() {
 
   // Swagger documentation
   if (IS_DEVELOPMENT) {
-    const config = new DocumentBuilder().setTitle(APP_NAME).build();
+    const config = new DocumentBuilder().setTitle(env.APP_NAME).build();
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('api-docs', app, document);
   }
