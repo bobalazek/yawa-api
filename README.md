@@ -4,5 +4,9 @@ This is the API for our app
 
 ## Commands
 
-- Run: `npm run start:dev` - that will start swagger docs on http://localhost:3000/api-docs
-- Run: `npm run typeorm:generate-migration src/database/migrations/{CamelCasedMigrationName}` - that will execute the database migrations
+- Run: `npm run start:dev`
+  - That will the development server. You can view the docs on <http://localhost:3000/api-docs>
+- Run: `npm run typeorm:generate-migration src/database/migrations/{CamelCasedMigrationName}`
+  - That will create a new diff migration. It will take your current database schema and compare it to the schema you want, depending on your models
+- Run: `npm run typeorm:run-migrations`
+  - That will create run the migration on the database

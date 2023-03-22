@@ -9,15 +9,16 @@ import { LoggerModule } from 'nestjs-pino';
 import { AuthModule } from './auth/auth.module';
 import { AuthMiddleware } from './auth/middlewares/auth.middleware';
 import { DatabaseModule } from './database/database.module';
-import environmentVariables from './environment-variables';
+import { env } from './env';
 import { MailModule } from './mail/mail.module';
-import { QueuesModule } from './queues/queues.module';
 import { ResourcesModule } from './resources/resources.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
+      isGlobal: true,
+      ignoreEnvFile: true, // We handle that on our own inside the environment-variables.ts file
       validationSchema: Joi.object({
         NODE_ENV: Joi.string().valid('development', 'production', 'test').default('development'),
         PORT: Joi.number().default(3000),
@@ -27,7 +28,7 @@ import { UsersModule } from './users/users.module';
         SMTP_TRANSPORT_URL: Joi.string().required(),
         SMTP_FROM: Joi.string().required(),
       }),
-      load: [environmentVariables],
+      load: [() => env],
     }),
     ThrottlerModule.forRoot({
       ttl: 60,
@@ -36,7 +37,6 @@ import { UsersModule } from './users/users.module';
     LoggerModule.forRoot(),
     DatabaseModule,
     MailModule,
-    QueuesModule,
     ResourcesModule,
     AuthModule,
     UsersModule,
