@@ -1,7 +1,7 @@
 import { Column, CreateDateColumn, Entity, Index, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
-import { Action } from '../../resources/entities/action.entity';
-import { Goal } from '../../resources/entities/goal.entity';
+import { Action } from '../../actions/entities/action.entity';
+import { Goal } from '../../actions/entities/goal.entity';
 import { UserAccessToken } from './user-access-token.entity';
 
 @Entity('users')

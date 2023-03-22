@@ -13,4 +13,4 @@ import { GoalsService } from './services/goals.service';
   controllers: [GoalsController, ActionsController],
   providers: [GoalsService, ActionsService],
 })
-export class ResourcesModule {}
+export class ActionsModule {}

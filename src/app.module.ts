@@ -6,12 +6,12 @@ import { ThrottlerGuard } from '@nestjs/throttler/dist/throttler.guard';
 import * as Joi from 'joi';
 import { LoggerModule } from 'nestjs-pino';
 
+import { ActionsModule } from './actions/actions.module';
 import { AuthModule } from './auth/auth.module';
 import { AuthMiddleware } from './auth/middlewares/auth.middleware';
 import { DatabaseModule } from './database/database.module';
 import { env } from './env';
 import { MailModule } from './mail/mail.module';
-import { ResourcesModule } from './resources/resources.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
@@ -37,7 +37,7 @@ import { UsersModule } from './users/users.module';
     LoggerModule.forRoot(),
     DatabaseModule,
     MailModule,
-    ResourcesModule,
+    ActionsModule,
     AuthModule,
     UsersModule,
   ],
