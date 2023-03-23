@@ -6,7 +6,7 @@ import { User } from '../entities/user.entity';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectRepository(User) private _usersRepository: Repository<User>) {}
+  constructor(@InjectRepository(User) private readonly _usersRepository: Repository<User>) {}
 
   findOneById(id: string): Promise<User | null> {
     return this._usersRepository.findOneBy({ id });

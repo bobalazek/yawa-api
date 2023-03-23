@@ -33,7 +33,21 @@ import { UsersModule } from './users/users.module';
       ttl: 60,
       limit: 30,
     }),
-    LoggerModule.forRoot(),
+    LoggerModule.forRoot({
+      pinoHttp: {
+        level: 'trace',
+        transport:
+          env.NODE_ENV !== 'production'
+            ? {
+                target: 'pino-pretty',
+                options: {
+                  minimumLevel: 'trace',
+                  colorize: true,
+                },
+              }
+            : undefined,
+      },
+    }),
     DatabaseModule,
     NotificationsModule,
     ActionsModule,

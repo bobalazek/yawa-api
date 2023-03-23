@@ -6,7 +6,7 @@ import { Goal } from '../entities/goal.entity';
 
 @Injectable()
 export class GoalsService {
-  constructor(@InjectRepository(Goal) private _goalsRepository: Repository<Goal>) {}
+  constructor(@InjectRepository(Goal) private readonly _goalsRepository: Repository<Goal>) {}
 
   findAll(): Promise<Goal[]> {
     return this._goalsRepository.find();

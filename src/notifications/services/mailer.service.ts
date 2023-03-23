@@ -6,7 +6,10 @@ import { User } from '../../users/entities/user.entity';
 
 @Injectable()
 export class MailerService {
-  constructor(private _configService: ConfigService, private _mailerService: NestModulesMailerService) {}
+  constructor(
+    private readonly _configService: ConfigService,
+    private readonly _mailerService: NestModulesMailerService
+  ) {}
 
   async sendEmailConfirmationEmail(user: User) {
     const BASE_URL = this._configService.get('BASE_URL');

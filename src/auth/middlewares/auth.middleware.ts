@@ -5,7 +5,7 @@ import { AuthService } from '../services/auth.service';
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
-  constructor(private _authService: AuthService) {}
+  constructor(private readonly _authService: AuthService) {}
 
   async use(req: Request, res: Response, next: NextFunction) {
     let accessToken: string | null = null;

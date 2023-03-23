@@ -6,7 +6,7 @@ import { Action } from '../entities/action.entity';
 
 @Injectable()
 export class ActionsService {
-  constructor(@InjectRepository(Action) private _actionsRepository: Repository<Action>) {}
+  constructor(@InjectRepository(Action) private readonly _actionsRepository: Repository<Action>) {}
 
   findAll(): Promise<Action[]> {
     return this._actionsRepository.find();

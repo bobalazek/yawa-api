@@ -6,7 +6,9 @@ import { UserAccessToken } from '../entities/user-access-token.entity';
 
 @Injectable()
 export class UserAccessTokensService {
-  constructor(@InjectRepository(UserAccessToken) private _userAccessTokensRepository: Repository<UserAccessToken>) {}
+  constructor(
+    @InjectRepository(UserAccessToken) private readonly _userAccessTokensRepository: Repository<UserAccessToken>
+  ) {}
 
   findOneById(id: string): Promise<UserAccessToken | null> {
     return this._userAccessTokensRepository.findOneBy({ id });

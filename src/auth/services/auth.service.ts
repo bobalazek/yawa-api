@@ -18,9 +18,9 @@ import { SettingsDto } from '../dtos/settings.dto';
 @Injectable()
 export class AuthService {
   constructor(
-    private _usersService: UsersService,
-    private _userAccessTokensService: UserAccessTokensService,
-    private _mailerService: MailerService
+    private readonly _usersService: UsersService,
+    private readonly _userAccessTokensService: UserAccessTokensService,
+    private readonly _mailerService: MailerService
   ) {}
 
   async loginUser(loginDto: LoginDto): Promise<string> {
@@ -254,7 +254,8 @@ export class AuthService {
   }
 
   private async _generateHash(password: string): Promise<string> {
-    return bcrypt.hash(password, 10);
+    const salt = await bcrypt.genSalt();
+    return bcrypt.hash(password, salt);
   }
 
   private async _compareHash(password: string, hash: string): Promise<boolean> {

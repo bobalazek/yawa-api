@@ -2,6 +2,8 @@ import { Global, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { GenerateSeedsCommand } from './commands/generate-seeds.command';
+
 @Global()
 @Module({
   imports: [
@@ -16,6 +18,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       }),
     }),
   ],
-  providers: [],
+  providers: [GenerateSeedsCommand],
 })
 export class DatabaseModule {}
