@@ -10,7 +10,7 @@ import { ActionsModule } from './actions/actions.module';
 import { AuthModule } from './auth/auth.module';
 import { DatabaseModule } from './database/database.module';
 import { env } from './env';
-import { MailModule } from './mail/mail.module';
+import { NotificationsModule } from './notifications/notifications.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
@@ -35,7 +35,7 @@ import { UsersModule } from './users/users.module';
     }),
     LoggerModule.forRoot(),
     DatabaseModule,
-    MailModule,
+    NotificationsModule,
     ActionsModule,
     AuthModule,
     UsersModule,

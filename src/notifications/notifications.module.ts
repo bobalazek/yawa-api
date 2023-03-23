@@ -4,7 +4,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { join, resolve } from 'path';
 
-import { MailService } from './services/mail.service';
+import { MailerService } from './services/mailer.service';
 
 @Module({
   imports: [
@@ -27,7 +27,7 @@ import { MailService } from './services/mail.service';
       }),
     }),
   ],
-  providers: [MailService],
-  exports: [MailService],
+  providers: [MailerService],
+  exports: [MailerService],
 })
-export class MailModule {}
+export class NotificationsModule {}

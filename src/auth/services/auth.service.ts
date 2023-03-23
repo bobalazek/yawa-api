@@ -2,7 +2,7 @@ import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/
 import * as bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 
-import { MailService } from '../../mail/services/mail.service';
+import { MailerService } from '../../notifications/services/mailer.service';
 import { User } from '../../users/entities/user.entity';
 import { UserAccessTokensService } from '../../users/services/user-access-tokens.service';
 import { UsersService } from '../../users/services/users.service';
@@ -15,7 +15,7 @@ export class AuthService {
   constructor(
     private _usersService: UsersService,
     private _userAccessTokensService: UserAccessTokensService,
-    private _mailService: MailService
+    private _mailerService: MailerService
   ) {}
 
   async login(loginDto: LoginDto): Promise<string> {
@@ -74,7 +74,7 @@ export class AuthService {
         emailConfirmationToken: uuidv4(),
       });
 
-      await this._mailService.sendEmailConfirmationEmail(user);
+      await this._mailerService.sendEmailConfirmationEmail(user);
 
       return user;
     } catch (err) {
@@ -109,7 +109,7 @@ export class AuthService {
 
     await this._usersService.save(user);
 
-    await this._mailService.sendEmailConfirmationSuccessEmail(user);
+    await this._mailerService.sendEmailConfirmationSuccessEmail(user);
 
     return true;
   }
@@ -129,7 +129,7 @@ export class AuthService {
     await this._usersService.save(user);
 
     if (settingsDto.email) {
-      await this._mailService.sendNewEmailConfirmationEmail(user);
+      await this._mailerService.sendNewEmailConfirmationEmail(user);
     }
 
     return user;

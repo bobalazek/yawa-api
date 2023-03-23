@@ -1,12 +1,12 @@
-import { MailerService } from '@nestjs-modules/mailer';
+import { MailerService as NestModulesMailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import { User } from '../../users/entities/user.entity';
 
 @Injectable()
-export class MailService {
-  constructor(private _configService: ConfigService, private _mailerService: MailerService) {}
+export class MailerService {
+  constructor(private _configService: ConfigService, private _mailerService: NestModulesMailerService) {}
 
   async sendEmailConfirmationEmail(user: User) {
     const BASE_URL = this._configService.get('BASE_URL');
