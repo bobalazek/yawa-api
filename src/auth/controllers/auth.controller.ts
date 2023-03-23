@@ -3,12 +3,11 @@ import { ApiHeader, ApiTags } from '@nestjs/swagger';
 import { plainToClass } from 'class-transformer';
 import { Request } from 'express';
 
+import { TokenDto } from '../../common/dtos/token.dto';
 import { UserDto } from '../../users/dtos/user.dto';
-import { AccessTokenDto } from '../dtos/access-token.dto';
 import { LoginDto } from '../dtos/login.dto';
 import { RegisterDto } from '../dtos/register.dto';
 import { SettingsDto } from '../dtos/settings.dto';
-import { TokenDto } from '../dtos/token.dto';
 import { AuthenticatedGuard } from '../guards/authenticated.guard';
 import { AuthService } from '../services/auth.service';
 
@@ -18,17 +17,10 @@ export class AuthController {
   constructor(private readonly _authService: AuthService) {}
 
   @Post('/login')
-  async login(@Body() loginDto: LoginDto): Promise<AccessTokenDto> {
-    const accessToken = await this._authService.login(loginDto);
+  async login(@Body() loginDto: LoginDto): Promise<TokenDto> {
+    const token = await this._authService.login(loginDto);
 
-    return { accessToken };
-  }
-
-  @Post('/logout')
-  async logout(): Promise<{ message: string }> {
-    // TODO: do we need to do anything?
-
-    return { message: 'User successfully logged out' };
+    return { token };
   }
 
   @Post('/register')
@@ -36,6 +28,15 @@ export class AuthController {
     const createdUser = await this._authService.registerUser(registerDto);
 
     return plainToClass(UserDto, createdUser);
+  }
+
+  @Post('/logout')
+  async logout(@Req() req: Request): Promise<{ message: string }> {
+    if (req.user) {
+      await this._authService.logout(req.user.token);
+    }
+
+    return { message: 'User successfully logged out' };
   }
 
   @ApiHeader({
@@ -81,7 +82,7 @@ export class AuthController {
   @UseGuards(AuthenticatedGuard)
   @Post('/profile')
   async profile(@Req() req: Request): Promise<UserDto> {
-    const user = this._authService.getUserById((req.user as UserDto).id);
+    const user = this._authService.getUserById(req.user.id);
 
     return plainToClass(UserDto, user);
   }
@@ -97,14 +98,14 @@ export class AuthController {
   @UseGuards(AuthenticatedGuard)
   @Post('/settings')
   async settings(@Body() settingsDto: SettingsDto, @Req() req: Request): Promise<UserDto> {
-    const user = this._authService.updateUser(req.user?.id, settingsDto);
+    const user = this._authService.updateUser(req.user.id, settingsDto);
 
     return plainToClass(UserDto, user);
   }
 
   /*
-  @Post('/request-reset-password')
-  async requestResetPassword(@Req() req: Request) {
+  @Post('/request-password-reset')
+  async requestPasswordReset(@Req() req: Request) {
     // TODO: reset password request DTO
 
     return null;

@@ -1,10 +1,10 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { UserAccessTokensService } from 'src/users/services/user-access-tokens.service';
 import { v4 as uuidv4 } from 'uuid';
 
 import { MailService } from '../../mail/services/mail.service';
 import { User } from '../../users/entities/user.entity';
+import { UserAccessTokensService } from '../../users/services/user-access-tokens.service';
 import { UsersService } from '../../users/services/users.service';
 import { LoginDto } from '../dtos/login.dto';
 import { RegisterDto } from '../dtos/register.dto';
@@ -32,6 +32,17 @@ export class AuthService {
       // In the very, VERY unlikely scenario the uuid would be a duplicate, just prompt the user to login again
       throw new BadRequestException(`Something went wrong. Try logging in again`);
     }
+  }
+
+  async logout(token: string): Promise<boolean> {
+    const userAccessToken = await this._userAccessTokensService.findOneByToken(token);
+
+    if (userAccessToken) {
+      userAccessToken.expiresAt = new Date();
+      await this._userAccessTokensService.save(userAccessToken);
+    }
+
+    return true;
   }
 
   async validateUser(loginDto: LoginDto) {

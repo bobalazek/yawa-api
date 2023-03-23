@@ -20,7 +20,14 @@ export class AuthMiddleware implements NestMiddleware {
     }
 
     try {
-      req.user = accessToken ? await this._authService.getUserByAccessToken(accessToken) : undefined;
+      const user = accessToken ? await this._authService.getUserByAccessToken(accessToken) : undefined;
+      if (user) {
+        // If you edit this, also remember to edit global.d.ts
+        req.user = {
+          id: user.id,
+          token: accessToken,
+        };
+      }
     } catch (err) {
       // Nothing to do
     }

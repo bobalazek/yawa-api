@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerModule } from '@nestjs/throttler';
@@ -8,7 +8,6 @@ import { LoggerModule } from 'nestjs-pino';
 
 import { ActionsModule } from './actions/actions.module';
 import { AuthModule } from './auth/auth.module';
-import { AuthMiddleware } from './auth/middlewares/auth.middleware';
 import { DatabaseModule } from './database/database.module';
 import { env } from './env';
 import { MailModule } from './mail/mail.module';
@@ -48,8 +47,4 @@ import { UsersModule } from './users/users.module';
     },
   ],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AuthMiddleware).forRoutes('*');
-  }
-}
+export class AppModule {}
