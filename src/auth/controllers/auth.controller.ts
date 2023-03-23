@@ -6,8 +6,9 @@ import { Request } from 'express';
 import { TokenDto } from '../../common/dtos/token.dto';
 import { UserDto } from '../../users/dtos/user.dto';
 import { LoginDto } from '../dtos/login.dto';
+import { PasswordResetRequestDto } from '../dtos/password-reset-request.dto';
 import { RegisterDto } from '../dtos/register.dto';
-import { SettingsDto } from '../dtos/settings.dto';
+import { ResetPasswordDto } from '../dtos/reset-password.dto';
 import { AuthenticatedGuard } from '../guards/authenticated.guard';
 import { AuthService } from '../services/auth.service';
 
@@ -18,7 +19,7 @@ export class AuthController {
 
   @Post('/login')
   async login(@Body() loginDto: LoginDto): Promise<TokenDto> {
-    const token = await this._authService.login(loginDto);
+    const token = await this._authService.loginUser(loginDto);
 
     return { token };
   }
@@ -71,51 +72,17 @@ export class AuthController {
     return { message: 'New email successfully confirmed' };
   }
 
-  @ApiHeader({
-    name: 'X-Authorization',
-    required: true,
-    schema: {
-      type: 'string',
-      example: 'Bearer e737c47f-8ec5-4ddc-b414-d93975ffd297',
-    },
-  })
-  @UseGuards(AuthenticatedGuard)
-  @Post('/profile')
-  async profile(@Req() req: Request): Promise<UserDto> {
-    const user = this._authService.getUserById(req.user.id);
-
-    return plainToClass(UserDto, user);
-  }
-
-  @ApiHeader({
-    name: 'X-Authorization',
-    required: true,
-    schema: {
-      type: 'string',
-      example: 'Bearer e737c47f-8ec5-4ddc-b414-d93975ffd297',
-    },
-  })
-  @UseGuards(AuthenticatedGuard)
-  @Post('/settings')
-  async settings(@Body() settingsDto: SettingsDto, @Req() req: Request): Promise<UserDto> {
-    const user = this._authService.updateUser(req.user.id, settingsDto);
-
-    return plainToClass(UserDto, user);
-  }
-
-  /*
   @Post('/request-password-reset')
-  async requestPasswordReset(@Req() req: Request) {
-    // TODO: reset password request DTO
+  async requestPasswordReset(@Body() passwordResetRequestDto: PasswordResetRequestDto): Promise<{ message: string }> {
+    await this._authService.requestPasswordReset(passwordResetRequestDto);
 
-    return null;
+    return { message: 'Password reset successfully requested' };
   }
 
   @Post('/reset-password')
-  async resetPassword(@Req() req: Request) {
-    // TODO: reset password DTO
+  async resetPassword(@Body() resetPasswordDto: ResetPasswordDto): Promise<{ message: string }> {
+    await this._authService.resetPassword(resetPasswordDto);
 
-    return null;
+    return { message: 'Password was successfully reset' };
   }
-  */
 }

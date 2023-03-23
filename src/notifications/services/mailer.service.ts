@@ -50,4 +50,31 @@ export class MailerService {
       },
     });
   }
+
+  async sendResetPasswordRequestEmail(user: User) {
+    const BASE_URL = this._configService.get('BASE_URL');
+    const { passwordResetToken } = user;
+    const passwordResetUrl = `${BASE_URL}/auth/password-reset?token=${passwordResetToken}`;
+
+    return this._mailerService.sendMail({
+      to: user.email,
+      subject: 'Password reset',
+      template: 'password-reset',
+      context: {
+        user,
+        passwordResetUrl,
+      },
+    });
+  }
+
+  async sendPasswordResetSuccessEmail(user: User) {
+    return this._mailerService.sendMail({
+      to: user.email,
+      subject: 'Password reset success',
+      template: 'password-reset-success',
+      context: {
+        user,
+      },
+    });
+  }
 }

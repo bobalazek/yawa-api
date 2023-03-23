@@ -16,7 +16,7 @@ export class UsersService {
     return this._usersRepository.findOneBy({ email });
   }
 
-  findOneBy(field: string, value: string): Promise<User | null> {
+  findOneBy(field: keyof User, value: string): Promise<User | null> {
     return this._usersRepository.findOneBy({ [field]: value });
   }
 

@@ -1,13 +1,17 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
+import { DateTime } from 'luxon';
 import { v4 as uuidv4 } from 'uuid';
 
+import { env } from '../../env';
 import { MailerService } from '../../notifications/services/mailer.service';
 import { User } from '../../users/entities/user.entity';
 import { UserAccessTokensService } from '../../users/services/user-access-tokens.service';
 import { UsersService } from '../../users/services/users.service';
 import { LoginDto } from '../dtos/login.dto';
+import { PasswordResetRequestDto } from '../dtos/password-reset-request.dto';
 import { RegisterDto } from '../dtos/register.dto';
+import { ResetPasswordDto } from '../dtos/reset-password.dto';
 import { SettingsDto } from '../dtos/settings.dto';
 
 @Injectable()
@@ -18,7 +22,7 @@ export class AuthService {
     private _mailerService: MailerService
   ) {}
 
-  async login(loginDto: LoginDto): Promise<string> {
+  async loginUser(loginDto: LoginDto): Promise<string> {
     const user = await this.validateUser(loginDto);
 
     try {
@@ -48,7 +52,7 @@ export class AuthService {
   async validateUser(loginDto: LoginDto) {
     const user = await this._usersService.findOneByEmail(loginDto.email);
     if (!user) {
-      throw new UnauthorizedException(`User with this username or email was not found`);
+      throw new UnauthorizedException(`User with this email was not found`);
     }
 
     const isPasswordSame = await this._compareHash(loginDto.password, user.password);
@@ -103,6 +107,8 @@ export class AuthService {
       user.email = user.newEmail;
       user.newEmail = null;
       user.newEmailConfirmationToken = null;
+    } else {
+      user.emailConfirmationToken = null;
     }
 
     user.emailConfirmedAt = new Date();
@@ -114,9 +120,7 @@ export class AuthService {
     return true;
   }
 
-  async updateUser(userId: string, settingsDto: SettingsDto) {
-    const user = await this.getUserById(userId);
-
+  async updateUser(user: User, settingsDto: SettingsDto) {
     if (settingsDto.email) {
       user.newEmail = settingsDto.email;
       user.newEmailConfirmationToken = uuidv4();
@@ -126,7 +130,12 @@ export class AuthService {
       user.firstName = settingsDto.firstName;
     }
 
-    await this._usersService.save(user);
+    try {
+      await this._usersService.save(user);
+    } catch (err) {
+      // In the very, VERY unlikely scenario the uuid would be a duplicate - if setting the new email
+      throw new BadRequestException(`Something went wrong. Try updating the user again`);
+    }
 
     if (settingsDto.email) {
       await this._mailerService.sendNewEmailConfirmationEmail(user);
@@ -135,8 +144,77 @@ export class AuthService {
     return user;
   }
 
-  async getUserById(id: string) {
-    return this._usersService.findOneById(id);
+  async requestPasswordReset(passwordResetRequestDto: PasswordResetRequestDto) {
+    const user = await this._usersService.findOneByEmail(passwordResetRequestDto.email);
+    if (!user) {
+      throw new BadRequestException(`User with this email was not found`);
+    }
+
+    const now = new Date();
+
+    if (user.passwordResetLastRequestExpiresAt && user.passwordResetLastRequestExpiresAt.getTime() < now.getTime()) {
+      throw new BadRequestException(
+        `You already have a pending password reset request. Check your email or try again later.`
+      );
+    }
+
+    user.passwordResetToken = uuidv4();
+    user.passwordResetLastRequestedAt = now;
+    user.passwordResetLastRequestExpiresAt = DateTime.fromJSDate(now)
+      .plus({
+        seconds: env.RESET_PASSWORD_REQUEST_EXPIRATION_SECONDS,
+      })
+      .toJSDate();
+
+    try {
+      await this._usersService.save(user);
+    } catch (err) {
+      // In the very, VERY unlikely scenario the uuid would be a duplicate - if setting the password reset
+      throw new BadRequestException(`Something went wrong. Try requesting the password reset again`);
+    }
+
+    await this._mailerService.sendResetPasswordRequestEmail(user);
+
+    return user;
+  }
+
+  async resetPassword(resetPasswordDto: ResetPasswordDto) {
+    if (resetPasswordDto.newPassword !== resetPasswordDto.repeatNewPassword) {
+      throw new BadRequestException(`Passwords do not match`);
+    }
+
+    const user = await this._usersService.findOneBy('passwordResetToken', resetPasswordDto.token);
+    if (!user) {
+      throw new BadRequestException(`User with this token was not found`);
+    }
+
+    const now = new Date();
+
+    if (
+      !user.passwordResetLastRequestExpiresAt ||
+      (user.passwordResetLastRequestExpiresAt && user.passwordResetLastRequestExpiresAt.getTime() < now.getTime())
+    ) {
+      throw new BadRequestException(`Seems like the token already expired. Please try and request it again.`);
+    }
+
+    user.password = await this._generateHash(resetPasswordDto.newPassword);
+    user.passwordResetToken = null;
+    user.passwordResetLastRequestExpiresAt = now;
+
+    await this._usersService.save(user);
+
+    await this._mailerService.sendPasswordResetSuccessEmail(user);
+
+    return user;
+  }
+
+  async getUserById(id: string): Promise<User> {
+    const user = await this._usersService.findOneById(id);
+    if (!user) {
+      throw new BadRequestException(`User not found`);
+    }
+
+    return user;
   }
 
   async getUserByAccessToken(accessToken: string): Promise<User> {

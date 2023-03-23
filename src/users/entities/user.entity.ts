@@ -42,8 +42,10 @@ export class User {
   @Index({
     unique: true,
   })
-  @Column()
-  emailConfirmationToken!: string;
+  @Column({
+    nullable: true,
+  })
+  emailConfirmationToken?: string;
 
   @Index({
     unique: true,
