@@ -1,12 +1,13 @@
+import type { User } from './users/entities/user.entity';
+
 export {};
 
-// For auth
+// Auth
 declare global {
   namespace Express {
     interface Request {
-      user?: {
-        id: string;
-        token: string;
+      user?: User & {
+        _accessToken: string;
       };
     }
   }

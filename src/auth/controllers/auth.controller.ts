@@ -33,7 +33,7 @@ export class AuthController {
   @Post('/logout')
   async logout(@Req() req: Request): Promise<{ message: string }> {
     if (req.user) {
-      await this._authService.logout(req.user.token);
+      await this._authService.logout(req.user._accessToken);
     }
 
     return { message: 'User successfully logged out' };

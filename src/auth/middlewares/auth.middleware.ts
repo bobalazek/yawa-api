@@ -24,8 +24,8 @@ export class AuthMiddleware implements NestMiddleware {
       if (user) {
         // If you edit this, also remember to edit global.d.ts
         req.user = {
-          id: user.id,
-          token: accessToken,
+          ...user,
+          _accessToken: accessToken,
         };
       }
     } catch (err) {

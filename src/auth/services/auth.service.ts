@@ -8,6 +8,7 @@ import { MailerService } from '../../notifications/services/mailer.service';
 import { User } from '../../users/entities/user.entity';
 import { UserAccessTokensService } from '../../users/services/user-access-tokens.service';
 import { UsersService } from '../../users/services/users.service';
+import { ChangePasswordDto } from '../dtos/change-password.dto';
 import { LoginDto } from '../dtos/login.dto';
 import { PasswordResetRequestDto } from '../dtos/password-reset-request.dto';
 import { RegisterDto } from '../dtos/register.dto';
@@ -144,6 +145,27 @@ export class AuthService {
     return user;
   }
 
+  async changePassword(user: User, changePasswordDto: ChangePasswordDto) {
+    const currentPasswordHashed = await this._generateHash(changePasswordDto.currentPassword);
+    if (currentPasswordHashed !== user.password) {
+      throw new BadRequestException(`The current password you provided is incorrect`);
+    }
+
+    if (changePasswordDto.newPassword !== changePasswordDto.newPasswordConfirm) {
+      throw new BadRequestException(`Passwords do not match`);
+    }
+
+    const newPasswordHashed = await this._generateHash(changePasswordDto.newPassword);
+
+    user.password = newPasswordHashed;
+
+    await this._usersService.save(user);
+
+    // TODO: maybe send an email to the user that the password was changed and maybe also log them out?
+
+    return user;
+  }
+
   async requestPasswordReset(passwordResetRequestDto: PasswordResetRequestDto) {
     const user = await this._usersService.findOneByEmail(passwordResetRequestDto.email);
     if (!user) {
@@ -179,7 +201,7 @@ export class AuthService {
   }
 
   async resetPassword(resetPasswordDto: ResetPasswordDto) {
-    if (resetPasswordDto.newPassword !== resetPasswordDto.repeatNewPassword) {
+    if (resetPasswordDto.newPassword !== resetPasswordDto.newPasswordConfirm) {
       throw new BadRequestException(`Passwords do not match`);
     }
 
