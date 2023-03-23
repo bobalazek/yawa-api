@@ -36,6 +36,11 @@ export class User {
   })
   measurementSystem!: string;
 
+  @Column({
+    default: 'UTC',
+  })
+  timezone!: string;
+
   @Column()
   firstName!: string;
 
@@ -77,6 +82,16 @@ export class User {
     nullable: true,
   })
   passwordResetLastRequestExpiresAt?: Date;
+
+  @Column({
+    nullable: true,
+  })
+  deletionRequestedAt?: Date;
+
+  @Column({
+    nullable: true,
+  })
+  deletedAt?: Date;
 
   @CreateDateColumn()
   createdAt!: Date;

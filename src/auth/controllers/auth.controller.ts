@@ -1,5 +1,5 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
-import { ApiHeader, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Post, Req } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { plainToClass } from 'class-transformer';
 import { Request } from 'express';
 
@@ -9,7 +9,6 @@ import { LoginDto } from '../dtos/login.dto';
 import { PasswordResetRequestDto } from '../dtos/password-reset-request.dto';
 import { RegisterDto } from '../dtos/register.dto';
 import { ResetPasswordDto } from '../dtos/reset-password.dto';
-import { AuthenticatedGuard } from '../guards/authenticated.guard';
 import { AuthService } from '../services/auth.service';
 
 @ApiTags('Auth (API v1)')
@@ -40,15 +39,6 @@ export class AuthController {
     return { message: 'User successfully logged out' };
   }
 
-  @ApiHeader({
-    name: 'X-Authorization',
-    required: true,
-    schema: {
-      type: 'string',
-      example: 'Bearer e737c47f-8ec5-4ddc-b414-d93975ffd297',
-    },
-  })
-  @UseGuards(AuthenticatedGuard)
   @Post('/confirm-email')
   async confirmEmail(@Body() tokenDto: TokenDto): Promise<{ message: string }> {
     await this._authService.confirmUserEmail(tokenDto.token);
@@ -56,15 +46,6 @@ export class AuthController {
     return { message: 'Email successfully confirmed' };
   }
 
-  @ApiHeader({
-    name: 'X-Authorization',
-    required: true,
-    schema: {
-      type: 'string',
-      example: 'Bearer e737c47f-8ec5-4ddc-b414-d93975ffd297',
-    },
-  })
-  @UseGuards(AuthenticatedGuard)
   @Post('/confirm-new-email')
   async confirmNewEmail(@Body() tokenDto: TokenDto): Promise<{ message: string }> {
     await this._authService.confirmUserEmail(tokenDto.token, true);
