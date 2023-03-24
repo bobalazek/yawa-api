@@ -5,15 +5,15 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { env } from '../../common/env';
 import { MailerService } from '../../notifications/services/mailer.service';
-import { User } from '../../users/entities/user.entity';
-import { UserAccessTokensService } from '../../users/services/user-access-tokens.service';
-import { UsersService } from '../../users/services/users.service';
 import { ChangePasswordDto } from '../dtos/change-password.dto';
 import { LoginDto } from '../dtos/login.dto';
 import { PasswordResetRequestDto } from '../dtos/password-reset-request.dto';
 import { RegisterDto } from '../dtos/register.dto';
 import { ResetPasswordDto } from '../dtos/reset-password.dto';
 import { SettingsDto } from '../dtos/settings.dto';
+import { User } from '../entities/user.entity';
+import { UserAccessTokensService } from '../services/user-access-tokens.service';
+import { UsersService } from '../services/users.service';
 
 @Injectable()
 export class AuthService {

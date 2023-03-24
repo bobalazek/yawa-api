@@ -1,6 +1,6 @@
 import { DeepPartial } from 'typeorm';
 
-import { User } from '../../users/entities/user.entity';
+import { User } from '../../auth/entities/user.entity';
 
 const usersSeed: DeepPartial<User[]> = [
   {

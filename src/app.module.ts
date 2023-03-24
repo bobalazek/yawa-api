@@ -12,7 +12,6 @@ import { env } from './common/env';
 import { DatabaseModule } from './database/database.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { SettingsModule } from './settings/settings.module';
-import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -54,7 +53,6 @@ import { UsersModule } from './users/users.module';
     ActionsModule,
     AuthModule,
     SettingsModule,
-    UsersModule,
   ],
   providers: [
     {
