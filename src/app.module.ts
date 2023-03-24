@@ -8,8 +8,8 @@ import { LoggerModule } from 'nestjs-pino';
 
 import { ActionsModule } from './actions/actions.module';
 import { AuthModule } from './auth/auth.module';
+import { env } from './common/env';
 import { DatabaseModule } from './database/database.module';
-import { env } from './env';
 import { NotificationsModule } from './notifications/notifications.module';
 import { UsersModule } from './users/users.module';
 
