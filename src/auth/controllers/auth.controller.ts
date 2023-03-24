@@ -1,14 +1,16 @@
-import { Body, Controller, Post, Req } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { ApiHeader, ApiTags } from '@nestjs/swagger';
 import { plainToClass } from 'class-transformer';
 import { Request } from 'express';
 
 import { TokenDto } from '../../common/dtos/token.dto';
 import { UserDto } from '../../users/dtos/user.dto';
+import { API_HEADER_X_AUTHORIZATION } from '../auth.constants';
 import { LoginDto } from '../dtos/login.dto';
 import { PasswordResetRequestDto } from '../dtos/password-reset-request.dto';
 import { RegisterDto } from '../dtos/register.dto';
 import { ResetPasswordDto } from '../dtos/reset-password.dto';
+import { AuthenticatedGuard } from '../guards/authenticated.guard';
 import { AuthService } from '../services/auth.service';
 
 @ApiTags('Auth (API v1)')
@@ -65,5 +67,14 @@ export class AuthController {
     await this._authService.resetPassword(resetPasswordDto);
 
     return { message: 'Password was successfully reset' };
+  }
+
+  @ApiHeader(API_HEADER_X_AUTHORIZATION)
+  @UseGuards(AuthenticatedGuard)
+  @Get('/profile')
+  async profile(@Req() req: Request): Promise<UserDto> {
+    const user = await this._authService.getUserById(req.user.id);
+
+    return plainToClass(UserDto, user);
   }
 }
