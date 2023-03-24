@@ -4,7 +4,7 @@ import { DataSource } from 'typeorm';
 
 import { Action } from '../../actions/entities/action.entity';
 import { Goal } from '../../actions/entities/goal.entity';
-import { User } from '../../auth/entities/user.entity';
+import { User } from '../../users/entities/user.entity';
 import { actionsSeed } from '../seeds/actions.seed';
 import { goalsSeed } from '../seeds/goals.seed';
 import { usersSeed } from '../seeds/users.seed';

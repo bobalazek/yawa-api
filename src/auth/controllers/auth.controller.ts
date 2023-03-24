@@ -4,12 +4,12 @@ import { plainToClass } from 'class-transformer';
 import { Request } from 'express';
 
 import { TokenDto } from '../../common/dtos/token.dto';
+import { UserDto } from '../../users/dtos/user.dto';
 import { API_HEADER_X_AUTHORIZATION } from '../auth.constants';
 import { LoginDto } from '../dtos/login.dto';
 import { PasswordResetRequestDto } from '../dtos/password-reset-request.dto';
 import { RegisterDto } from '../dtos/register.dto';
 import { ResetPasswordDto } from '../dtos/reset-password.dto';
-import { UserDto } from '../dtos/user.dto';
 import { AuthenticatedGuard } from '../guards/authenticated.guard';
 import { AuthService } from '../services/auth.service';
 
