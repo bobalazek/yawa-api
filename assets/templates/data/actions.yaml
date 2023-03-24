@@ -1,0 +1,115 @@
+- key: hydrate
+  name: Hydrate
+  goals: [ improve_physical_health ]
+
+- key: stretch
+  name: Stretch
+  goals: [ improve_physical_health ]
+
+- key: sit_straight
+  name: Sit straight
+  goals: [ improve_physical_health ]
+
+- key: untense
+  name: Untense
+  goals: [ improve_physical_health ]
+
+- key: take_your_medicine
+  name: Take your medicine
+  goals: [ improve_physical_health ]
+
+- key: take_your_supplements
+  name: Take your supplements
+  goals: [ improve_physical_health ]
+
+- key: eat_healthy
+  name: Eat healthy
+  goals: [ improve_physical_health ]
+
+- key: exercise
+  name: Exercise
+  goals: [ improve_physical_health ]
+
+- key: do_a_health_check_up
+  name: Do a health check up
+  goals: [ improve_physical_health ]
+
+- key: make_a_weekly_plan
+  name: Make a weekly plan
+  goals: [ improve_mental_health ]
+
+- key: make_a_daily_plan
+  name: Make a daily plan
+  goals: [ improve_mental_health ]
+
+- key: meditate
+  name: Meditate
+  goals: [ improve_mental_health ]
+
+- key: wind_down
+  name: Wind down
+  goals: [ improve_mental_health ]
+
+- key: nostalgize
+  name: Nostalgize
+  goals: [ improve_mental_health ]
+
+- key: walk_in_nature
+  name: Walk in nature
+  goals: [ improve_mental_health ]
+
+- key: learn_a_new_language
+  name: Learn a new language
+  goals: [ improve_skills, improve_knowledge ]
+
+- key: learn_a_new_skill
+  name: Learn a new skill
+  goals: [ improve_skills ]
+
+- key: learn_a_new_instrument
+  name: Learn a new intrument
+  goals: [ improve_skills ]
+
+- key: pick_up_a_new_hobby
+  name: Pick up a new hobby
+  goals: [ improve_skills ]
+
+- key: read_a_book
+  name: Read a book
+  goals: [ improve_skills ]
+
+- key: listen_to_a_podcast
+  name: Listen to a podcast
+  goals: [ improve_skills ]
+
+- key: have_a_family_night
+  name: Have a family night
+  goals: [ improve_family_life ]
+
+- key: have_a_friends_night
+  name: Have a friends night
+  goals: [ improve_social_life ]
+
+- key: have_a_date_night
+  name: Have a date night
+  goals: [ improve_love_life ]
+
+- key: talk_about_problems
+  name: Talk about problems
+  goals: [ improve_mental_health ]
+
+- key: talk_to_a_friend
+  name: Talk to a friend
+  goals: [ improve_mental_health ]
+
+- key: try_intermittent_fasting
+  name: Try intermittent fasting
+  goals: [ improve_physical_health ]
+
+- key: have_a_regular_meal_schedule
+  name: Have a regular meal schedule
+  goals: [ improve_physical_health ]
+
+- key: have_a_light_dinner
+  name: Have a light dinner
+  goals: [ improve_physical_health ]

@@ -34,6 +34,10 @@
   name: Improve mental health
   areas: [ emotional_wellbeing ]
 
+- key: improve_mental_clarity
+  name: Improve mental clarity
+  areas: [ emotional_wellbeing ]
+
 - key: increase_happiness
   name: Increase happiness
   areas: [ emotional_wellbeing ]
