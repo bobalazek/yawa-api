@@ -54,7 +54,7 @@ export class MailerService {
     });
   }
 
-  async sendResetPasswordRequestEmail(user: User) {
+  async sendPasswordResetRequestEmail(user: User) {
     const BASE_URL = this._configService.get('BASE_URL');
     const { passwordResetToken } = user;
     const passwordResetUrl = `${BASE_URL}/auth/password-reset?token=${passwordResetToken}`;

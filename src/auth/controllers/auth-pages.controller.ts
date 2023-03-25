@@ -10,7 +10,7 @@ export class AuthPagesController {
 
   @Render('auth-confirm-email')
   @Get('/confirm-email')
-  async confirmEmailGet(@Query('token') token: string) {
+  async confirmEmail(@Query('token') token: string): Promise<{ message?: string; error?: string }> {
     try {
       await this._authService.confirmUserEmail(token);
 
@@ -24,9 +24,15 @@ export class AuthPagesController {
 
   @Render('auth-confirm-new-email')
   @Get('/confirm-new-email')
-  async confirmNewEmailGet(@Query('token') token: string) {
+  async confirmNewEmail(@Query('token') token: string): Promise<{ message?: string; error?: string }> {
     await this._authService.confirmUserEmail(token, true);
 
     return { message: 'New email successfully confirmed' };
+  }
+
+  @Render('auth-password-reset')
+  @Get('/password-reset')
+  async passwordReset(@Query('token') token?: string): Promise<{ token: string }> {
+    return { token };
   }
 }

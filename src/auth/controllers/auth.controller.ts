@@ -8,8 +8,8 @@ import { UserDto } from '../../users/dtos/user.dto';
 import { API_HEADER_X_AUTHORIZATION } from '../auth.constants';
 import { LoginDto } from '../dtos/login.dto';
 import { PasswordResetRequestDto } from '../dtos/password-reset-request.dto';
+import { PasswordResetDto } from '../dtos/password-reset.dto';
 import { RegisterDto } from '../dtos/register.dto';
-import { ResetPasswordDto } from '../dtos/reset-password.dto';
 import { AuthenticatedGuard } from '../guards/authenticated.guard';
 import { AuthService } from '../services/auth.service';
 
@@ -62,8 +62,8 @@ export class AuthController {
     return { message: 'Password reset successfully requested' };
   }
 
-  @Post('/reset-password')
-  async resetPassword(@Body() resetPasswordDto: ResetPasswordDto): Promise<{ message: string }> {
+  @Post('/password-reset')
+  async passwordReset(@Body() resetPasswordDto: PasswordResetDto): Promise<{ message: string }> {
     await this._authService.resetPassword(resetPasswordDto);
 
     return { message: 'Password was successfully reset' };

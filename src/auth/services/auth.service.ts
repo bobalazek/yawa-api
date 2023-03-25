@@ -11,8 +11,8 @@ import { UsersService } from '../../users/services/users.service';
 import { ChangePasswordDto } from '../dtos/change-password.dto';
 import { LoginDto } from '../dtos/login.dto';
 import { PasswordResetRequestDto } from '../dtos/password-reset-request.dto';
+import { PasswordResetDto } from '../dtos/password-reset.dto';
 import { RegisterDto } from '../dtos/register.dto';
-import { ResetPasswordDto } from '../dtos/reset-password.dto';
 import { SettingsDto } from '../dtos/settings.dto';
 
 @Injectable()
@@ -161,7 +161,7 @@ export class AuthService {
 
     await this._usersService.save(user);
 
-    // TODO: maybe send an email to the user that the password was changed and maybe also log them out?
+    await this._mailerService.sendPasswordResetSuccessEmail(user);
 
     return user;
   }
@@ -174,7 +174,7 @@ export class AuthService {
 
     const now = new Date();
 
-    if (user.passwordResetLastRequestExpiresAt && user.passwordResetLastRequestExpiresAt.getTime() < now.getTime()) {
+    if (user.passwordResetLastRequestExpiresAt && user.passwordResetLastRequestExpiresAt.getTime() > now.getTime()) {
       throw new BadRequestException(
         `You already have a pending password reset request. Check your email or try again later.`
       );
@@ -191,16 +191,21 @@ export class AuthService {
     try {
       await this._usersService.save(user);
     } catch (err) {
+      console.log(err);
       // In the very, VERY unlikely scenario the uuid would be a duplicate - if setting the password reset
       throw new BadRequestException(`Something went wrong. Try requesting the password reset again`);
     }
 
-    await this._mailerService.sendResetPasswordRequestEmail(user);
+    await this._mailerService.sendPasswordResetRequestEmail(user);
 
     return user;
   }
 
-  async resetPassword(resetPasswordDto: ResetPasswordDto) {
+  async resetPassword(resetPasswordDto: PasswordResetDto) {
+    if (!resetPasswordDto.newPassword) {
+      throw new BadRequestException(`New password is required`);
+    }
+
     if (resetPasswordDto.newPassword !== resetPasswordDto.newPasswordConfirm) {
       throw new BadRequestException(`Passwords do not match`);
     }
