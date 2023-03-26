@@ -50,7 +50,7 @@ export class AuthService {
     return true;
   }
 
-  async validateUser(loginDto: LoginDto) {
+  async validateUser(loginDto: LoginDto): Promise<User> {
     const user = await this._usersService.findOneByEmail(loginDto.email);
     if (!user) {
       throw new UnauthorizedException(`User with this email was not found`);
@@ -64,7 +64,7 @@ export class AuthService {
     return user;
   }
 
-  async registerUser(registerDto: RegisterDto) {
+  async registerUser(registerDto: RegisterDto): Promise<string> {
     const password = await this._generateHash(registerDto.password);
     const processedRegisterDto = {
       ...registerDto,
@@ -81,7 +81,7 @@ export class AuthService {
 
       await this._mailerService.sendEmailConfirmationEmail(user);
 
-      return user;
+      return this.loginUser(processedRegisterDto);
     } catch (err) {
       if (err.code === '23505') {
         throw new BadRequestException(`A user with this email already exists`);
@@ -91,7 +91,7 @@ export class AuthService {
     }
   }
 
-  async confirmUserEmail(token: string, isNewEmail: boolean = false) {
+  async confirmUserEmail(token: string, isNewEmail: boolean = false): Promise<User> {
     const user = await this._usersService.findOneBy(
       isNewEmail ? 'newEmailConfirmationToken' : 'emailConfirmationToken',
       token
@@ -118,10 +118,10 @@ export class AuthService {
 
     await this._mailerService.sendEmailConfirmationSuccessEmail(user);
 
-    return true;
+    return user;
   }
 
-  async updateUser(user: User, settingsDto: SettingsDto) {
+  async updateUser(user: User, settingsDto: SettingsDto): Promise<User> {
     if (settingsDto.email) {
       user.newEmail = settingsDto.email;
       user.newEmailConfirmationToken = uuidv4();
@@ -145,7 +145,7 @@ export class AuthService {
     return user;
   }
 
-  async changePassword(user: User, changePasswordDto: ChangePasswordDto) {
+  async changePassword(user: User, changePasswordDto: ChangePasswordDto): Promise<User> {
     const currentPasswordHashed = await this._generateHash(changePasswordDto.currentPassword);
     if (currentPasswordHashed !== user.password) {
       throw new BadRequestException(`The current password you provided is incorrect`);
@@ -166,7 +166,7 @@ export class AuthService {
     return user;
   }
 
-  async requestPasswordReset(passwordResetRequestDto: PasswordResetRequestDto) {
+  async requestPasswordReset(passwordResetRequestDto: PasswordResetRequestDto): Promise<User> {
     const user = await this._usersService.findOneByEmail(passwordResetRequestDto.email);
     if (!user) {
       throw new BadRequestException(`User with this email was not found`);
@@ -201,7 +201,7 @@ export class AuthService {
     return user;
   }
 
-  async resetPassword(resetPasswordDto: PasswordResetDto) {
+  async resetPassword(resetPasswordDto: PasswordResetDto): Promise<User> {
     if (!resetPasswordDto.newPassword) {
       throw new BadRequestException(`New password is required`);
     }
