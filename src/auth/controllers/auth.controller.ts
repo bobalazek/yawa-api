@@ -26,10 +26,10 @@ export class AuthController {
   }
 
   @Post('/register')
-  async register(@Body() registerDto: RegisterDto): Promise<UserDto> {
-    const createdUser = await this._authService.registerUser(registerDto);
+  async register(@Body() registerDto: RegisterDto): Promise<TokenDto> {
+    const token = await this._authService.registerUser(registerDto);
 
-    return plainToClass(UserDto, createdUser);
+    return { token };
   }
 
   @Post('/logout')
