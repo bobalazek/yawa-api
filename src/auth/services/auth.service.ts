@@ -5,15 +5,15 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { env } from '../../common/env';
 import { MailerService } from '../../notifications/services/mailer.service';
+import { ChangePasswordSettingsDto } from '../../settings/dtos/change-password-settings.dto';
+import { ProfileSettingsDto } from '../../settings/dtos/profile-settings.dto';
 import { User } from '../../users/entities/user.entity';
 import { UserAccessTokensService } from '../../users/services/user-access-tokens.service';
 import { UsersService } from '../../users/services/users.service';
-import { ChangePasswordDto } from '../dtos/change-password.dto';
 import { LoginDto } from '../dtos/login.dto';
 import { PasswordResetRequestDto } from '../dtos/password-reset-request.dto';
 import { PasswordResetDto } from '../dtos/password-reset.dto';
 import { RegisterDto } from '../dtos/register.dto';
-import { SettingsDto } from '../dtos/settings.dto';
 
 @Injectable()
 export class AuthService {
@@ -125,14 +125,14 @@ export class AuthService {
     return user;
   }
 
-  async updateUser(user: User, settingsDto: SettingsDto): Promise<User> {
-    if (settingsDto.email) {
-      user.newEmail = settingsDto.email;
+  async updateUser(user: User, profileSettingsDto: ProfileSettingsDto): Promise<User> {
+    if (profileSettingsDto.email) {
+      user.newEmail = profileSettingsDto.email;
       user.newEmailConfirmationToken = uuidv4();
     }
 
-    if (settingsDto.firstName) {
-      user.firstName = settingsDto.firstName;
+    if (profileSettingsDto.firstName) {
+      user.firstName = profileSettingsDto.firstName;
     }
 
     try {
@@ -142,28 +142,28 @@ export class AuthService {
       throw new BadRequestException(`Something went wrong. Try updating the user again`);
     }
 
-    if (settingsDto.email) {
+    if (profileSettingsDto.email) {
       await this._mailerService.sendNewEmailConfirmationEmail(user);
     }
 
     return user;
   }
 
-  async changePassword(user: User, changePasswordDto: ChangePasswordDto): Promise<User> {
-    const currentPasswordHashed = await this._generateHash(changePasswordDto.currentPassword);
+  async changePassword(user: User, changePasswordSettingsDto: ChangePasswordSettingsDto): Promise<User> {
+    const currentPasswordHashed = await this._generateHash(changePasswordSettingsDto.currentPassword);
     if (currentPasswordHashed !== user.password) {
       throw new BadRequestException(`The current password you provided is incorrect`);
     }
 
-    if (changePasswordDto.newPassword !== changePasswordDto.newPasswordConfirm) {
+    if (changePasswordSettingsDto.newPassword !== changePasswordSettingsDto.newPasswordConfirm) {
       throw new BadRequestException(`Passwords do not match`);
     }
 
-    if (changePasswordDto.newPassword.length < 6) {
+    if (changePasswordSettingsDto.newPassword.length < 6) {
       throw new BadRequestException(`Password must be at least 6 characters long`);
     }
 
-    const newPasswordHashed = await this._generateHash(changePasswordDto.newPassword);
+    const newPasswordHashed = await this._generateHash(changePasswordSettingsDto.newPassword);
 
     user.password = newPasswordHashed;
 
