@@ -65,6 +65,10 @@ export class AuthService {
   }
 
   async registerUser(registerDto: RegisterDto): Promise<string> {
+    if (registerDto.password.length < 6) {
+      throw new BadRequestException(`Password must be at least 6 characters long`);
+    }
+
     const password = await this._generateHash(registerDto.password);
     const processedRegisterDto = {
       ...registerDto,
@@ -155,6 +159,10 @@ export class AuthService {
       throw new BadRequestException(`Passwords do not match`);
     }
 
+    if (changePasswordDto.newPassword.length < 6) {
+      throw new BadRequestException(`Password must be at least 6 characters long`);
+    }
+
     const newPasswordHashed = await this._generateHash(changePasswordDto.newPassword);
 
     user.password = newPasswordHashed;
@@ -208,6 +216,10 @@ export class AuthService {
 
     if (resetPasswordDto.newPassword !== resetPasswordDto.newPasswordConfirm) {
       throw new BadRequestException(`Passwords do not match`);
+    }
+
+    if (resetPasswordDto.newPassword.length < 6) {
+      throw new BadRequestException(`Password must be at least 6 characters long`);
     }
 
     const user = await this._usersService.findOneBy('passwordResetToken', resetPasswordDto.token);

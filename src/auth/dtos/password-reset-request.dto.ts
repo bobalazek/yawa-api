@@ -1,9 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty } from 'class-validator';
+import { IsEmail } from 'class-validator';
 
 export class PasswordResetRequestDto {
   @ApiProperty()
   @IsEmail()
-  @IsNotEmpty()
   readonly email!: string;
 }
