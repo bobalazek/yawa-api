@@ -75,6 +75,6 @@ export class AuthController {
   async profile(@Req() req: Request): Promise<UserDto> {
     const user = await this._authService.getUserById(req.user.id);
 
-    return plainToClass(UserDto, user);
+    return plainToClass(UserDto, { ...user, avatarUrl: 'https://randomuser.me/api/portraits/men/18.jpg' });
   }
 }

@@ -38,6 +38,12 @@ export class UserDto extends AbstractDto {
 
   @ApiProperty()
   @Expose()
+  @IsString()
+  @IsOptional()
+  readonly avatarUrl?: string;
+
+  @ApiProperty()
+  @Expose()
   @IsDate()
   @IsOptional()
   readonly emailConfirmedAt?: Date;
