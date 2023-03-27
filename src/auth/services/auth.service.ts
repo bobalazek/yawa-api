@@ -1,12 +1,10 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
-import * as bcrypt from 'bcrypt';
 import { DateTime } from 'luxon';
 import { v4 as uuidv4 } from 'uuid';
 
 import { env } from '../../common/env';
+import { compareHash, generateHash } from '../../common/utils/hash';
 import { MailerService } from '../../notifications/services/mailer.service';
-import { ChangePasswordSettingsDto } from '../../settings/dtos/change-password-settings.dto';
-import { ProfileSettingsDto } from '../../settings/dtos/profile-settings.dto';
 import { User } from '../../users/entities/user.entity';
 import { UserAccessTokensService } from '../../users/services/user-access-tokens.service';
 import { UsersService } from '../../users/services/users.service';
@@ -56,7 +54,7 @@ export class AuthService {
       throw new UnauthorizedException(`User with this email was not found`);
     }
 
-    const isPasswordSame = await this._compareHash(loginDto.password, user.password);
+    const isPasswordSame = await compareHash(loginDto.password, user.password);
     if (!isPasswordSame) {
       throw new UnauthorizedException(`The password you provided is incorrect`);
     }
@@ -69,7 +67,7 @@ export class AuthService {
       throw new BadRequestException(`Password must be at least 6 characters long`);
     }
 
-    const password = await this._generateHash(registerDto.password);
+    const password = await generateHash(registerDto.password);
     const processedRegisterDto = {
       ...registerDto,
       password,
@@ -79,7 +77,7 @@ export class AuthService {
       const user = await this._usersService.save({
         // We need to await it, else it's not caught and it's caught as unexpectedException
         ...processedRegisterDto,
-        password: await this._generateHash(processedRegisterDto.password),
+        password: await generateHash(processedRegisterDto.password),
         emailConfirmationToken: uuidv4(),
       });
 
@@ -121,55 +119,6 @@ export class AuthService {
     await this._usersService.save(user);
 
     await this._mailerService.sendEmailConfirmationSuccessEmail(user);
-
-    return user;
-  }
-
-  async updateUser(user: User, profileSettingsDto: ProfileSettingsDto): Promise<User> {
-    if (profileSettingsDto.email) {
-      user.newEmail = profileSettingsDto.email;
-      user.newEmailConfirmationToken = uuidv4();
-    }
-
-    if (profileSettingsDto.firstName) {
-      user.firstName = profileSettingsDto.firstName;
-    }
-
-    try {
-      await this._usersService.save(user);
-    } catch (err) {
-      // In the very, VERY unlikely scenario the uuid would be a duplicate - if setting the new email
-      throw new BadRequestException(`Something went wrong. Try updating the user again`);
-    }
-
-    if (profileSettingsDto.email) {
-      await this._mailerService.sendNewEmailConfirmationEmail(user);
-    }
-
-    return user;
-  }
-
-  async changePassword(user: User, changePasswordSettingsDto: ChangePasswordSettingsDto): Promise<User> {
-    const currentPasswordHashed = await this._generateHash(changePasswordSettingsDto.currentPassword);
-    if (currentPasswordHashed !== user.password) {
-      throw new BadRequestException(`The current password you provided is incorrect`);
-    }
-
-    if (changePasswordSettingsDto.newPassword !== changePasswordSettingsDto.newPasswordConfirm) {
-      throw new BadRequestException(`Passwords do not match`);
-    }
-
-    if (changePasswordSettingsDto.newPassword.length < 6) {
-      throw new BadRequestException(`Password must be at least 6 characters long`);
-    }
-
-    const newPasswordHashed = await this._generateHash(changePasswordSettingsDto.newPassword);
-
-    user.password = newPasswordHashed;
-
-    await this._usersService.save(user);
-
-    await this._mailerService.sendPasswordResetSuccessEmail(user);
 
     return user;
   }
@@ -236,7 +185,7 @@ export class AuthService {
       throw new BadRequestException(`Seems like the token already expired. Please try and request it again.`);
     }
 
-    user.password = await this._generateHash(resetPasswordDto.newPassword);
+    user.password = await generateHash(resetPasswordDto.newPassword);
     user.passwordResetToken = null;
     user.passwordResetLastRequestExpiresAt = now;
 
@@ -268,14 +217,5 @@ export class AuthService {
     }
 
     return userAccessToken.user;
-  }
-
-  private async _generateHash(password: string): Promise<string> {
-    const salt = await bcrypt.genSalt();
-    return bcrypt.hash(password, salt);
-  }
-
-  private async _compareHash(password: string, hash: string): Promise<boolean> {
-    return bcrypt.compare(password, hash);
   }
 }
