@@ -15,8 +15,11 @@ export class SettingsController {
 
   @ApiHeader(API_HEADER_X_AUTHORIZATION)
   @UseGuards(AuthenticatedGuard)
-  @Post('/profile')
-  async profile(@Body() profileSettingsDto: ProfileSettingsDto, @Req() req: Request): Promise<{ message: string }> {
+  @Post('/update-profile')
+  async updateProfile(
+    @Body() profileSettingsDto: ProfileSettingsDto,
+    @Req() req: Request
+  ): Promise<{ message: string }> {
     await this._settingsService.updateUser(req.user, profileSettingsDto);
 
     return { message: 'User profile successfully updated' };
