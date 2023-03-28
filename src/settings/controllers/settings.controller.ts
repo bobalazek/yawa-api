@@ -54,4 +54,13 @@ export class SettingsController {
 
     return { message: 'New email was successfully canceled' };
   }
+
+  @ApiHeader(API_HEADER_X_AUTHORIZATION)
+  @UseGuards(AuthenticatedGuard)
+  @Post('/request-account-deletion')
+  async requestDeletion(@Req() req: Request): Promise<{ message: string }> {
+    await this._settingsService.requestAccountDeletion(req.user);
+
+    return { message: 'New email was successfully canceled' };
+  }
 }

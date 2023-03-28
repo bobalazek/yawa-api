@@ -11,4 +11,19 @@ export class ProfileSettingsDto {
   @IsString()
   @IsOptional()
   readonly firstName?: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  readonly languageCode?: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  readonly timezone?: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  readonly measurementSystem?: string;
 }

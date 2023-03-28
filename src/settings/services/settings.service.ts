@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { DateTime } from 'luxon';
+import { DateTime, IANAZone } from 'luxon';
 import { v4 as uuidv4 } from 'uuid';
 
 import { env } from '../../common/env';
@@ -27,6 +27,30 @@ export class SettingsService {
 
     if (profileSettingsDto.firstName) {
       user.firstName = profileSettingsDto.firstName;
+    }
+
+    if (profileSettingsDto.languageCode) {
+      if (profileSettingsDto.languageCode !== 'en') {
+        throw new BadRequestException(`The language you provided is invalid`);
+      }
+
+      user.timezone = profileSettingsDto.timezone;
+    }
+
+    if (profileSettingsDto.timezone) {
+      if (!IANAZone.isValidZone(profileSettingsDto.timezone)) {
+        throw new BadRequestException(`The timezone you provided is invalid`);
+      }
+
+      user.timezone = profileSettingsDto.timezone;
+    }
+
+    if (profileSettingsDto.measurementSystem) {
+      if (profileSettingsDto.measurementSystem !== 'metric' && profileSettingsDto.measurementSystem !== 'imperial') {
+        throw new BadRequestException(`The measurement system you provided is invalid`);
+      }
+
+      user.timezone = profileSettingsDto.timezone;
     }
 
     try {
@@ -101,6 +125,18 @@ export class SettingsService {
     user.newEmail = null;
     user.newEmailConfirmationToken = null;
     user.newEmailConfirmationLastSentAt = null;
+
+    await this._usersService.save(user);
+
+    return user;
+  }
+
+  async requestAccountDeletion(user: User): Promise<User> {
+    const now = new Date();
+
+    user.beforeDeletionEmail = user.email;
+    user.email = `pending-deletion-${user.id}-${now.getTime()}@yawa.com`;
+    user.deletionRequestedAt = now;
 
     await this._usersService.save(user);
 

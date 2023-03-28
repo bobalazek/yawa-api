@@ -23,6 +23,11 @@ export class User {
   })
   newEmail?: string;
 
+  @Column({
+    nullable: true,
+  })
+  beforeDeletionEmail?: string;
+
   @Column()
   password!: string;
 
