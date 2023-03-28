@@ -36,4 +36,13 @@ export class SettingsController {
 
     return { message: 'Password successfully changed' };
   }
+
+  @ApiHeader(API_HEADER_X_AUTHORIZATION)
+  @UseGuards(AuthenticatedGuard)
+  @Post('/resend-new-email-confirmation-email')
+  async resendNewEmailConfirmationEmail(@Req() req: Request): Promise<{ message: string }> {
+    await this._settingsService.resendNewEmailConfirmationEmail(req.user);
+
+    return { message: 'New email confirmation email successfully sent' };
+  }
 }
