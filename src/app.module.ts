@@ -10,6 +10,7 @@ import { ActionsModule } from './actions/actions.module';
 import { AuthModule } from './auth/auth.module';
 import { env } from './common/env';
 import { DatabaseModule } from './database/database.module';
+import { GoalsModule } from './goals/goals.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { SettingsModule } from './settings/settings.module';
 import { UsersModule } from './users/users.module';
@@ -51,6 +52,7 @@ import { UsersModule } from './users/users.module';
     }),
     DatabaseModule,
     NotificationsModule,
+    GoalsModule,
     ActionsModule,
     AuthModule,
     SettingsModule,

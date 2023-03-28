@@ -3,7 +3,7 @@ import { resolve } from 'path';
 import { DeepPartial } from 'typeorm';
 import { parse } from 'yaml';
 
-import { Goal } from '../../actions/entities/goal.entity';
+import { Goal } from '../../goals/entities/goal.entity';
 
 const goalsSeed: DeepPartial<Goal[]> = [];
 

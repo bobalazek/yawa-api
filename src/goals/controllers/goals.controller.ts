@@ -11,7 +11,7 @@ export class GoalsController {
   constructor(private readonly _goalsService: GoalsService) {}
 
   @Get('/')
-  async list(): Promise<GoalDto[]> {
+  async index(): Promise<GoalDto[]> {
     const goals = await this._goalsService.findAll();
 
     return goals.map((goal) => {

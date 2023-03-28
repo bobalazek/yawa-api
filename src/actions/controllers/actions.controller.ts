@@ -11,7 +11,7 @@ export class ActionsController {
   constructor(private readonly _actionsService: ActionsService) {}
 
   @Get('/')
-  async list(): Promise<ActionDto[]> {
+  async index(): Promise<ActionDto[]> {
     const actions = await this._actionsService.findAll();
 
     return actions.map((action) => {
