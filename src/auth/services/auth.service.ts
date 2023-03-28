@@ -99,7 +99,7 @@ export class AuthService {
       token
     );
     if (!user) {
-      throw new BadRequestException(`User not found`);
+      throw new BadRequestException(`Token already used or expired`);
     }
 
     if (!isNewEmail && user.emailConfirmedAt) {
