@@ -17,7 +17,7 @@ export class SettingsService {
   async updateUser(user: User, profileSettingsDto: ProfileSettingsDto): Promise<User> {
     let emailChanged = false;
 
-    if (profileSettingsDto.email !== user.email || profileSettingsDto.email !== user.newEmail) {
+    if (profileSettingsDto.email !== user.email && profileSettingsDto.email !== user.newEmail) {
       user.newEmail = profileSettingsDto.email;
       user.newEmailConfirmationToken = uuidv4();
       user.newEmailConfirmationLastSentAt = new Date();
