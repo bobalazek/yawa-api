@@ -8,7 +8,7 @@ import { Goal } from '../entities/goal.entity';
 export class GoalsService {
   constructor(@InjectRepository(Goal) private readonly _goalsRepository: Repository<Goal>) {}
 
-  findAll(): Promise<Goal[]> {
+  async findAll(): Promise<Goal[]> {
     return this._goalsRepository.find();
   }
 }
