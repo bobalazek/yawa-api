@@ -45,4 +45,13 @@ export class SettingsController {
 
     return { message: 'New email confirmation email successfully sent' };
   }
+
+  @ApiHeader(API_HEADER_X_AUTHORIZATION)
+  @UseGuards(AuthenticatedGuard)
+  @Post('/cancel-new-email')
+  async cancelNewEmail(@Req() req: Request): Promise<{ message: string }> {
+    await this._settingsService.cancelNewEmail(req.user);
+
+    return { message: 'New email was successfully canceled' };
+  }
 }

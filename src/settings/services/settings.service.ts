@@ -96,4 +96,14 @@ export class SettingsService {
 
     return user;
   }
+
+  async cancelNewEmail(user: User): Promise<User> {
+    user.newEmail = null;
+    user.newEmailConfirmationToken = null;
+    user.newEmailConfirmationLastSentAt = null;
+
+    await this._usersService.save(user);
+
+    return user;
+  }
 }
