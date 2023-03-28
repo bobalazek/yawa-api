@@ -135,7 +135,15 @@ export class AuthService {
 
     const now = new Date();
 
-    if (user.passwordResetLastRequestExpiresAt && user.passwordResetLastRequestExpiresAt.getTime() > now.getTime()) {
+    const passwordResetLastRequestExpiresAt = user.passwordResetLastRequestedAt
+      ? DateTime.fromJSDate(user.passwordResetLastRequestedAt)
+          .plus({
+            seconds: env.PASSWORD_RESET_REQUEST_EXPIRATION_SECONDS,
+          })
+          .toJSDate()
+      : null;
+
+    if (passwordResetLastRequestExpiresAt && passwordResetLastRequestExpiresAt.getTime() > now.getTime()) {
       throw new BadRequestException(
         `You already have a pending password reset request. Check your email or try again later.`
       );
@@ -143,16 +151,10 @@ export class AuthService {
 
     user.passwordResetToken = uuidv4();
     user.passwordResetLastRequestedAt = now;
-    user.passwordResetLastRequestExpiresAt = DateTime.fromJSDate(now)
-      .plus({
-        seconds: env.RESET_PASSWORD_REQUEST_EXPIRATION_SECONDS,
-      })
-      .toJSDate();
 
     try {
       await this._usersService.save(user);
     } catch (err) {
-      console.log(err);
       // In the very, VERY unlikely scenario the uuid would be a duplicate - if setting the password reset
       throw new BadRequestException(`Something went wrong. Try requesting the password reset again`);
     }
@@ -182,16 +184,24 @@ export class AuthService {
 
     const now = new Date();
 
+    const passwordResetLastRequestExpiresAt = user.passwordResetLastRequestedAt
+      ? DateTime.fromJSDate(user.passwordResetLastRequestedAt)
+          .plus({
+            seconds: env.PASSWORD_RESET_REQUEST_EXPIRATION_SECONDS,
+          })
+          .toJSDate()
+      : null;
+
     if (
-      !user.passwordResetLastRequestExpiresAt ||
-      (user.passwordResetLastRequestExpiresAt && user.passwordResetLastRequestExpiresAt.getTime() < now.getTime())
+      !passwordResetLastRequestExpiresAt ||
+      (passwordResetLastRequestExpiresAt && passwordResetLastRequestExpiresAt.getTime() < now.getTime())
     ) {
       throw new BadRequestException(`Seems like the token already expired. Please try and request it again.`);
     }
 
     user.password = await generateHash(resetPasswordDto.newPassword);
     user.passwordResetToken = null;
-    user.passwordResetLastRequestExpiresAt = now;
+    user.passwordResetLastRequestedAt = now;
 
     await this._usersService.save(user);
 

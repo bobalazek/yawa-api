@@ -1,6 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
+import { DateTime } from 'luxon';
 import { v4 as uuidv4 } from 'uuid';
 
+import { env } from '../../common/env';
 import { generateHash } from '../../common/utils/hash';
 import { MailerService } from '../../notifications/services/mailer.service';
 import { ChangePasswordSettingsDto } from '../../settings/dtos/change-password-settings.dto';
@@ -18,6 +20,7 @@ export class SettingsService {
     if (profileSettingsDto.email !== user.email || profileSettingsDto.email !== user.newEmail) {
       user.newEmail = profileSettingsDto.email;
       user.newEmailConfirmationToken = uuidv4();
+      user.newEmailConfirmationLastSentAt = new Date();
 
       emailChanged = true;
     }
@@ -61,6 +64,35 @@ export class SettingsService {
     await this._usersService.save(user);
 
     await this._mailerService.sendPasswordResetSuccessEmail(user);
+
+    return user;
+  }
+
+  async resendNewEmailConfirmationEmail(user: User): Promise<User> {
+    const now = new Date();
+
+    const newEmailConfirmationLastRequestExpiresAt = user.newEmailConfirmationLastSentAt
+      ? DateTime.fromJSDate(user.newEmailConfirmationLastSentAt)
+          .plus({
+            seconds: env.NEW_EMAIL_CONFIRMATION_TIMEOUT_SECONDS,
+          })
+          .toJSDate()
+      : null;
+
+    if (
+      newEmailConfirmationLastRequestExpiresAt &&
+      newEmailConfirmationLastRequestExpiresAt.getTime() > now.getTime()
+    ) {
+      throw new BadRequestException(
+        `You already have a requested the new email confirmation email recently. Check your email or try again later.`
+      );
+    }
+
+    user.newEmailConfirmationLastSentAt = now;
+
+    await this._usersService.save(user);
+
+    await this._mailerService.sendNewEmailConfirmationEmail(user);
 
     return user;
   }

@@ -81,7 +81,7 @@ export class User {
   @Column({
     nullable: true,
   })
-  passwordResetLastRequestExpiresAt?: Date;
+  newEmailConfirmationLastSentAt?: Date;
 
   @Column({
     nullable: true,
