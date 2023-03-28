@@ -13,9 +13,13 @@ export class SettingsService {
   constructor(private readonly _usersService: UsersService, private readonly _mailerService: MailerService) {}
 
   async updateUser(user: User, profileSettingsDto: ProfileSettingsDto): Promise<User> {
-    if (profileSettingsDto.email) {
+    let emailChanged = false;
+
+    if (profileSettingsDto.email !== user.email || profileSettingsDto.email !== user.newEmail) {
       user.newEmail = profileSettingsDto.email;
       user.newEmailConfirmationToken = uuidv4();
+
+      emailChanged = true;
     }
 
     if (profileSettingsDto.firstName) {
@@ -29,7 +33,7 @@ export class SettingsService {
       throw new BadRequestException(`Something went wrong. Try updating the user again`);
     }
 
-    if (profileSettingsDto.email) {
+    if (emailChanged) {
       await this._mailerService.sendNewEmailConfirmationEmail(user);
     }
 

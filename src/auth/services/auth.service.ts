@@ -118,7 +118,11 @@ export class AuthService {
 
     await this._usersService.save(user);
 
-    await this._mailerService.sendEmailConfirmationSuccessEmail(user);
+    if (isNewEmail) {
+      await this._mailerService.sendNewEmailConfirmationSuccessEmail(user);
+    } else {
+      await this._mailerService.sendEmailConfirmationSuccessEmail(user);
+    }
 
     return user;
   }

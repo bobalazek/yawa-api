@@ -38,6 +38,17 @@ export class MailerService {
     });
   }
 
+  async sendNewEmailConfirmationSuccessEmail(user: User) {
+    return this._mailerService.sendMail({
+      to: user.email,
+      subject: 'New email confirmation success',
+      template: 'new-email-confirmation-success',
+      context: {
+        user,
+      },
+    });
+  }
+
   async sendNewEmailConfirmationEmail(user: User) {
     const BASE_URL = this._configService.get('BASE_URL');
     const { newEmailConfirmationToken } = user;

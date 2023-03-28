@@ -25,9 +25,15 @@ export class AuthPagesController {
   @Render('auth-confirm-new-email')
   @Get('/confirm-new-email')
   async confirmNewEmail(@Query('token') token: string): Promise<{ message?: string; error?: string }> {
-    await this._authService.confirmUserEmail(token, true);
+    try {
+      await this._authService.confirmUserEmail(token, true);
 
-    return { message: 'New email successfully confirmed' };
+      return { message: 'New email successfully confirmed' };
+    } catch (err) {
+      return {
+        error: err.message,
+      };
+    }
   }
 
   @Render('auth-password-reset')
