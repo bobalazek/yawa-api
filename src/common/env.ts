@@ -4,6 +4,7 @@ config();
 
 export const env = {
   APP_NAME: 'YAWA',
+  APP_VERSION: '0.1.0',
   NEW_EMAIL_CONFIRMATION_TIMEOUT_SECONDS: 900,
   PASSWORD_RESET_REQUEST_EXPIRATION_SECONDS: 900,
   NODE_ENV: process.env.NODE_ENV || 'development',
