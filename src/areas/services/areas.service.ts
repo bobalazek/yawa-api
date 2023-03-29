@@ -1,10 +1,25 @@
 import { Injectable } from '@nestjs/common';
+import { readFileSync } from 'fs';
+import { resolve } from 'path';
+import { parse } from 'yaml';
 
-import { AreaTemplateDto } from '../dtos/area-template.dto';
+interface AreaTemplate {
+  key: string;
+  name: string;
+  subheading: string;
+  description: string;
+}
 
 @Injectable()
 export class AreasService {
-  async getAllTemplates(): Promise<AreaTemplateDto[]> {
-    return [];
+  _areaTemplates: AreaTemplate[] = [];
+
+  async getAllTemplates(): Promise<AreaTemplate[]> {
+    if (this._areaTemplates.length === 0) {
+      const areaTemplatesFileContents = readFileSync(resolve(__dirname, '../../../assets/data/areas.yaml'), 'utf8');
+      this._areaTemplates = parse(areaTemplatesFileContents);
+    }
+
+    return this._areaTemplates;
   }
 }

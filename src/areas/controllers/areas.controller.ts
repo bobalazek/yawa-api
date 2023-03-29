@@ -12,10 +12,10 @@ export class AreasController {
 
   @Get('/templates')
   async templates(): Promise<AreaTemplateDto[]> {
-    const areaTemplates = await this._areasService.getAllTemplates();
+    const templates = await this._areasService.getAllTemplates();
 
-    return areaTemplates.map((areaTemplate) => {
-      return plainToClass(AreaTemplateDto, areaTemplate);
+    return templates.map((template) => {
+      return plainToClass(AreaTemplateDto, template);
     });
   }
 }

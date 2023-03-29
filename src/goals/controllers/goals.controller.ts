@@ -2,6 +2,7 @@ import { Controller, Get } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { plainToClass } from 'class-transformer';
 
+import { GoalTemplateDto } from '../dtos/goal-template.dto';
 import { GoalDto } from '../dtos/goal.dto';
 import { GoalsService } from '../services/goals.service';
 
@@ -16,6 +17,15 @@ export class GoalsController {
 
     return goals.map((goal) => {
       return plainToClass(GoalDto, goal);
+    });
+  }
+
+  @Get('/templates')
+  async templates(): Promise<GoalTemplateDto[]> {
+    const templates = await this._goalsService.getAllTemplates();
+
+    return templates.map((template) => {
+      return plainToClass(GoalTemplateDto, template);
     });
   }
 }
