@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional } from 'class-validator';
 
 export class RegisterDto {
   @ApiProperty()
@@ -13,4 +13,12 @@ export class RegisterDto {
   @ApiProperty()
   @IsNotEmpty({ message: 'First name is required' })
   readonly firstName!: string;
+
+  @ApiProperty()
+  @IsOptional()
+  readonly timezone!: string;
+
+  @ApiProperty()
+  @IsOptional()
+  readonly measurementSystem!: string;
 }

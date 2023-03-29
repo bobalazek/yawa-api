@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
-import { DateTime } from 'luxon';
+import { DateTime, IANAZone } from 'luxon';
 import { v4 as uuidv4 } from 'uuid';
 
 import { env } from '../../common/env';
@@ -65,6 +65,18 @@ export class AuthService {
   async registerUser(registerDto: RegisterDto): Promise<string> {
     if (registerDto.password.length < 6) {
       throw new BadRequestException(`Password must be at least 6 characters long`);
+    }
+
+    if (registerDto.timezone && !IANAZone.isValidZone(registerDto.timezone)) {
+      throw new BadRequestException(`The timezone you provided is invalid`);
+    }
+
+    if (
+      registerDto.measurementSystem &&
+      registerDto.measurementSystem !== 'metric' &&
+      registerDto.measurementSystem !== 'imperial'
+    ) {
+      throw new BadRequestException(`The measurement system you provided is invalid`);
     }
 
     const password = await generateHash(registerDto.password);

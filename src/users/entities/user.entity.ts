@@ -49,6 +49,12 @@ export class User {
   @Column()
   firstName!: string;
 
+  @Column({
+    type: 'date',
+    nullable: true,
+  })
+  birthday?: Date;
+
   @Index({
     unique: true,
   })

@@ -50,7 +50,16 @@ export class SettingsService {
         throw new BadRequestException(`The measurement system you provided is invalid`);
       }
 
-      user.timezone = profileSettingsDto.timezone;
+      user.measurementSystem = profileSettingsDto.measurementSystem;
+    }
+
+    if (profileSettingsDto.birthday) {
+      const birthday = new Date(profileSettingsDto.birthday);
+      if (!(birthday instanceof Date) || isNaN(birthday.getTime())) {
+        throw new BadRequestException(`The birthday you provided is invalid`);
+      }
+
+      user.birthday = birthday;
     }
 
     try {

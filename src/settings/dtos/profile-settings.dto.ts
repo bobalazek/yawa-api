@@ -26,4 +26,9 @@ export class ProfileSettingsDto {
   @IsString()
   @IsOptional()
   readonly measurementSystem?: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  readonly birthday?: string;
 }
