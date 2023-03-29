@@ -34,6 +34,12 @@ export class UserDto extends AbstractDto {
   @Expose()
   @IsString()
   @IsNotEmpty()
+  readonly timezone!: string;
+
+  @ApiProperty()
+  @Expose()
+  @IsString()
+  @IsNotEmpty()
   readonly firstName!: string;
 
   @ApiProperty()
