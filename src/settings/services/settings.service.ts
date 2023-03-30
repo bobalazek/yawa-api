@@ -18,6 +18,11 @@ export class SettingsService {
     let emailChanged = false;
 
     if (profileSettingsDto.email !== user.email && profileSettingsDto.email !== user.newEmail) {
+      const existingUser = await this._usersService.findOneByEmail(profileSettingsDto.email);
+      if (existingUser && existingUser.id !== user.id) {
+        throw new BadRequestException(`A user with this email already exists`);
+      }
+
       user.newEmail = profileSettingsDto.email;
       user.newEmailConfirmationToken = uuidv4();
       user.newEmailConfirmationLastSentAt = new Date();

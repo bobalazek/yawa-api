@@ -79,6 +79,11 @@ export class AuthService {
       throw new BadRequestException(`The measurement system you provided is invalid`);
     }
 
+    const existingUser = await this._usersService.findOneByEmail(registerDto.email);
+    if (existingUser) {
+      throw new BadRequestException(`A user with this email already exists`);
+    }
+
     const password = await generateHash(registerDto.password);
     const processedRegisterDto = {
       ...registerDto,
@@ -128,7 +133,17 @@ export class AuthService {
 
     user.emailConfirmedAt = new Date();
 
-    await this._usersService.save(user);
+    try {
+      await this._usersService.save(user);
+    } catch (err) {
+      if (err.code === '23505') {
+        throw new BadRequestException(
+          `A user with this email seems to have already been created in the meantime. Please go back to your settings and change the email`
+        );
+      }
+
+      throw new BadRequestException(`Something went wrong. Please try and confirm your email again`);
+    }
 
     if (isNewEmail) {
       await this._mailerService.sendNewEmailConfirmationSuccessEmail(user);
