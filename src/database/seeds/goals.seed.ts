@@ -3,9 +3,9 @@ import { resolve } from 'path';
 import { DeepPartial } from 'typeorm';
 import { parse } from 'yaml';
 
-import { Goal } from '../../goals/entities/goal.entity';
+import { GoalTemplateDto } from '../../goals/dtos/goal-template.dto';
 
-const goalsSeed: DeepPartial<Goal[]> = [];
+const goalsSeed: DeepPartial<GoalTemplateDto[]> = [];
 
 const goals = parse(readFileSync(resolve(__dirname, '../../../assets/data/goals.yaml'), 'utf8'));
 for (const goal of goals) {

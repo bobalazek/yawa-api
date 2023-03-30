@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
-import { Repository } from 'typeorm';
+import { DeepPartial, Repository } from 'typeorm';
 import { parse } from 'yaml';
 
 import { Action } from '../entities/action.entity';
@@ -19,8 +19,21 @@ export class ActionsService {
 
   constructor(@InjectRepository(Action) private readonly _actionsRepository: Repository<Action>) {}
 
-  async findAll(): Promise<Action[]> {
-    return this._actionsRepository.find();
+  async findOneForUser(id: string, userId: string): Promise<Action[]> {
+    return this._actionsRepository.find({
+      where: {
+        id,
+        userId,
+      },
+    });
+  }
+
+  async findAllForUser(userId: string): Promise<Action[]> {
+    return this._actionsRepository.find({
+      where: {
+        userId,
+      },
+    });
   }
 
   async getAllTemplates(): Promise<ActionTemplate[]> {
@@ -30,5 +43,9 @@ export class ActionsService {
     }
 
     return this._actionTemplates;
+  }
+
+  save(action: DeepPartial<Action>, userId: string) {
+    return this._actionsRepository.save({ ...action, userId });
   }
 }

@@ -3,9 +3,9 @@ import { resolve } from 'path';
 import { DeepPartial } from 'typeorm';
 import { parse } from 'yaml';
 
-import { Action } from '../../actions/entities/action.entity';
+import { ActionTemplateDto } from '../../actions/dtos/action-template.dto';
 
-const actionsSeed: DeepPartial<Action[]> = [];
+const actionsSeed: DeepPartial<ActionTemplateDto[]> = [];
 
 const actions = parse(readFileSync(resolve(__dirname, '../../../assets/data/actions.yaml'), 'utf8'));
 for (const action of actions) {
