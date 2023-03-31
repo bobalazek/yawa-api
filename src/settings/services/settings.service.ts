@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { DateTime } from 'luxon';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -20,7 +20,7 @@ export class SettingsService {
     if (profileSettingsDto.email !== user.email && profileSettingsDto.email !== user.newEmail) {
       const existingUser = await this._usersService.findOneByEmail(profileSettingsDto.email);
       if (existingUser && existingUser.id !== user.id) {
-        throw new BadRequestException(`A user with this email already exists`);
+        throw new Error(`A user with this email already exists`);
       }
 
       user.newEmail = profileSettingsDto.email;
@@ -54,7 +54,7 @@ export class SettingsService {
       await this._usersService.save(user);
     } catch (err) {
       // In the very, VERY unlikely scenario the uuid would be a duplicate - if setting the new email
-      throw new BadRequestException(`Something went wrong. Try updating the user again`);
+      throw new Error(`Something went wrong. Try updating the user again`);
     }
 
     if (emailChanged) {
@@ -67,11 +67,11 @@ export class SettingsService {
   async changePassword(user: User, changePasswordSettingsDto: ChangePasswordSettingsDto): Promise<User> {
     const currentPasswordHashed = await generateHash(changePasswordSettingsDto.currentPassword);
     if (currentPasswordHashed !== user.password) {
-      throw new BadRequestException(`The current password you provided is incorrect`);
+      throw new Error(`The current password you provided is incorrect`);
     }
 
     if (changePasswordSettingsDto.newPassword !== changePasswordSettingsDto.newPasswordConfirm) {
-      throw new BadRequestException(`Passwords do not match`);
+      throw new Error(`Passwords do not match`);
     }
 
     const newPasswordHashed = await generateHash(changePasswordSettingsDto.newPassword);
@@ -100,7 +100,7 @@ export class SettingsService {
       newEmailConfirmationLastRequestExpiresAt &&
       newEmailConfirmationLastRequestExpiresAt.getTime() > now.getTime()
     ) {
-      throw new BadRequestException(
+      throw new Error(
         `You already have a requested the new email confirmation email recently. Check your email or try again later.`
       );
     }

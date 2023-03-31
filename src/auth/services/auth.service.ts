@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { DateTime } from 'luxon';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -33,7 +33,7 @@ export class AuthService {
       return userAccessToken.token;
     } catch (err) {
       // In the very, VERY unlikely scenario the uuid would be a duplicate, just prompt the user to login again
-      throw new BadRequestException(`Something went wrong. Try logging in again`);
+      throw new Error(`Something went wrong. Try logging in again`);
     }
   }
 
@@ -80,10 +80,10 @@ export class AuthService {
       });
     } catch (err) {
       if (err.code === '23505') {
-        throw new BadRequestException(`A user with this email already exists`);
+        throw new Error(`A user with this email already exists`);
       }
 
-      throw new BadRequestException(`Something went wrong while creating the user`);
+      throw new Error(`Something went wrong while creating the user`);
     }
 
     await this._mailerService.sendEmailConfirmationEmail(user);
@@ -97,11 +97,11 @@ export class AuthService {
       token
     );
     if (!user) {
-      throw new BadRequestException(`Token already used or expired`);
+      throw new Error(`Token already used or expired`);
     }
 
     if (!isNewEmail && user.emailConfirmedAt) {
-      throw new BadRequestException(`Email already confirmed`);
+      throw new Error(`Email already confirmed`);
     }
 
     if (isNewEmail) {
@@ -118,12 +118,12 @@ export class AuthService {
       await this._usersService.save(user);
     } catch (err) {
       if (err.code === '23505') {
-        throw new BadRequestException(
+        throw new Error(
           `A user with this email seems to have already been created in the meantime. Please go back to your settings and change the email`
         );
       }
 
-      throw new BadRequestException(`Something went wrong. Please try and confirm your email again`);
+      throw new Error(`Something went wrong. Please try and confirm your email again`);
     }
 
     if (isNewEmail) {
@@ -138,7 +138,7 @@ export class AuthService {
   async requestPasswordReset(passwordResetRequestDto: PasswordResetRequestDto): Promise<User> {
     const user = await this._usersService.findOneByEmail(passwordResetRequestDto.email);
     if (!user) {
-      throw new BadRequestException(`User with this email was not found`);
+      throw new Error(`User with this email was not found`);
     }
 
     const now = new Date();
@@ -152,9 +152,7 @@ export class AuthService {
       : null;
 
     if (passwordResetLastRequestExpiresAt && passwordResetLastRequestExpiresAt.getTime() > now.getTime()) {
-      throw new BadRequestException(
-        `You already have a pending password reset request. Check your email or try again later.`
-      );
+      throw new Error(`You already have a pending password reset request. Check your email or try again later.`);
     }
 
     user.passwordResetToken = uuidv4();
@@ -164,7 +162,7 @@ export class AuthService {
       await this._usersService.save(user);
     } catch (err) {
       // In the very, VERY unlikely scenario the uuid would be a duplicate - if setting the password reset
-      throw new BadRequestException(`Something went wrong. Try requesting the password reset again`);
+      throw new Error(`Something went wrong. Try requesting the password reset again`);
     }
 
     await this._mailerService.sendPasswordResetRequestEmail(user);
@@ -174,20 +172,16 @@ export class AuthService {
 
   async resetPassword(resetPasswordDto: PasswordResetDto): Promise<User> {
     if (!resetPasswordDto.newPassword) {
-      throw new BadRequestException(`New password is required`);
+      throw new Error(`New password is required`);
     }
 
     if (resetPasswordDto.newPassword !== resetPasswordDto.newPasswordConfirm) {
-      throw new BadRequestException(`Passwords do not match`);
-    }
-
-    if (resetPasswordDto.newPassword.length < 6) {
-      throw new BadRequestException(`Password must be at least 6 characters long`);
+      throw new Error(`Passwords do not match`);
     }
 
     const user = await this._usersService.findOneBy('passwordResetToken', resetPasswordDto.token);
     if (!user) {
-      throw new BadRequestException(`User with this token was not found`);
+      throw new Error(`User with this token was not found`);
     }
 
     const now = new Date();
@@ -204,7 +198,7 @@ export class AuthService {
       !passwordResetLastRequestExpiresAt ||
       (passwordResetLastRequestExpiresAt && passwordResetLastRequestExpiresAt.getTime() < now.getTime())
     ) {
-      throw new BadRequestException(`Seems like the token already expired. Please try and request it again.`);
+      throw new Error(`Seems like the token already expired. Please try and request it again.`);
     }
 
     user.password = await generateHash(resetPasswordDto.newPassword);
@@ -221,7 +215,7 @@ export class AuthService {
   async getUserById(id: string): Promise<User> {
     const user = await this._usersService.findOneById(id);
     if (!user) {
-      throw new BadRequestException(`User not found`);
+      throw new Error(`User not found`);
     }
 
     return user;
@@ -230,12 +224,12 @@ export class AuthService {
   async getUserByAccessToken(accessToken: string): Promise<User> {
     const userAccessToken = await this._userAccessTokensService.findOneByTokenWithUser(accessToken);
     if (!userAccessToken) {
-      throw new BadRequestException(`A user with this access token not found`);
+      throw new Error(`A user with this access token not found`);
     }
 
     const now = new Date();
     if (userAccessToken.expiresAt && userAccessToken.expiresAt < now) {
-      throw new BadRequestException(`The access token has expired`);
+      throw new Error(`The access token has expired`);
     }
 
     return userAccessToken.user;

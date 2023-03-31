@@ -7,6 +7,7 @@ import { join } from 'path';
 
 import { AppModule } from './app.module';
 import { env } from './common/env';
+import { ErrorFilter } from './common/filters/error.filter';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 
 async function bootstrap() {
@@ -18,6 +19,7 @@ async function bootstrap() {
 
   // Exceptions
   app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalFilters(new ErrorFilter());
 
   // Validation
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));

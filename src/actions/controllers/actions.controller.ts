@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiHeader, ApiTags } from '@nestjs/swagger';
 import { plainToClass } from 'class-transformer';
 import { Request } from 'express';
@@ -57,7 +57,7 @@ export class ActionsController {
   ): Promise<ActionDto> {
     const action = await this._actionsService.findOneForUser(id, req.user.id);
     if (!action) {
-      throw new BadRequestException('Action not found');
+      throw new Error('Action not found');
     }
 
     // TODO: validation
