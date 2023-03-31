@@ -3,7 +3,7 @@ import { IsNotEmpty, IsString } from 'class-validator';
 
 export class TokenDto {
   @ApiProperty()
-  @IsString()
   @IsNotEmpty()
+  @IsString()
   readonly token!: string;
 }

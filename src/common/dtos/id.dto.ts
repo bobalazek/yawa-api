@@ -3,7 +3,7 @@ import { IsNotEmpty, IsString } from 'class-validator';
 
 export class IdDto {
   @ApiProperty()
-  @IsString()
   @IsNotEmpty()
+  @IsString()
   readonly id!: string;
 }
