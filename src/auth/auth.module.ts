@@ -2,6 +2,10 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 
 import { NotificationsModule } from '../notifications/notifications.module';
 import { UsersModule } from '../users/users.module';
+import { EmailExistsConstraint } from './constraints/email-exists.constraint';
+import { MeasurementSystemConstraint } from './constraints/measurement-system.constraint';
+import { PasswordConstraint } from './constraints/password.constraint';
+import { TimezoneConstraint } from './constraints/timezone.constraint';
 import { AuthPagesController } from './controllers/auth-pages.controller';
 import { AuthController } from './controllers/auth.controller';
 import { AuthMiddleware } from './middlewares/auth.middleware';
@@ -9,7 +13,7 @@ import { AuthService } from './services/auth.service';
 
 @Module({
   imports: [NotificationsModule, UsersModule],
-  providers: [AuthService],
+  providers: [AuthService, EmailExistsConstraint, MeasurementSystemConstraint, PasswordConstraint, TimezoneConstraint],
   controllers: [AuthController, AuthPagesController],
   exports: [AuthService],
 })

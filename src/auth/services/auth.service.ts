@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
-import { DateTime, IANAZone } from 'luxon';
+import { DateTime } from 'luxon';
 import { v4 as uuidv4 } from 'uuid';
 
 import { env } from '../../common/env';
@@ -63,44 +63,21 @@ export class AuthService {
   }
 
   async registerUser(registerDto: RegisterDto): Promise<string> {
-    if (registerDto.password.length < 6) {
-      throw new BadRequestException(`Password must be at least 6 characters long`);
-    }
-
-    if (registerDto.timezone && !IANAZone.isValidZone(registerDto.timezone)) {
-      throw new BadRequestException(`The timezone you provided is invalid`);
-    }
-
-    if (
-      registerDto.measurementSystem &&
-      registerDto.measurementSystem !== 'metric' &&
-      registerDto.measurementSystem !== 'imperial'
-    ) {
-      throw new BadRequestException(`The measurement system you provided is invalid`);
-    }
-
-    const existingUser = await this._usersService.findOneByEmail(registerDto.email);
-    if (existingUser) {
-      throw new BadRequestException(`A user with this email already exists`);
-    }
-
     const password = await generateHash(registerDto.password);
     const processedRegisterDto = {
       ...registerDto,
       password,
     };
 
+    let user: User;
+
     try {
-      const user = await this._usersService.save({
+      user = await this._usersService.save({
         // We need to await it, else it's not caught and it's caught as unexpectedException
         ...processedRegisterDto,
         password: await generateHash(processedRegisterDto.password),
         emailConfirmationToken: uuidv4(),
       });
-
-      await this._mailerService.sendEmailConfirmationEmail(user);
-
-      return this.loginUser(processedRegisterDto);
     } catch (err) {
       if (err.code === '23505') {
         throw new BadRequestException(`A user with this email already exists`);
@@ -108,6 +85,10 @@ export class AuthService {
 
       throw new BadRequestException(`Something went wrong while creating the user`);
     }
+
+    await this._mailerService.sendEmailConfirmationEmail(user);
+
+    return this.loginUser(processedRegisterDto);
   }
 
   async confirmUserEmail(token: string, isNewEmail: boolean = false): Promise<User> {
