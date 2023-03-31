@@ -42,7 +42,12 @@ export class AuthService {
 
     if (userAccessToken) {
       userAccessToken.expiresAt = new Date();
-      await this._userAccessTokensService.save(userAccessToken);
+
+      try {
+        await this._userAccessTokensService.save(userAccessToken);
+      } catch (err) {
+        throw new Error(`Something went wrong. Try logging out again`);
+      }
     }
 
     return true;
@@ -205,7 +210,11 @@ export class AuthService {
     user.passwordResetToken = null;
     user.passwordResetLastRequestedAt = now;
 
-    await this._usersService.save(user);
+    try {
+      await this._usersService.save(user);
+    } catch (err) {
+      throw new Error(`Something went wrong. Try resetting the password again`);
+    }
 
     await this._mailerService.sendPasswordResetSuccessEmail(user);
 

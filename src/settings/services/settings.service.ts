@@ -78,7 +78,11 @@ export class SettingsService {
 
     user.password = newPasswordHashed;
 
-    await this._usersService.save(user);
+    try {
+      await this._usersService.save(user);
+    } catch (err) {
+      throw new Error(`Something went wrong. Try changing the password again`);
+    }
 
     await this._mailerService.sendPasswordResetSuccessEmail(user);
 
@@ -107,7 +111,11 @@ export class SettingsService {
 
     user.newEmailConfirmationLastSentAt = now;
 
-    await this._usersService.save(user);
+    try {
+      await this._usersService.save(user);
+    } catch (err) {
+      throw new Error(`Something went wrong. Try resending the password reset email again`);
+    }
 
     await this._mailerService.sendNewEmailConfirmationEmail(user);
 
@@ -119,7 +127,11 @@ export class SettingsService {
     user.newEmailConfirmationToken = null;
     user.newEmailConfirmationLastSentAt = null;
 
-    await this._usersService.save(user);
+    try {
+      await this._usersService.save(user);
+    } catch (err) {
+      throw new Error(`Something went wrong. Try canceling the new email again`);
+    }
 
     return user;
   }
@@ -131,7 +143,11 @@ export class SettingsService {
     user.email = `pending-deletion-${user.id}-${now.getTime()}@yawa.com`;
     user.deletionRequestedAt = now;
 
-    await this._usersService.save(user);
+    try {
+      await this._usersService.save(user);
+    } catch (err) {
+      throw new Error(`Something went wrong. Try requesting the account deletion again`);
+    }
 
     return user;
   }
