@@ -19,8 +19,8 @@ export class ActionsService {
 
   constructor(@InjectRepository(Action) private readonly _actionsRepository: Repository<Action>) {}
 
-  async findOneForUser(id: string, userId: string): Promise<Action[]> {
-    return this._actionsRepository.find({
+  async findOneForUser(id: string, userId: string): Promise<Action> {
+    return this._actionsRepository.findOne({
       where: {
         id,
         userId,

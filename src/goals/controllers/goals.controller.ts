@@ -11,7 +11,7 @@ import { GoalsService } from '../services/goals.service';
 export class GoalsController {
   constructor(private readonly _goalsService: GoalsService) {}
 
-  @Get('/')
+  @Get()
   async index(): Promise<GoalDto[]> {
     const goals = await this._goalsService.findAll();
 

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiHeader, ApiTags } from '@nestjs/swagger';
 import { plainToClass } from 'class-transformer';
 import { Request } from 'express';
@@ -8,6 +8,7 @@ import { AuthenticatedGuard } from '../../auth/guards/authenticated.guard';
 import { ActionTemplateDto } from '../dtos/action-template.dto';
 import { ActionDto } from '../dtos/action.dto';
 import { CreateActionDto } from '../dtos/create-action.dto';
+import { UpdateActionDto } from '../dtos/update-action.dto';
 import { ActionsService } from '../services/actions.service';
 
 @ApiTags('Actions (API v1)')
@@ -17,8 +18,10 @@ export class ActionsController {
 
   @ApiHeader(API_HEADER_X_AUTHORIZATION)
   @UseGuards(AuthenticatedGuard)
-  @Post('/')
+  @Post()
   async create(@Body() createActioDto: CreateActionDto, @Req() req: Request): Promise<ActionDto> {
+    // TODO: validation
+
     const action = await this._actionsService.save(createActioDto, req.user.id);
 
     return plainToClass(ActionDto, action);
@@ -26,7 +29,7 @@ export class ActionsController {
 
   @ApiHeader(API_HEADER_X_AUTHORIZATION)
   @UseGuards(AuthenticatedGuard)
-  @Get('/')
+  @Get()
   async findAll(@Req() req: Request): Promise<ActionDto[]> {
     const actions = await this._actionsService.findAllForUser(req.user.id);
 
@@ -38,12 +41,30 @@ export class ActionsController {
   @ApiHeader(API_HEADER_X_AUTHORIZATION)
   @UseGuards(AuthenticatedGuard)
   @Get('/:id')
-  async findOne(@Param('id') id: string, @Req() req: Request): Promise<ActionDto[]> {
-    const actions = await this._actionsService.findOneForUser(id, req.user.id);
+  async findOne(@Param('id') id: string, @Req() req: Request): Promise<ActionDto> {
+    const action = await this._actionsService.findOneForUser(id, req.user.id);
 
-    return actions.map((action) => {
-      return plainToClass(ActionDto, action);
-    });
+    return plainToClass(ActionDto, action);
+  }
+
+  @ApiHeader(API_HEADER_X_AUTHORIZATION)
+  @UseGuards(AuthenticatedGuard)
+  @Patch('/:id')
+  async update(
+    @Param('id') id: string,
+    @Body() updateActionDto: UpdateActionDto,
+    @Req() req: Request
+  ): Promise<ActionDto> {
+    const action = await this._actionsService.findOneForUser(id, req.user.id);
+    if (!action) {
+      throw new BadRequestException('Action not found');
+    }
+
+    // TODO: validation
+
+    const savedAction = await this._actionsService.save(updateActionDto, req.user.id);
+
+    return plainToClass(ActionDto, savedAction);
   }
 
   @Get('/templates')
