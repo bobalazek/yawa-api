@@ -19,6 +19,6 @@ export class EmailExistsConstraint implements ValidatorConstraintInterface {
   }
 
   defaultMessage(): string {
-    return 'Email already exists';
+    return 'The email you provided already exists';
   }
 }

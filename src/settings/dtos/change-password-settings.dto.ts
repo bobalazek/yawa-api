@@ -1,5 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, Validate } from 'class-validator';
+
+import { PasswordConstraint } from '../../common/constraints/password.constraint';
 
 export class ChangePasswordSettingsDto {
   @ApiProperty()
@@ -8,6 +10,7 @@ export class ChangePasswordSettingsDto {
 
   @ApiProperty()
   @IsNotEmpty()
+  @Validate(PasswordConstraint)
   readonly newPassword!: string;
 
   @ApiProperty()

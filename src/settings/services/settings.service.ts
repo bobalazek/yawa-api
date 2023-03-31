@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { DateTime, IANAZone } from 'luxon';
+import { DateTime } from 'luxon';
 import { v4 as uuidv4 } from 'uuid';
 
 import { env } from '../../common/env';
@@ -35,36 +35,19 @@ export class SettingsService {
     }
 
     if (profileSettingsDto.languageCode) {
-      if (profileSettingsDto.languageCode !== 'en') {
-        throw new BadRequestException(`The language you provided is invalid`);
-      }
-
       user.timezone = profileSettingsDto.timezone;
     }
 
     if (profileSettingsDto.timezone) {
-      if (!IANAZone.isValidZone(profileSettingsDto.timezone)) {
-        throw new BadRequestException(`The timezone you provided is invalid`);
-      }
-
       user.timezone = profileSettingsDto.timezone;
     }
 
     if (profileSettingsDto.measurementSystem) {
-      if (profileSettingsDto.measurementSystem !== 'metric' && profileSettingsDto.measurementSystem !== 'imperial') {
-        throw new BadRequestException(`The measurement system you provided is invalid`);
-      }
-
       user.measurementSystem = profileSettingsDto.measurementSystem;
     }
 
     if (profileSettingsDto.birthday) {
-      const birthday = new Date(profileSettingsDto.birthday);
-      if (!(birthday instanceof Date) || isNaN(birthday.getTime())) {
-        throw new BadRequestException(`The birthday you provided is invalid`);
-      }
-
-      user.birthday = birthday;
+      user.birthday = new Date(profileSettingsDto.birthday);
     }
 
     try {
@@ -89,10 +72,6 @@ export class SettingsService {
 
     if (changePasswordSettingsDto.newPassword !== changePasswordSettingsDto.newPasswordConfirm) {
       throw new BadRequestException(`Passwords do not match`);
-    }
-
-    if (changePasswordSettingsDto.newPassword.length < 6) {
-      throw new BadRequestException(`Password must be at least 6 characters long`);
     }
 
     const newPasswordHashed = await generateHash(changePasswordSettingsDto.newPassword);

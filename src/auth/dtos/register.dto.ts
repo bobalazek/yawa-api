@@ -1,10 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty, IsOptional, Validate } from 'class-validator';
 
+import { MeasurementSystemConstraint } from '../../common/constraints/measurement-system.constraint';
+import { PasswordConstraint } from '../../common/constraints/password.constraint';
+import { TimezoneConstraint } from '../../common/constraints/timezone.constraint';
 import { EmailExistsConstraint } from '../constraints/email-exists.constraint';
-import { MeasurementSystemConstraint } from '../constraints/measurement-system.constraint';
-import { PasswordConstraint } from '../constraints/password.constraint';
-import { TimezoneConstraint } from '../constraints/timezone.constraint';
 
 export class RegisterDto {
   @ApiProperty()

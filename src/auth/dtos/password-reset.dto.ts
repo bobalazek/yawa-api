@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, Validate } from 'class-validator';
 
-import { PasswordConstraint } from '../constraints/password.constraint';
+import { PasswordConstraint } from '../../common/constraints/password.constraint';
 
 export class PasswordResetDto {
   @ApiProperty()
