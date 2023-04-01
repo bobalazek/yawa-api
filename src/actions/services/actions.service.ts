@@ -45,7 +45,11 @@ export class ActionsService {
     return this._actionTemplates;
   }
 
-  save(action: DeepPartial<Action>, userId: string) {
-    return this._actionsRepository.save({ ...action, userId });
+  save(action: DeepPartial<Action>) {
+    return this._actionsRepository.save(action);
+  }
+
+  delete(id: string) {
+    return this._actionsRepository.delete(id);
   }
 }

@@ -22,7 +22,7 @@ export class ActionsController {
   async create(@Body() createActioDto: CreateActionDto, @Req() req: Request): Promise<ActionDto> {
     // TODO: validation
 
-    const action = await this._actionsService.save(createActioDto, req.user.id);
+    const action = await this._actionsService.save({ ...createActioDto, userId: req.user.id });
 
     return plainToClass(ActionDto, action);
   }
@@ -30,7 +30,7 @@ export class ActionsController {
   @ApiHeader(API_HEADER_X_AUTHORIZATION)
   @UseGuards(AuthenticatedGuard)
   @Get()
-  async findAll(@Req() req: Request): Promise<ActionDto[]> {
+  async readAll(@Req() req: Request): Promise<ActionDto[]> {
     const actions = await this._actionsService.findAllForUser(req.user.id);
 
     return actions.map((action) => {
@@ -41,7 +41,7 @@ export class ActionsController {
   @ApiHeader(API_HEADER_X_AUTHORIZATION)
   @UseGuards(AuthenticatedGuard)
   @Get('/:id')
-  async findOne(@Param('id') id: string, @Req() req: Request): Promise<ActionDto> {
+  async read(@Param('id') id: string, @Req() req: Request): Promise<ActionDto> {
     const action = await this._actionsService.findOneForUser(id, req.user.id);
 
     return plainToClass(ActionDto, action);
@@ -56,15 +56,29 @@ export class ActionsController {
     @Req() req: Request
   ): Promise<ActionDto> {
     const action = await this._actionsService.findOneForUser(id, req.user.id);
-    if (!action) {
+    if (!action || action.userId !== req.user.id) {
       throw new Error('Action not found');
     }
 
     // TODO: validation
 
-    const savedAction = await this._actionsService.save(updateActionDto, req.user.id);
+    const savedAction = await this._actionsService.save(updateActionDto);
 
     return plainToClass(ActionDto, savedAction);
+  }
+
+  @ApiHeader(API_HEADER_X_AUTHORIZATION)
+  @UseGuards(AuthenticatedGuard)
+  @Patch('/:id')
+  async delete(@Param('id') id: string, @Req() req: Request): Promise<{ message: string }> {
+    const action = await this._actionsService.findOneForUser(id, req.user.id);
+    if (!action || action.userId !== req.user.id) {
+      throw new Error('Action not found');
+    }
+
+    await this._actionsService.delete(id);
+
+    return { message: 'The action was successfully deleted' };
   }
 
   @Get('/templates')
