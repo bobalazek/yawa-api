@@ -67,7 +67,9 @@ export class Action {
   goalUnit?: string; // 10 deciliters (<- this part) per day - can be "deciliters" (drank water, ...), "minutes" (walk in nature, read, ...)
 
   @Column({
+    type: 'enum',
     nullable: true,
+    enum: ['day', 'week', 'month', 'year'],
   })
   goalIntervalUnit?: string; // 10 deciliters per day (<- this part)
 
