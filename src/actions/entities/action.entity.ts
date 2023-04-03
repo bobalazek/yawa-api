@@ -108,17 +108,17 @@ export class Action {
   reminderEndTime?: string; // 00:00 to 23:59
 
   @Column({
+    type: 'int',
+    nullable: true,
+  })
+  reminderRecurrenceIntervalAmount?: number; // 1, 2, 4, 8, ...
+
+  @Column({
     type: 'enum',
     enum: ['minute', 'hour', 'day', 'week', 'month', 'year'],
     nullable: true,
   })
   reminderRecurrenceIntervalUnit?: string;
-
-  @Column({
-    type: 'int',
-    nullable: true,
-  })
-  reminderRecurrenceIntervalAmount?: number; // 1, 2, 4, 8, ...
 
   /*
   @Column({

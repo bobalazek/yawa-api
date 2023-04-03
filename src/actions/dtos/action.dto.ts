@@ -65,11 +65,11 @@ export class ActionDto extends AbstractDto {
 
   @ApiProperty()
   @Expose()
-  readonly reminderRecurrenceIntervalUnit?: string;
+  readonly reminderRecurrenceIntervalAmount?: number;
 
   @ApiProperty()
   @Expose()
-  readonly reminderRecurrenceIntervalAmount?: number;
+  readonly reminderRecurrenceIntervalUnit?: string;
 
   @ApiProperty()
   @Expose()
