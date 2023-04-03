@@ -34,6 +34,14 @@ export const validateAction = (dto: ActionDto): true | { errors: string[] } => {
     errors.push('reminderIntervalType must be either "only_once", "recurring_every_x_y" or "recurring_x_times_per_y"');
   }
 
+  if (dto.reminderIntervalType === 'only_once' && !dto.reminderStartDate) {
+    errors.push('reminderStartDate is required when reminderIntervalType is "only_once"');
+  }
+
+  if (dto.reminderIntervalType === 'only_once' && !dto.reminderStartTime) {
+    errors.push('reminderStartTime is required when reminderIntervalType is "only_once"');
+  }
+
   if (
     dto.reminderRecurrenceIntervalUnit &&
     !REMINDER_RECURRENCE_INTERVAL_UNITS.includes(dto.reminderRecurrenceIntervalUnit)
