@@ -3,36 +3,42 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Expose } from 'class-transformer';
 import { IsEnum, MaxLength } from 'class-validator';
 
+import {
+  GOAL_INTERVAL_UNITS,
+  GOAL_TYPES,
+  REMINDER_INTERVAL_TYPES,
+  REMINDER_RECURRENCE_INTERVAL_UNITS,
+} from '../entities/action.entity';
 import { ActionDto } from './action.dto';
 
 export class CreateActionDto extends OmitType(ActionDto, ['id', 'createdAt', 'updatedAt'] as const) {
   @ApiProperty()
   @Expose()
-  @IsEnum(['binary', 'measurable'])
-  goalType?: string;
+  @IsEnum(GOAL_TYPES)
+  readonly goalType?: (typeof GOAL_TYPES)[number];
 
   @ApiProperty()
   @Expose()
   @MaxLength(3)
-  goalAmount?: number;
+  readonly goalAmount?: number;
 
   @ApiProperty()
   @Expose()
   @MaxLength(24)
-  goalUnit?: string;
+  readonly goalUnit?: string;
 
   @ApiProperty()
   @Expose()
-  @IsEnum(['day', 'week', 'month', 'year'])
-  goalIntervalUnit?: string;
+  @IsEnum(GOAL_INTERVAL_UNITS)
+  readonly goalIntervalUnit?: (typeof GOAL_INTERVAL_UNITS)[number];
 
   @ApiProperty()
   @Expose()
-  @IsEnum(['only_once', 'recurring_every_x_y', 'recurring_x_times_per_y'])
-  reminderIntervalType?: string;
+  @IsEnum(REMINDER_INTERVAL_TYPES)
+  readonly reminderIntervalType?: (typeof REMINDER_INTERVAL_TYPES)[number];
 
   @ApiProperty()
   @Expose()
-  @IsEnum(['minute', 'hour', 'day', 'week', 'month', 'year'])
-  reminderRecurrenceIntervalUnit?: string;
+  @IsEnum(REMINDER_RECURRENCE_INTERVAL_UNITS)
+  readonly reminderRecurrenceIntervalUnit?: (typeof REMINDER_RECURRENCE_INTERVAL_UNITS)[number];
 }

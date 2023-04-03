@@ -3,7 +3,7 @@ import { DateTime } from 'luxon';
 import { v4 as uuidv4 } from 'uuid';
 
 import { env } from '../../common/env';
-import { compareHash, generateHash } from '../../common/utils/hash';
+import { compareHash, generateHash } from '../../common/utils/hash.utils';
 import { MailerService } from '../../notifications/services/mailer.service';
 import { User } from '../../users/entities/user.entity';
 import { UserAccessTokensService } from '../../users/services/user-access-tokens.service';

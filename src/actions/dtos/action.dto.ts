@@ -2,6 +2,12 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Expose } from 'class-transformer';
 
 import { AbstractDto } from '../../common/dtos/abstract.dto';
+import {
+  GOAL_INTERVAL_UNITS,
+  GOAL_TYPES,
+  REMINDER_INTERVAL_TYPES,
+  REMINDER_RECURRENCE_INTERVAL_UNITS,
+} from '../entities/action.entity';
 
 @Exclude()
 export class ActionDto extends AbstractDto {
@@ -24,7 +30,7 @@ export class ActionDto extends AbstractDto {
   // Goal
   @ApiProperty()
   @Expose()
-  readonly goalType?: string;
+  readonly goalType?: (typeof GOAL_TYPES)[number];
 
   @ApiProperty()
   @Expose()
@@ -36,7 +42,7 @@ export class ActionDto extends AbstractDto {
 
   @ApiProperty()
   @Expose()
-  readonly goalIntervalUnit?: string;
+  readonly goalIntervalUnit?: (typeof GOAL_INTERVAL_UNITS)[number];
 
   // Reminder
   @ApiProperty()
@@ -45,7 +51,7 @@ export class ActionDto extends AbstractDto {
 
   @ApiProperty()
   @Expose()
-  readonly reminderIntervalType?: string;
+  readonly reminderIntervalType?: (typeof REMINDER_INTERVAL_TYPES)[number];
 
   @ApiProperty()
   @Expose()
@@ -69,7 +75,7 @@ export class ActionDto extends AbstractDto {
 
   @ApiProperty()
   @Expose()
-  readonly reminderRecurrenceIntervalUnit?: string;
+  readonly reminderRecurrenceIntervalUnit?: (typeof REMINDER_RECURRENCE_INTERVAL_UNITS)[number];
 
   @ApiProperty()
   @Expose()

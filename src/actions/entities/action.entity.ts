@@ -13,6 +13,17 @@ import {
 import { Goal } from '../../goals/entities/goal.entity';
 import { User } from '../../users/entities/user.entity';
 
+export const GOAL_TYPES = [
+  'binary' /* in case you want to just say yes/no on something for a day/week/month - for example "movie night" */,
+  'measurable' /* this would be for example hydration - where you want to meansure like deciliters per day/week/month */,
+] as const;
+
+export const GOAL_INTERVAL_UNITS = ['day', 'week', 'month', 'year'] as const;
+
+export const REMINDER_INTERVAL_TYPES = ['only_once', 'recurring_every_x_y', 'recurring_x_times_per_y'] as const;
+
+export const REMINDER_RECURRENCE_INTERVAL_UNITS = ['minute', 'hour', 'day', 'week', 'month', 'year'] as const;
+
 @Entity('actions')
 export class Action {
   @PrimaryGeneratedColumn('uuid')
@@ -47,10 +58,7 @@ export class Action {
   // Goal
   @Column({
     type: 'enum',
-    enum: [
-      'binary' /* in case you want to just say yes/no on something for a day/week/month - for example "movie night" */,
-      'measurable' /* this would be for example hydration - where you want to meansure like deciliters per day/week/month */,
-    ],
+    enum: GOAL_TYPES,
     nullable: true,
   })
   goalType?: string;
@@ -69,7 +77,7 @@ export class Action {
   @Column({
     type: 'enum',
     nullable: true,
-    enum: ['day', 'week', 'month', 'year'],
+    enum: GOAL_INTERVAL_UNITS,
   })
   goalIntervalUnit?: string; // 10 deciliters per day (<- this part)
 
@@ -79,7 +87,7 @@ export class Action {
 
   @Column({
     type: 'enum',
-    enum: ['only_once', 'recurring_every_x_y', 'recurring_x_times_per_y'],
+    enum: REMINDER_INTERVAL_TYPES,
     nullable: true,
   })
   reminderIntervalType?: string;
@@ -115,7 +123,7 @@ export class Action {
 
   @Column({
     type: 'enum',
-    enum: ['minute', 'hour', 'day', 'week', 'month', 'year'],
+    enum: REMINDER_RECURRENCE_INTERVAL_UNITS,
     nullable: true,
   })
   reminderRecurrenceIntervalUnit?: string;
