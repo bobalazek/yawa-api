@@ -49,6 +49,14 @@ export class ActionDto extends AbstractDto {
 
   @ApiProperty()
   @Expose()
+  readonly reminderStartDate?: string;
+
+  @ApiProperty()
+  @Expose()
+  readonly reminderEndDate?: string;
+
+  @ApiProperty()
+  @Expose()
   readonly reminderStartTime?: string;
 
   @ApiProperty()
@@ -57,23 +65,11 @@ export class ActionDto extends AbstractDto {
 
   @ApiProperty()
   @Expose()
-  readonly reminderOnlyOnceDate?: string;
-
-  @ApiProperty()
-  @Expose()
   readonly reminderRecurrenceIntervalUnit?: string;
 
   @ApiProperty()
   @Expose()
   readonly reminderRecurrenceIntervalAmount?: number;
-
-  @ApiProperty()
-  @Expose()
-  readonly reminderRecurrenceStartsAt?: Date;
-
-  @ApiProperty()
-  @Expose()
-  readonly reminderRecurrenceEndsAt?: Date;
 
   @ApiProperty()
   @Expose()

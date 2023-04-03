@@ -85,6 +85,18 @@ export class Action {
   reminderIntervalType?: string;
 
   @Column({
+    type: 'date',
+    nullable: true,
+  })
+  reminderStartDate?: string;
+
+  @Column({
+    type: 'date',
+    nullable: true,
+  })
+  reminderEndDate?: string;
+
+  @Column({
     nullable: true,
     default: '00:00',
   })
@@ -94,12 +106,6 @@ export class Action {
     nullable: true,
   })
   reminderEndTime?: string; // 00:00 to 23:59
-
-  @Column({
-    type: 'date',
-    nullable: true,
-  })
-  reminderOnlyOnceDate?: string; // only if the type is set to only_once
 
   @Column({
     type: 'enum',
@@ -120,16 +126,6 @@ export class Action {
   })
   reminderRecurrenceVariance?: string; // In case we don't want the reminder be executed at exactly the same intervals, we can for example set a variance value of "15m". This means, that if we have set a reminder with a frequency of 2h and it would start at 12:00, we would expect the next execution to be at 14:00, but with this variance value it can be anywhere between 14:00 and 14:15
   */
-
-  @Column({
-    nullable: true,
-  })
-  reminderRecurrenceStartsAt?: Date;
-
-  @Column({
-    nullable: true,
-  })
-  reminderRecurrenceEndsAt?: Date;
 
   @Column({
     nullable: true,
