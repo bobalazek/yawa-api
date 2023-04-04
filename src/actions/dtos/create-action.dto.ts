@@ -15,7 +15,7 @@ export class CreateActionDto extends OmitType(ActionDto, ['id', 'createdAt', 'up
   @ApiProperty()
   @Expose()
   @IsEnum(GOAL_TYPES)
-  readonly goalType?: (typeof GOAL_TYPES)[number];
+  readonly goalType!: (typeof GOAL_TYPES)[number];
 
   @ApiProperty()
   @Expose()
@@ -30,7 +30,7 @@ export class CreateActionDto extends OmitType(ActionDto, ['id', 'createdAt', 'up
   @ApiProperty()
   @Expose()
   @IsEnum(GOAL_INTERVAL_UNITS)
-  readonly goalIntervalUnit?: (typeof GOAL_INTERVAL_UNITS)[number];
+  readonly goalIntervalUnit!: (typeof GOAL_INTERVAL_UNITS)[number];
 
   @ApiProperty()
   @Expose()

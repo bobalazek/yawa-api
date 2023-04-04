@@ -17,12 +17,11 @@ export const GOAL_TYPES = [
   'binary' /* in case you want to just say yes/no on something for a day/week/month - for example "movie night" */,
   'measurable' /* this would be for example hydration - where you want to meansure like deciliters per day/week/month */,
 ] as const;
-
 export const GOAL_INTERVAL_UNITS = ['day', 'week', 'month', 'year'] as const;
 
 export const REMINDER_INTERVAL_TYPES = ['only_once', 'recurring_every_x_y', 'recurring_x_times_per_y'] as const;
-
 export const REMINDER_RECURRENCE_INTERVAL_UNITS = ['minute', 'hour', 'day', 'week', 'month', 'year'] as const;
+export const REMINDER_RECURRENCE_VARIANCE_UNITS = REMINDER_RECURRENCE_INTERVAL_UNITS;
 
 @Entity('actions')
 export class Action {
@@ -59,9 +58,8 @@ export class Action {
   @Column({
     type: 'enum',
     enum: GOAL_TYPES,
-    nullable: true,
   })
-  goalType?: string;
+  goalType!: string;
 
   @Column({
     type: 'int',
@@ -72,14 +70,13 @@ export class Action {
   @Column({
     nullable: true,
   })
-  goalUnit?: string; // 10 deciliters (<- this part) per day - can be "deciliters" (drank water, ...), "minutes" (walk in nature, read, ...)
+  goalUnit?: string; // 10 deciliters (<- this part) per day
 
   @Column({
     type: 'enum',
-    nullable: true,
     enum: GOAL_INTERVAL_UNITS,
   })
-  goalIntervalUnit?: string; // 10 deciliters per day (<- this part)
+  goalIntervalUnit!: string; // 10 deciliters per day (<- this part)
 
   // Reminder
   @Column()
@@ -119,7 +116,7 @@ export class Action {
     type: 'int',
     nullable: true,
   })
-  reminderRecurrenceIntervalAmount?: number; // 1, 2, 4, 8, ...
+  reminderRecurrenceIntervalAmount?: number;
 
   @Column({
     type: 'enum',
@@ -128,12 +125,25 @@ export class Action {
   })
   reminderRecurrenceIntervalUnit?: string;
 
-  /*
+  /**
+   * In case we don't want the reminder be executed at exactly the same intervals,
+   * we can for example set a variance value of "15m".
+   * This means, that if we have set a reminder with a frequency of 2h and it would start at 12:00,
+   * we would expect the next execution to be at 14:00,
+   * but with this variance value it can be anywhere between 14:00 and 14:15
+   */
   @Column({
+    type: 'int',
     nullable: true,
   })
-  reminderRecurrenceVariance?: string; // In case we don't want the reminder be executed at exactly the same intervals, we can for example set a variance value of "15m". This means, that if we have set a reminder with a frequency of 2h and it would start at 12:00, we would expect the next execution to be at 14:00, but with this variance value it can be anywhere between 14:00 and 14:15
-  */
+  reminderRecurrenceVarianceAmount?: number;
+
+  @Column({
+    type: 'enum',
+    nullable: true,
+    enum: REMINDER_RECURRENCE_VARIANCE_UNITS,
+  })
+  reminderRecurrenceVarianceUnit?: string;
 
   @Column({
     nullable: true,
