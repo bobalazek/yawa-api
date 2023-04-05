@@ -8,36 +8,36 @@ import { TimezoneConstraint } from '../../common/constraints/timezone.constraint
 
 export class ProfileSettingsDto {
   @ApiProperty()
-  @IsOptional()
   @IsEmail()
+  @IsOptional()
   readonly email: string | null;
 
   @ApiProperty()
-  @IsOptional()
   @IsString()
+  @IsOptional()
   readonly firstName: string | null;
 
   @ApiProperty()
-  @IsOptional()
-  @IsString()
   @Validate(LanaugageCodeConstraint)
+  @IsString()
+  @IsOptional()
   readonly languageCode: string | null;
 
   @ApiProperty()
-  @IsOptional()
-  @IsString()
   @Validate(TimezoneConstraint)
+  @IsString()
+  @IsOptional()
   readonly timezone: string | null;
 
   @ApiProperty()
-  @IsOptional()
-  @IsString()
   @Validate(MeasurementSystemConstraint)
+  @IsString()
+  @IsOptional()
   readonly measurementSystem: string | null;
 
   @ApiProperty()
-  @IsOptional()
-  @IsString()
   @Validate(BirthdayConstraint)
+  @IsString()
+  @IsOptional()
   readonly birthday: string | null;
 }

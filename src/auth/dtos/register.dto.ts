@@ -8,14 +8,14 @@ import { EmailExistsConstraint } from '../constraints/email-exists.constraint';
 
 export class RegisterDto {
   @ApiProperty()
-  @IsNotEmpty({ message: 'Email is required' })
-  @IsEmail(undefined, { message: 'Invalid email' })
   @Validate(EmailExistsConstraint)
+  @IsEmail(undefined, { message: 'Invalid email' })
+  @IsNotEmpty({ message: 'Email is required' })
   readonly email: string;
 
   @ApiProperty()
-  @IsNotEmpty({ message: 'Password is required' })
   @Validate(PasswordConstraint)
+  @IsNotEmpty({ message: 'Password is required' })
   readonly password: string;
 
   @ApiProperty()
@@ -23,12 +23,12 @@ export class RegisterDto {
   readonly firstName: string;
 
   @ApiProperty()
-  @IsOptional()
   @Validate(TimezoneConstraint)
-  readonly timezone: string;
+  @IsOptional()
+  readonly timezone: string | null;
 
   @ApiProperty()
-  @IsOptional()
   @Validate(MeasurementSystemConstraint)
-  readonly measurementSystem: string;
+  @IsOptional()
+  readonly measurementSystem: string | null;
 }

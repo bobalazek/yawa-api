@@ -52,6 +52,20 @@ export const validateAction = (dto: CreateActionDto | UpdateActionDto): true | {
       });
     }
 
+    if (dto.reminderStartDate === '') {
+      errors.push({
+        field: 'reminderStartDate',
+        message: `reminderStartDate must either be null or a valid date`,
+      });
+    }
+
+    if (dto.reminderEndDate === '') {
+      errors.push({
+        field: 'reminderEndDate',
+        message: `reminderEndDate must either be null or a valid date`,
+      });
+    }
+
     if (dto.reminderIntervalType === 'only_once') {
       if (!dto.reminderStartDate) {
         errors.push({
