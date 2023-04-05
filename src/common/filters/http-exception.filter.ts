@@ -12,7 +12,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
     let error = exceptionResponse.error;
     if (Array.isArray(exceptionResponse.message)) {
-      error = `Errors: ${exceptionResponse.message.join(', ')}`;
+      error = `Errors: ${exceptionResponse.message.join('; ')}`;
     } else if (exceptionResponse.message) {
       error = exceptionResponse.message;
     }

@@ -7,7 +7,7 @@ export class ErrorFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 
-    const error = Array.isArray(exception.message) ? `Errors: ${exception.message.join(', ')}` : exception.message;
+    const error = Array.isArray(exception.message) ? `Errors: ${exception.message.join('; ')}` : exception.message;
 
     response.status(HttpStatus.BAD_REQUEST).json({
       statusCode: HttpStatus.BAD_REQUEST,
