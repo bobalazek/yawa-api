@@ -7,13 +7,13 @@ import { UserAccessToken } from './user-access-token.entity';
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn('uuid')
-  id!: string;
+  id: string;
 
   @Index({
     unique: true,
   })
   @Column()
-  email!: string;
+  email: string;
 
   @Index({
     unique: true,
@@ -21,39 +21,39 @@ export class User {
   @Column({
     nullable: true,
   })
-  newEmail?: string;
+  newEmail: string | null;
 
   @Column({
     nullable: true,
   })
-  beforeDeletionEmail?: string;
+  beforeDeletionEmail: string | null;
 
   @Column()
-  password!: string;
+  password: string;
 
   @Column({
     default: 'en',
   })
-  languageCode!: string;
+  languageCode: string;
 
   @Column({
     default: 'metric',
   })
-  measurementSystem!: string;
+  measurementSystem: string;
 
   @Column({
     default: 'UTC',
   })
-  timezone!: string;
+  timezone: string;
 
   @Column()
-  firstName!: string;
+  firstName: string;
 
   @Column({
     type: 'date',
     nullable: true,
   })
-  birthday?: Date;
+  birthday: Date | null;
 
   @Index({
     unique: true,
@@ -61,7 +61,7 @@ export class User {
   @Column({
     nullable: true,
   })
-  emailConfirmationToken?: string;
+  emailConfirmationToken: string | null;
 
   @Index({
     unique: true,
@@ -69,7 +69,7 @@ export class User {
   @Column({
     nullable: true,
   })
-  newEmailConfirmationToken?: string;
+  newEmailConfirmationToken: string | null;
 
   @Index({
     unique: true,
@@ -77,38 +77,38 @@ export class User {
   @Column({
     nullable: true,
   })
-  passwordResetToken?: string;
+  passwordResetToken: string | null;
 
   @Column({
     nullable: true,
   })
-  emailConfirmedAt?: Date;
+  emailConfirmedAt: Date | null;
 
   @Column({
     nullable: true,
   })
-  passwordResetLastRequestedAt?: Date;
+  passwordResetLastRequestedAt: Date | null;
 
   @Column({
     nullable: true,
   })
-  newEmailConfirmationLastSentAt?: Date;
+  newEmailConfirmationLastSentAt: Date | null;
 
   @Column({
     nullable: true,
   })
-  deletionRequestedAt?: Date;
+  deletionRequestedAt: Date | null;
 
   @Column({
     nullable: true,
   })
-  deletedAt?: Date;
+  deletedAt: Date | null;
 
   @CreateDateColumn()
-  createdAt!: Date;
+  createdAt: Date;
 
   @UpdateDateColumn()
-  updatedAt!: Date;
+  updatedAt: Date;
 
   @OneToMany(() => UserAccessToken, (userAccessToken) => userAccessToken.user)
   userAccessTokens: UserAccessToken[];

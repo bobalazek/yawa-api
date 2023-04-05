@@ -3,7 +3,6 @@ import {
   CreateDateColumn,
   Entity,
   JoinTable,
-  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -15,18 +14,18 @@ import { Action } from './action.entity';
 @Entity('action_entries')
 export class ActionEntry {
   @PrimaryGeneratedColumn('uuid')
-  id!: string;
+  id: string;
 
   @Column()
-  userId!: string;
+  userId: string;
 
   @Column()
-  actionId!: string;
+  actionId: string;
 
   @Column({
     type: 'int',
   })
-  amount!: number;
+  amount: number;
 
   /**
    * Technically entered and created should be the same,
@@ -36,18 +35,18 @@ export class ActionEntry {
   @Column({
     nullable: true,
   })
-  enteredAt?: Date;
+  enteredAt: Date | null;
 
   @CreateDateColumn()
-  createdAt!: Date;
+  createdAt: Date;
 
   @UpdateDateColumn()
-  updatedAt!: Date;
+  updatedAt: Date;
 
   @ManyToOne(() => User, (user) => user.actions)
-  user!: User;
+  user: User;
 
   @ManyToOne(() => Action, (action) => action.actionEntries)
   @JoinTable()
-  action!: Action;
+  action: Action;
 }

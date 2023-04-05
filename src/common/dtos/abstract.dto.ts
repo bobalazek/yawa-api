@@ -5,13 +5,13 @@ import { Exclude, Expose } from 'class-transformer';
 export class AbstractDto {
   @ApiProperty({ format: 'uuid' })
   @Expose()
-  readonly id!: string;
+  readonly id: string;
 
   @ApiProperty()
   @Expose()
-  readonly createdAt!: Date;
+  readonly createdAt: Date;
 
   @ApiProperty()
   @Expose()
-  readonly updatedAt!: Date;
+  readonly updatedAt: Date;
 }

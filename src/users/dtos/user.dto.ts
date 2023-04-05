@@ -7,41 +7,41 @@ import { AbstractDto } from '../../common/dtos/abstract.dto';
 export class UserDto extends AbstractDto {
   @ApiProperty()
   @Expose()
-  readonly email!: string;
+  readonly email: string;
 
   @ApiProperty()
   @Expose()
-  readonly newEmail?: string;
+  readonly newEmail: string | null;
 
   @ApiProperty()
   @Expose()
-  readonly languageCode!: string;
+  readonly languageCode: string;
 
   @ApiProperty()
   @Expose()
-  readonly measurementSystem!: string;
+  readonly measurementSystem: string;
 
   @ApiProperty()
   @Expose()
-  readonly timezone!: string;
+  readonly timezone: string;
 
   @ApiProperty()
   @Expose()
-  readonly firstName!: string;
+  readonly firstName: string;
 
   @ApiProperty()
   @Expose()
-  readonly birthday?: Date;
+  readonly birthday: Date | null;
 
   @ApiProperty()
   @Expose()
-  readonly avatarUrl?: string;
+  readonly avatarUrl: string | null;
 
   @ApiProperty()
   @Expose()
-  readonly emailConfirmedAt?: Date;
+  readonly emailConfirmedAt: Date | null;
 
   @ApiProperty()
   @Expose()
-  readonly passwordResetLastRequestedAt?: Date;
+  readonly passwordResetLastRequestedAt: Date | null;
 }

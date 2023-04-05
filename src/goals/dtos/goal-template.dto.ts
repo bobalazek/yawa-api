@@ -5,13 +5,13 @@ import { Exclude, Expose } from 'class-transformer';
 export class GoalTemplateDto {
   @ApiProperty()
   @Expose()
-  readonly key!: string;
+  readonly key: string;
 
   @ApiProperty()
   @Expose()
-  readonly name!: string;
+  readonly name: string;
 
   @ApiProperty()
   @Expose()
-  readonly areas!: string[];
+  readonly areas: string[];
 }

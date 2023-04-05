@@ -14,91 +14,91 @@ import {
 export class ActionDto extends AbstractDto {
   @ApiProperty()
   @Expose()
-  readonly template?: string;
+  readonly template: string | null;
 
   @ApiProperty()
   @Expose()
-  readonly name!: string;
+  readonly name: string;
 
   @ApiProperty()
   @Expose()
-  readonly description?: string;
+  readonly description: string | null;
 
   @ApiProperty()
   @Expose()
-  readonly iconUrl?: string;
+  readonly iconUrl: string | null;
 
   // Goal
   @ApiProperty()
   @Expose()
-  readonly goalType!: (typeof GOAL_TYPES)[number];
+  readonly goalType: (typeof GOAL_TYPES)[number];
 
   @ApiProperty()
   @Expose()
-  readonly goalAmount?: number;
+  readonly goalAmount: number | null;
 
   @ApiProperty()
   @Expose()
-  readonly goalUnit?: string;
+  readonly goalUnit: string | null;
 
   @ApiProperty()
   @Expose()
-  readonly goalIntervalUnit!: (typeof GOAL_INTERVAL_UNITS)[number];
+  readonly goalIntervalUnit: (typeof GOAL_INTERVAL_UNITS)[number];
 
   // Reminder
   @ApiProperty()
   @Expose()
-  readonly reminderEnabled!: boolean;
+  readonly reminderEnabled: boolean;
 
   @ApiProperty()
   @Expose()
-  readonly reminderIntervalType?: (typeof REMINDER_INTERVAL_TYPES)[number];
+  readonly reminderIntervalType: (typeof REMINDER_INTERVAL_TYPES)[number] | null;
 
   @ApiProperty()
   @Expose()
-  readonly reminderStartDate?: string;
+  readonly reminderStartDate: string | null;
 
   @ApiProperty()
   @Expose()
-  readonly reminderEndDate?: string;
+  readonly reminderEndDate: string | null;
 
   @ApiProperty()
   @Expose()
-  readonly reminderStartTime?: string;
+  readonly reminderStartTime: string | null;
 
   @ApiProperty()
   @Expose()
-  readonly reminderEndTime?: string;
+  readonly reminderEndTime: string | null;
 
   @ApiProperty()
   @Expose()
-  readonly reminderRecurrenceIntervalAmount?: number;
+  readonly reminderRecurrenceIntervalAmount: number | null;
 
   @ApiProperty()
   @Expose()
-  readonly reminderRecurrenceIntervalUnit?: (typeof REMINDER_RECURRENCE_INTERVAL_UNITS)[number];
+  readonly reminderRecurrenceIntervalUnit: (typeof REMINDER_RECURRENCE_INTERVAL_UNITS)[number] | null;
 
   @ApiProperty()
   @Expose()
-  readonly reminderRecurrenceVarianceAmount?: number;
+  readonly reminderRecurrenceVarianceAmount: number | null;
 
   @ApiProperty()
   @Expose()
-  readonly reminderRecurrenceVarianceUnit?: (typeof REMINDER_RECURRENCE_VARIANCE_UNITS)[number];
+  readonly reminderRecurrenceVarianceUnit: (typeof REMINDER_RECURRENCE_VARIANCE_UNITS)[number] | null;
 
   @ApiProperty()
   @Expose()
-  readonly reminderLastExecutedAt?: Date;
+  readonly reminderLastExecutedAt: Date | null;
 
   @ApiProperty()
   @Expose()
-  readonly reminderNextExecutesAt?: Date;
+  readonly reminderNextExecutesAt: Date | null;
 
   @ApiProperty()
   @Expose()
-  readonly reminderMuteEndsAt?: Date;
+  readonly reminderMuteEndsAt: Date | null;
 
   @ApiProperty()
   @Expose()
-  readonly enteredAt?: Date;
+  readonly enteredAt: Date | null;
 }

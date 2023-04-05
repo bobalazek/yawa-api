@@ -6,14 +6,14 @@ import { PasswordConstraint } from '../../common/constraints/password.constraint
 export class ChangePasswordSettingsDto {
   @ApiProperty()
   @IsNotEmpty()
-  readonly currentPassword!: string;
+  readonly currentPassword: string;
 
   @ApiProperty()
   @IsNotEmpty()
   @Validate(PasswordConstraint)
-  readonly newPassword!: string;
+  readonly newPassword: string;
 
   @ApiProperty()
   @IsNotEmpty()
-  readonly newPasswordConfirm!: string;
+  readonly newPasswordConfirm: string;
 }

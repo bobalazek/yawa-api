@@ -4,5 +4,5 @@ import { IsEmail } from 'class-validator';
 export class PasswordResetRequestDto {
   @ApiProperty()
   @IsEmail()
-  readonly email!: string;
+  readonly email: string;
 }

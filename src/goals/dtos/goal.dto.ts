@@ -7,9 +7,9 @@ import { AbstractDto } from '../../common/dtos/abstract.dto';
 export class GoalDto extends AbstractDto {
   @ApiProperty()
   @Expose()
-  readonly name!: string;
+  readonly name: string;
 
   @ApiProperty()
   @Expose()
-  readonly description?: string;
+  readonly description: string | null;
 }

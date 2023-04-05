@@ -5,28 +5,28 @@ import { User } from './user.entity';
 @Entity('user_access_tokens')
 export class UserAccessToken {
   @PrimaryGeneratedColumn('uuid')
-  id!: string;
+  id: string;
 
   @Index({
     unique: true,
   })
   @Column()
-  token!: string;
+  token: string;
 
   @Column({
     nullable: true,
   })
-  expiresAt?: Date;
+  expiresAt: Date | null;
 
   @CreateDateColumn()
-  createdAt!: Date;
+  createdAt: Date;
 
   @UpdateDateColumn()
-  updatedAt!: Date;
+  updatedAt: Date;
 
   @Column()
-  userId!: string;
+  userId: string;
 
   @ManyToOne(() => User, (user) => user.userAccessTokens)
-  user!: User;
+  user: User;
 }

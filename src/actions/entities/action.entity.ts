@@ -27,99 +27,99 @@ export const REMINDER_RECURRENCE_VARIANCE_UNITS = REMINDER_RECURRENCE_INTERVAL_U
 @Entity('actions')
 export class Action {
   @PrimaryGeneratedColumn('uuid')
-  id!: string;
+  id: string;
 
   @Column({
     nullable: true,
   })
-  template?: string;
+  template: string | null;
 
   @Column()
-  userId!: string;
+  userId: string;
 
   @Column()
-  name!: string;
+  name: string;
 
   @Column({
     nullable: true,
   })
-  description?: string;
+  description: string | null;
 
   @Column({
     nullable: true,
   })
-  iconUrl?: string;
+  iconUrl: string | null;
 
   // Goal
   @Column({
     type: 'enum',
     enum: GOAL_TYPES,
   })
-  goalType!: string;
+  goalType: string;
 
   @Column({
     type: 'int',
     nullable: true,
   })
-  goalAmount?: number; // 10 (<- this part) deciliters per day
+  goalAmount: number | null; // 10 (<- this part) deciliters per day
 
   @Column({
     nullable: true,
   })
-  goalUnit?: string; // 10 deciliters (<- this part) per day
+  goalUnit: string | null; // 10 deciliters (<- this part) per day
 
   @Column({
     type: 'enum',
     enum: GOAL_INTERVAL_UNITS,
   })
-  goalIntervalUnit!: string; // 10 deciliters per day (<- this part)
+  goalIntervalUnit: string | null; // 10 deciliters per day (<- this part)
 
   // Reminder
   @Column()
-  reminderEnabled!: boolean;
+  reminderEnabled: boolean;
 
   @Column({
     type: 'enum',
     enum: REMINDER_INTERVAL_TYPES,
     nullable: true,
   })
-  reminderIntervalType?: string;
+  reminderIntervalType: string | null;
 
   @Column({
     type: 'date',
     nullable: true,
   })
-  reminderStartDate?: string;
+  reminderStartDate: string | null;
 
   @Column({
     type: 'date',
     nullable: true,
   })
-  reminderEndDate?: string;
+  reminderEndDate: string | null;
 
   @Column({
     nullable: true,
     default: '00:00',
   })
-  reminderStartTime?: string; // 00:00 to 23:59
+  reminderStartTime: string | null; // 00:00 to 23:59
 
   @Column({
     nullable: true,
   })
-  reminderEndTime?: string; // 00:00 to 23:59
+  reminderEndTime: string | null; // 00:00 to 23:59
 
   @Column({
     type: 'int',
     nullable: true,
   })
-  reminderRecurrenceIntervalAmount?: number;
+  reminderRecurrenceIntervalAmount: number | null;
 
   @Column({
     type: 'enum',
     enum: REMINDER_RECURRENCE_INTERVAL_UNITS,
     nullable: true,
   })
-  reminderRecurrenceIntervalUnit?: string;
+  reminderRecurrenceIntervalUnit: string | null;
 
   /**
    * In case we don't want the reminder be executed at exactly the same intervals,
@@ -132,29 +132,29 @@ export class Action {
     type: 'int',
     nullable: true,
   })
-  reminderRecurrenceVarianceAmount?: number;
+  reminderRecurrenceVarianceAmount: number | null;
 
   @Column({
     type: 'enum',
     nullable: true,
     enum: REMINDER_RECURRENCE_VARIANCE_UNITS,
   })
-  reminderRecurrenceVarianceUnit?: string;
+  reminderRecurrenceVarianceUnit: string | null;
 
   @Column({
     nullable: true,
   })
-  reminderLastExecutedAt?: Date;
+  reminderLastExecutedAt: Date | null;
 
   @Column({
     nullable: true,
   })
-  reminderNextExecutesAt?: Date;
+  reminderNextExecutesAt: Date | null;
 
   @Column({
     nullable: true,
   })
-  reminderMuteEndsAt?: Date;
+  reminderMuteEndsAt: Date | null;
 
   /**
    * Technically entered and created should be the same,
@@ -164,21 +164,21 @@ export class Action {
   @Column({
     nullable: true,
   })
-  enteredAt?: Date;
+  enteredAt: Date | null;
 
   @CreateDateColumn()
-  createdAt!: Date;
+  createdAt: Date;
 
   @UpdateDateColumn()
-  updatedAt!: Date;
+  updatedAt: Date;
 
   @ManyToOne(() => User, (user) => user.actions)
-  user!: User;
+  user: User;
 
   @ManyToMany(() => Goal, (goal) => goal.actions)
   @JoinTable()
-  goals!: Goal[];
+  goals: Goal[];
 
   @OneToMany(() => ActionEntry, (actionEntry) => actionEntry.action)
-  actionEntries!: ActionEntry[];
+  actionEntries: ActionEntry[];
 }

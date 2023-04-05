@@ -5,5 +5,5 @@ export class TokenDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  readonly token!: string;
+  readonly token: string;
 }

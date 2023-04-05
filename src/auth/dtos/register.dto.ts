@@ -11,24 +11,24 @@ export class RegisterDto {
   @IsNotEmpty({ message: 'Email is required' })
   @IsEmail(undefined, { message: 'Invalid email' })
   @Validate(EmailExistsConstraint)
-  readonly email!: string;
+  readonly email: string;
 
   @ApiProperty()
   @IsNotEmpty({ message: 'Password is required' })
   @Validate(PasswordConstraint)
-  readonly password!: string;
+  readonly password: string;
 
   @ApiProperty()
   @IsNotEmpty({ message: 'First name is required' })
-  readonly firstName!: string;
+  readonly firstName: string;
 
   @ApiProperty()
   @IsOptional()
   @Validate(TimezoneConstraint)
-  readonly timezone!: string;
+  readonly timezone: string;
 
   @ApiProperty()
   @IsOptional()
   @Validate(MeasurementSystemConstraint)
-  readonly measurementSystem!: string;
+  readonly measurementSystem: string;
 }

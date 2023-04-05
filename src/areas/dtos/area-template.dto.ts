@@ -5,17 +5,17 @@ import { Exclude, Expose } from 'class-transformer';
 export class AreaTemplateDto {
   @ApiProperty()
   @Expose()
-  readonly key!: string;
+  readonly key: string;
 
   @ApiProperty()
   @Expose()
-  readonly name!: string;
+  readonly name: string;
 
   @ApiProperty()
   @Expose()
-  readonly subheading!: string;
+  readonly subheading: string;
 
   @ApiProperty()
   @Expose()
-  readonly description?: string;
+  readonly description: string | null;
 }

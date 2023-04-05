@@ -10,34 +10,34 @@ export class ProfileSettingsDto {
   @ApiProperty()
   @IsOptional()
   @IsEmail()
-  readonly email?: string;
+  readonly email: string | null;
 
   @ApiProperty()
   @IsOptional()
   @IsString()
-  readonly firstName?: string;
+  readonly firstName: string | null;
 
   @ApiProperty()
   @IsOptional()
   @IsString()
   @Validate(LanaugageCodeConstraint)
-  readonly languageCode?: string;
+  readonly languageCode: string | null;
 
   @ApiProperty()
   @IsOptional()
   @IsString()
   @Validate(TimezoneConstraint)
-  readonly timezone?: string;
+  readonly timezone: string | null;
 
   @ApiProperty()
   @IsOptional()
   @IsString()
   @Validate(MeasurementSystemConstraint)
-  readonly measurementSystem?: string;
+  readonly measurementSystem: string | null;
 
   @ApiProperty()
   @IsOptional()
   @IsString()
   @Validate(BirthdayConstraint)
-  readonly birthday?: string;
+  readonly birthday: string | null;
 }

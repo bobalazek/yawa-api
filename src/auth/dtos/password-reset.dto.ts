@@ -6,14 +6,14 @@ import { PasswordConstraint } from '../../common/constraints/password.constraint
 export class PasswordResetDto {
   @ApiProperty()
   @IsNotEmpty()
-  readonly token!: string;
+  readonly token: string;
 
   @ApiProperty()
   @IsNotEmpty()
   @Validate(PasswordConstraint)
-  readonly newPassword!: string;
+  readonly newPassword: string;
 
   @ApiProperty()
   @IsNotEmpty()
-  readonly newPasswordConfirm!: string;
+  readonly newPasswordConfirm: string;
 }

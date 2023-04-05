@@ -5,5 +5,5 @@ export class IdDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  readonly id!: string;
+  readonly id: string;
 }
