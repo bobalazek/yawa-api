@@ -44,116 +44,121 @@ export const validateAction = (dto: CreateActionDto | UpdateActionDto): true | {
   }
 
   /* ========== Reminder ========== */
-  if (dto.reminderIntervalType && !REMINDER_INTERVAL_TYPES.includes(dto.reminderIntervalType)) {
-    errors.push({
-      field: 'reminderIntervalType',
-      message: `reminderIntervalType must be either: ${REMINDER_INTERVAL_TYPES.join(', ')}`,
-    });
-  }
+  if (dto.reminderEnabled) {
+    if (dto.reminderIntervalType && !REMINDER_INTERVAL_TYPES.includes(dto.reminderIntervalType)) {
+      errors.push({
+        field: 'reminderIntervalType',
+        message: `reminderIntervalType must be either: ${REMINDER_INTERVAL_TYPES.join(', ')}`,
+      });
+    }
 
-  if (dto.reminderIntervalType === 'only_once') {
-    if (!dto.reminderStartDate) {
+    if (dto.reminderIntervalType === 'only_once') {
+      if (!dto.reminderStartDate) {
+        errors.push({
+          field: 'reminderStartDate',
+          message: `reminderStartDate is required when reminderIntervalType is "only_once"`,
+        });
+      }
+
+      if (!dto.reminderStartTime) {
+        errors.push({
+          field: 'reminderStartTime',
+          message: `reminderStartTime is required when reminderIntervalType is "only_once"`,
+        });
+      }
+    } else {
+      if (!dto.reminderRecurrenceIntervalAmount) {
+        errors.push({
+          field: 'reminderRecurrenceIntervalAmount',
+          message: `reminderRecurrenceIntervalAmount is required`,
+        });
+      }
+
+      if (!dto.reminderRecurrenceIntervalUnit) {
+        errors.push({ field: 'reminderRecurrenceIntervalUnit', message: `reminderRecurrenceIntervalUnit is required` });
+      }
+    }
+
+    if (dto.reminderStartTime && !isValidTimeShort(dto.reminderStartTime)) {
+      errors.push({ field: 'reminderStartTime', message: `reminderStartTime is not a valid time` });
+    }
+
+    if (dto.reminderEndTime && !isValidTimeShort(dto.reminderEndTime)) {
+      errors.push({ field: 'reminderEndTime', message: `reminderEndTime is not a valid time` });
+    }
+
+    if (!dto.reminderStartDate && dto.reminderStartTime) {
       errors.push({
         field: 'reminderStartDate',
-        message: `reminderStartDate is required when reminderIntervalType is "only_once"`,
+        message: `reminderStartDate is required when reminderStartTime is set`,
       });
     }
 
-    if (!dto.reminderStartTime) {
-      errors.push({
-        field: 'reminderStartTime',
-        message: `reminderStartTime is required when reminderIntervalType is "only_once"`,
-      });
-    }
-  } else {
-    if (!dto.reminderRecurrenceIntervalAmount) {
-      errors.push({
-        field: 'reminderRecurrenceIntervalAmount',
-        message: `reminderRecurrenceIntervalAmount is required`,
-      });
+    if (!dto.reminderEndDate && dto.reminderEndTime) {
+      errors.push({ field: 'reminderEndDate', message: `reminderEndDate is required when reminderEndTime is set` });
     }
 
-    if (!dto.reminderRecurrenceIntervalUnit) {
-      errors.push({ field: 'reminderRecurrenceIntervalUnit', message: `reminderRecurrenceIntervalUnit is required` });
+    if (dto.reminderStartDate && dto.reminderEndDate) {
+      const startDateString = dto.reminderStartTime
+        ? `${dto.reminderStartDate}T${dto.reminderStartTime}:00`
+        : dto.reminderStartDate;
+      const endDateString = dto.reminderEndTime
+        ? `${dto.reminderEndDate}T${dto.reminderEndTime}:00`
+        : dto.reminderEndDate;
+
+      const startDate = new Date(startDateString);
+      const endDate = new Date(endDateString);
+
+      if (startDate > endDate) {
+        errors.push({ field: 'reminderEndTime', message: `reminderEndTime must be after reminderStartDate` });
+      }
     }
-  }
 
-  if (dto.reminderStartTime && !isValidTimeShort(dto.reminderStartTime)) {
-    errors.push({ field: 'reminderStartTime', message: `reminderStartTime is not a valid time` });
-  }
+    if (dto.reminderRecurrenceIntervalUnit) {
+      if (!REMINDER_RECURRENCE_INTERVAL_UNITS.includes(dto.reminderRecurrenceIntervalUnit)) {
+        errors.push({
+          field: 'reminderRecurrenceIntervalUnit',
+          message: `reminderRecurrenceIntervalUnit must be either: ${REMINDER_RECURRENCE_INTERVAL_UNITS.join(', ')}`,
+        });
+      }
 
-  if (dto.reminderEndTime && !isValidTimeShort(dto.reminderEndTime)) {
-    errors.push({ field: 'reminderEndTime', message: `reminderEndTime is not a valid time` });
-  }
-
-  if (!dto.reminderStartDate && dto.reminderStartTime) {
-    errors.push({ field: 'reminderStartDate', message: `reminderStartDate is required when reminderStartTime is set` });
-  }
-
-  if (!dto.reminderEndDate && dto.reminderEndTime) {
-    errors.push({ field: 'reminderEndDate', message: `reminderEndDate is required when reminderEndTime is set` });
-  }
-
-  if (dto.reminderStartDate && dto.reminderEndDate) {
-    const startDateString = dto.reminderStartTime
-      ? `${dto.reminderStartDate}T${dto.reminderStartTime}:00`
-      : dto.reminderStartDate;
-    const endDateString = dto.reminderEndTime
-      ? `${dto.reminderEndDate}T${dto.reminderEndTime}:00`
-      : dto.reminderEndDate;
-
-    const startDate = new Date(startDateString);
-    const endDate = new Date(endDateString);
-
-    if (startDate > endDate) {
-      errors.push({ field: 'reminderEndTime', message: `reminderEndTime must be after reminderStartDate` });
+      if (!dto.reminderRecurrenceIntervalAmount) {
+        errors.push({
+          field: 'reminderRecurrenceIntervalAmount',
+          message: `reminderRecurrenceIntervalAmount is required when reminderRecurrenceIntervalUnit is set`,
+        });
+      }
     }
-  }
 
-  if (dto.reminderRecurrenceIntervalUnit) {
-    if (!REMINDER_RECURRENCE_INTERVAL_UNITS.includes(dto.reminderRecurrenceIntervalUnit)) {
+    if (dto.reminderRecurrenceIntervalAmount && !dto.reminderRecurrenceIntervalUnit) {
       errors.push({
         field: 'reminderRecurrenceIntervalUnit',
-        message: `reminderRecurrenceIntervalUnit must be either: ${REMINDER_RECURRENCE_INTERVAL_UNITS.join(', ')}`,
+        message: `reminderRecurrenceIntervalUnit is required when reminderRecurrenceIntervalAmount is set`,
       });
     }
 
-    if (!dto.reminderRecurrenceIntervalAmount) {
-      errors.push({
-        field: 'reminderRecurrenceIntervalAmount',
-        message: `reminderRecurrenceIntervalAmount is required when reminderRecurrenceIntervalUnit is set`,
-      });
+    if (dto.reminderRecurrenceVarianceUnit) {
+      if (!REMINDER_RECURRENCE_VARIANCE_UNITS.includes(dto.reminderRecurrenceVarianceUnit)) {
+        errors.push({
+          field: 'reminderRecurrenceVarianceUnit',
+          message: `reminderRecurrenceVarianceUnit must be either: ${REMINDER_RECURRENCE_VARIANCE_UNITS.join(', ')}`,
+        });
+      }
+
+      if (!dto.reminderRecurrenceVarianceAmount) {
+        errors.push({
+          field: 'reminderRecurrenceVarianceAmount',
+          message: `reminderRecurrenceVarianceAmount is required when reminderRecurrenceVarianceUnit is set`,
+        });
+      }
     }
-  }
 
-  if (dto.reminderRecurrenceIntervalAmount && !dto.reminderRecurrenceIntervalUnit) {
-    errors.push({
-      field: 'reminderRecurrenceIntervalUnit',
-      message: `reminderRecurrenceIntervalUnit is required when reminderRecurrenceIntervalAmount is set`,
-    });
-  }
-
-  if (dto.reminderRecurrenceVarianceUnit) {
-    if (!REMINDER_RECURRENCE_VARIANCE_UNITS.includes(dto.reminderRecurrenceVarianceUnit)) {
+    if (dto.reminderRecurrenceVarianceAmount && !dto.reminderRecurrenceVarianceUnit) {
       errors.push({
         field: 'reminderRecurrenceVarianceUnit',
-        message: `reminderRecurrenceVarianceUnit must be either: ${REMINDER_RECURRENCE_VARIANCE_UNITS.join(', ')}`,
+        message: `reminderRecurrenceVarianceUnit is required when reminderRecurrenceVarianceAmount is set`,
       });
     }
-
-    if (!dto.reminderRecurrenceVarianceAmount) {
-      errors.push({
-        field: 'reminderRecurrenceVarianceAmount',
-        message: `reminderRecurrenceVarianceAmount is required when reminderRecurrenceVarianceUnit is set`,
-      });
-    }
-  }
-
-  if (dto.reminderRecurrenceVarianceAmount && !dto.reminderRecurrenceVarianceUnit) {
-    errors.push({
-      field: 'reminderRecurrenceVarianceUnit',
-      message: `reminderRecurrenceVarianceUnit is required when reminderRecurrenceVarianceAmount is set`,
-    });
   }
 
   if (errors.length) {
