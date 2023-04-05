@@ -7,9 +7,11 @@ export class ErrorFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
 
+    const error = Array.isArray(exception.message) ? `Errors: ${exception.message.join(', ')}` : exception.message;
+
     response.status(HttpStatus.BAD_REQUEST).json({
       statusCode: HttpStatus.BAD_REQUEST,
-      error: Array.isArray(exception.message) ? exception.message.join(', ') : exception.message,
+      error,
       timestamp: new Date().toISOString(),
     });
   }
