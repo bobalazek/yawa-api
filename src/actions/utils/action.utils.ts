@@ -1,5 +1,7 @@
 import { isValidTimeShort } from '../../common/utils/time.utils';
 import { ActionDto } from '../dtos/action.dto';
+import { CreateActionDto } from '../dtos/create-action.dto';
+import { UpdateActionDto } from '../dtos/update-action.dto';
 import {
   Action,
   GOAL_INTERVAL_UNITS,
@@ -14,7 +16,7 @@ interface ValidateActionError {
   message: string;
 }
 
-export const validateAction = (dto: ActionDto): true | { errors: ValidateActionError[] } => {
+export const validateAction = (dto: CreateActionDto | UpdateActionDto): true | { errors: ValidateActionError[] } => {
   const errors: ValidateActionError[] = [];
 
   /* ========== Goal ========== */

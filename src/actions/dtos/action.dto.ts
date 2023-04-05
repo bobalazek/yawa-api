@@ -97,4 +97,8 @@ export class ActionDto extends AbstractDto {
   @ApiProperty()
   @Expose()
   readonly reminderMuteEndsAt?: Date;
+
+  @ApiProperty()
+  @Expose()
+  readonly enteredAt?: Date;
 }

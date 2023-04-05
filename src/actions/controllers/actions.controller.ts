@@ -10,6 +10,7 @@ import { ActionDto } from '../dtos/action.dto';
 import { CreateActionDto } from '../dtos/create-action.dto';
 import { UpdateActionDto } from '../dtos/update-action.dto';
 import { ActionsService } from '../services/actions.service';
+import { validateAction } from '../utils/action.utils';
 
 @ApiTags('Actions (API v1)')
 @Controller('/api/v1/actions')
@@ -20,9 +21,16 @@ export class ActionsController {
   @UseGuards(AuthenticatedGuard)
   @Post()
   async create(@Body() createActioDto: CreateActionDto, @Req() req: Request): Promise<ActionDto> {
-    // TODO: validation
+    const isActionValid = validateAction(createActioDto);
+    if (isActionValid !== true) {
+      throw new Error(`Action is not valid. Errors: ${isActionValid.errors.map((e) => e.message).join(', ')}`);
+    }
 
-    const action = await this._actionsService.save({ ...createActioDto, userId: req.user.id });
+    const action = await this._actionsService.save({
+      ...createActioDto,
+      enteredAt: new Date(),
+      userId: req.user.id,
+    });
 
     return plainToClass(ActionDto, action);
   }
@@ -30,7 +38,7 @@ export class ActionsController {
   @ApiHeader(API_HEADER_X_AUTHORIZATION)
   @UseGuards(AuthenticatedGuard)
   @Get()
-  async readAll(@Req() req: Request): Promise<ActionDto[]> {
+  async viewAll(@Req() req: Request): Promise<ActionDto[]> {
     const actions = await this._actionsService.findAllForUser(req.user.id);
 
     return actions.map((action) => {
@@ -41,7 +49,7 @@ export class ActionsController {
   @ApiHeader(API_HEADER_X_AUTHORIZATION)
   @UseGuards(AuthenticatedGuard)
   @Get('/:id')
-  async read(@Param('id') id: string, @Req() req: Request): Promise<ActionDto> {
+  async view(@Param('id') id: string, @Req() req: Request): Promise<ActionDto> {
     const action = await this._actionsService.findOneForUser(id, req.user.id);
 
     return plainToClass(ActionDto, action);
@@ -55,12 +63,15 @@ export class ActionsController {
     @Body() updateActionDto: UpdateActionDto,
     @Req() req: Request
   ): Promise<ActionDto> {
+    const isActionValid = validateAction(updateActionDto);
+    if (isActionValid !== true) {
+      throw new Error(`Action is not valid. Errors: ${isActionValid.errors.map((e) => e.message).join(', ')}`);
+    }
+
     const action = await this._actionsService.findOneForUser(id, req.user.id);
     if (!action || action.userId !== req.user.id) {
       throw new Error('Action not found');
     }
-
-    // TODO: validation
 
     const savedAction = await this._actionsService.save(updateActionDto);
 

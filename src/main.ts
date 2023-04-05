@@ -1,14 +1,16 @@
-import { ValidationPipe } from '@nestjs/common';
+import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ValidationError } from 'class-validator';
 import { join } from 'path';
 
 import { AppModule } from './app.module';
 import { env } from './common/env';
 import { ErrorFilter } from './common/filters/error.filter';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import { ValidationExceptionFilter } from './common/filters/validation-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, { cors: true });
@@ -19,10 +21,18 @@ async function bootstrap() {
 
   // Exceptions
   app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalFilters(new ValidationExceptionFilter());
   app.useGlobalFilters(new ErrorFilter());
 
   // Validation
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      exceptionFactory: (validationErrors: ValidationError[] = []) => {
+        return new BadRequestException(validationErrors);
+      },
+    })
+  );
 
   // Templating
   app.setViewEngine('ejs');

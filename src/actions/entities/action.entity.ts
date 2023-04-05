@@ -2,16 +2,17 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  Index,
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
 import { Goal } from '../../goals/entities/goal.entity';
 import { User } from '../../users/entities/user.entity';
+import { ActionEntry } from './action-entry.entity';
 
 export const GOAL_TYPES = [
   'binary' /* in case you want to just say yes/no on something for a day/week/month - for example "movie night" */,
@@ -28,18 +29,13 @@ export class Action {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Index({
-    unique: true,
-  })
   @Column({
     nullable: true,
   })
   template?: string;
 
-  @Column({
-    nullable: true,
-  })
-  userId?: string;
+  @Column()
+  userId!: string;
 
   @Column()
   name!: string;
@@ -160,6 +156,16 @@ export class Action {
   })
   reminderMuteEndsAt?: Date;
 
+  /**
+   * Technically entered and created should be the same,
+   * but in case we want to import data from somewhere else,
+   * we can set this value to the date when the action was entered.
+   */
+  @Column({
+    nullable: true,
+  })
+  enteredAt?: Date;
+
   @CreateDateColumn()
   createdAt!: Date;
 
@@ -167,9 +173,12 @@ export class Action {
   updatedAt!: Date;
 
   @ManyToOne(() => User, (user) => user.actions)
-  user?: User;
+  user!: User;
 
   @ManyToMany(() => Goal, (goal) => goal.actions)
   @JoinTable()
-  goals: Goal[];
+  goals!: Goal[];
+
+  @OneToMany(() => ActionEntry, (actionEntry) => actionEntry.action)
+  actionEntries!: ActionEntry[];
 }

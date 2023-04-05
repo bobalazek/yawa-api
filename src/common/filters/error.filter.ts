@@ -9,7 +9,7 @@ export class ErrorFilter implements ExceptionFilter {
 
     response.status(HttpStatus.BAD_REQUEST).json({
       statusCode: HttpStatus.BAD_REQUEST,
-      error: exception.message,
+      error: Array.isArray(exception.message) ? exception.message.join(', ') : exception.message,
       timestamp: new Date().toISOString(),
     });
   }
