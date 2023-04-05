@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 import {
   GOAL_INTERVAL_UNITS,
@@ -11,23 +11,23 @@ import {
 
 export class CreateActionDto {
   @ApiProperty()
-  @IsOptional()
   @IsString()
+  @IsOptional()
   readonly template: string | null;
 
   @ApiProperty()
   @IsString()
-  @IsString()
+  @IsNotEmpty()
   readonly name: string;
 
   @ApiProperty()
-  @IsOptional()
   @IsString()
+  @IsOptional()
   readonly description: string | null;
 
   @ApiProperty()
-  @IsOptional()
   @IsString()
+  @IsOptional()
   readonly iconUrl: string | null;
 
   // Goal
@@ -36,13 +36,13 @@ export class CreateActionDto {
   readonly goalType: (typeof GOAL_TYPES)[number];
 
   @ApiProperty()
-  @IsOptional()
   @IsNumber()
+  @IsOptional()
   readonly goalAmount: number | null;
 
   @ApiProperty()
-  @IsOptional()
   @IsString()
+  @IsOptional()
   readonly goalUnit: string | null;
 
   @ApiProperty()
@@ -55,47 +55,47 @@ export class CreateActionDto {
   readonly reminderEnabled: boolean;
 
   @ApiProperty()
-  @IsOptional()
   @IsEnum(REMINDER_INTERVAL_TYPES)
+  @IsOptional()
   readonly reminderIntervalType: (typeof REMINDER_INTERVAL_TYPES)[number] | null;
 
   @ApiProperty()
-  @IsOptional()
   @IsString()
+  @IsOptional()
   readonly reminderStartDate: string | null;
 
   @ApiProperty()
-  @IsOptional()
   @IsString()
+  @IsOptional()
   readonly reminderEndDate: string | null;
 
   @ApiProperty()
-  @IsOptional()
   @IsString()
+  @IsOptional()
   readonly reminderStartTime: string | null;
 
   @ApiProperty()
-  @IsOptional()
   @IsString()
+  @IsOptional()
   readonly reminderEndTime: string | null;
 
   @ApiProperty()
-  @IsOptional()
   @IsNumber()
+  @IsOptional()
   readonly reminderRecurrenceIntervalAmount: number | null;
 
   @ApiProperty()
-  @IsOptional()
   @IsEnum(REMINDER_RECURRENCE_INTERVAL_UNITS)
+  @IsOptional()
   readonly reminderRecurrenceIntervalUnit: (typeof REMINDER_RECURRENCE_INTERVAL_UNITS)[number] | null;
 
   @ApiProperty()
-  @IsOptional()
   @IsNumber()
+  @IsOptional()
   readonly reminderRecurrenceVarianceAmount: number | null;
 
   @ApiProperty()
-  @IsOptional()
   @IsEnum(REMINDER_RECURRENCE_VARIANCE_UNITS)
+  @IsOptional()
   readonly reminderRecurrenceVarianceUnit: (typeof REMINDER_RECURRENCE_VARIANCE_UNITS)[number] | null;
 }

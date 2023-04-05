@@ -23,7 +23,7 @@ export class ActionsController {
   async create(@Body() createActioDto: CreateActionDto, @Req() req: Request): Promise<ActionDto> {
     const isActionValid = validateAction(createActioDto);
     if (isActionValid !== true) {
-      throw new Error(`Action is not valid. Errors: ${isActionValid.errors.map((e) => e.message).join('; ')}`);
+      throw new Error(isActionValid.errors.map((e) => e.message).join('; '));
     }
 
     const action = await this._actionsService.save({
@@ -65,7 +65,7 @@ export class ActionsController {
   ): Promise<ActionDto> {
     const isActionValid = validateAction(updateActionDto);
     if (isActionValid !== true) {
-      throw new Error(`Action is not valid. Errors: ${isActionValid.errors.map((e) => e.message).join('; ')}`);
+      throw new Error(isActionValid.errors.map((e) => e.message).join('; '));
     }
 
     const action = await this._actionsService.findOneForUser(id, req.user.id);
