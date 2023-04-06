@@ -1,9 +1,10 @@
+import { DateTime, Duration } from 'luxon';
+
 import { isValidTimeShort } from '../../common/utils/time.utils';
 import { ActionDto } from '../dtos/action.dto';
 import { CreateActionDto } from '../dtos/create-action.dto';
 import { UpdateActionDto } from '../dtos/update-action.dto';
 import {
-  Action,
   GOAL_INTERVAL_UNITS,
   GOAL_TYPES,
   REMINDER_INTERVAL_TYPES,
@@ -182,6 +183,64 @@ export const validateAction = (dto: CreateActionDto | UpdateActionDto): true | {
   return true;
 };
 
-export const getNextActionExecutionDate = (action: Action, currentDate: Date = new Date()): Date | null => {
-  return null;
+export const getNextReminderExecutionDate = (dto: ActionDto, currentDate: Date = new Date()): Date | null => {
+  if (!dto.reminderEnabled) {
+    return null;
+  }
+
+  const now = DateTime.fromJSDate(currentDate);
+  const startDateString =
+    dto.reminderStartDate && dto.reminderStartTime
+      ? `${dto.reminderStartDate}T${dto.reminderStartTime}:00`
+      : dto.reminderStartDate;
+  const endDateString =
+    dto.reminderEndDate && dto.reminderEndTime
+      ? `${dto.reminderEndDate}T${dto.reminderEndTime}:00`
+      : dto.reminderEndDate;
+  const startDate = startDateString ? DateTime.fromISO(startDateString) : null;
+  const endDate = endDateString ? DateTime.fromISO(endDateString) : null;
+
+  if (!startDate) {
+    return null;
+  }
+
+  let nextExecution: DateTime | null = null;
+
+  if (dto.reminderIntervalType === 'only_once') {
+    console.log(now.toISO(), startDate.toISO());
+    if (now < startDate) {
+      nextExecution = startDate;
+    }
+  } else if (dto.reminderIntervalType === 'recurring_every_x_y') {
+    let currentExecution = startDate;
+    while (currentExecution <= now && (!endDate || currentExecution <= endDate)) {
+      currentExecution = currentExecution.plus({
+        [`${dto.reminderRecurrenceIntervalUnit}s`]: dto.reminderRecurrenceIntervalAmount,
+      });
+    }
+    if (!endDate || currentExecution <= endDate) {
+      nextExecution = currentExecution;
+    }
+  } else if (dto.reminderIntervalType === 'recurring_x_times_per_y') {
+    const interval = Duration.fromObject({
+      [`${dto.reminderRecurrenceIntervalUnit}s`]: dto.reminderRecurrenceIntervalAmount,
+    });
+    const startOfPeriod = now.startOf(dto.goalIntervalUnit);
+    const endOfPeriod = now.endOf(dto.goalIntervalUnit);
+    let currentExecution = startDate;
+    let executionCount = 0;
+
+    while (currentExecution <= endOfPeriod && (!endDate || currentExecution <= endDate)) {
+      if (currentExecution >= startOfPeriod && currentExecution <= now) {
+        executionCount++;
+      }
+      currentExecution = currentExecution.plus(interval);
+    }
+
+    if (executionCount < dto.goalAmount && (!endDate || currentExecution <= endDate)) {
+      nextExecution = currentExecution;
+    }
+  }
+
+  return nextExecution ? nextExecution.toJSDate() : null;
 };
