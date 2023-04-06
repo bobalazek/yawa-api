@@ -198,7 +198,10 @@ export const getNextReminderExecutionDate = (dto: ActionDto, currentDate: Date =
       ? `${dto.reminderEndDate}T${dto.reminderEndTime}:00`
       : dto.reminderEndDate;
   const startDate = startDateString ? DateTime.fromISO(startDateString) : null;
-  const endDate = endDateString ? DateTime.fromISO(endDateString) : null;
+  const endDate =
+    endDateString && dto.reminderIntervalType !== 'only_once' // Safety check - we only care about the end date, is the type isn't only_once
+      ? DateTime.fromISO(endDateString)
+      : null;
 
   if (!startDate) {
     return null;
@@ -207,19 +210,25 @@ export const getNextReminderExecutionDate = (dto: ActionDto, currentDate: Date =
   let nextExecution: DateTime | null = null;
 
   if (dto.reminderIntervalType === 'only_once') {
-    console.log(now.toISO(), startDate.toISO());
     if (now < startDate) {
       nextExecution = startDate;
     }
   } else if (dto.reminderIntervalType === 'recurring_every_x_y') {
-    let currentExecution = startDate;
-    while (currentExecution <= now && (!endDate || currentExecution <= endDate)) {
-      currentExecution = currentExecution.plus({
-        [`${dto.reminderRecurrenceIntervalUnit}s`]: dto.reminderRecurrenceIntervalAmount,
-      });
+    const interval = Duration.fromObject({
+      [`${dto.reminderRecurrenceIntervalUnit}s`]: dto.reminderRecurrenceIntervalAmount,
+    });
+    nextExecution = startDate;
+
+    while (nextExecution <= now) {
+      nextExecution = nextExecution.plus(interval);
     }
-    if (!endDate || currentExecution <= endDate) {
-      nextExecution = currentExecution;
+
+    if (dto.reminderRecurrenceVarianceAmount && dto.reminderRecurrenceVarianceUnit) {
+      nextExecution = applyVariance(
+        nextExecution,
+        dto.reminderRecurrenceVarianceAmount,
+        `${dto.reminderRecurrenceVarianceUnit}s`
+      );
     }
   } else if (dto.reminderIntervalType === 'recurring_x_times_per_y') {
     const interval = Duration.fromObject({
@@ -240,7 +249,28 @@ export const getNextReminderExecutionDate = (dto: ActionDto, currentDate: Date =
     if (executionCount < dto.goalAmount && (!endDate || currentExecution <= endDate)) {
       nextExecution = currentExecution;
     }
+
+    if (dto.reminderRecurrenceVarianceAmount && dto.reminderRecurrenceVarianceUnit) {
+      nextExecution = applyVariance(
+        nextExecution,
+        dto.reminderRecurrenceVarianceAmount,
+        `${dto.reminderRecurrenceVarianceUnit}s`
+      );
+    }
   }
 
-  return nextExecution ? nextExecution.toJSDate() : null;
+  if (nextExecution) {
+    if (endDate && nextExecution > endDate) {
+      return endDate.toJSDate();
+    }
+
+    return nextExecution.toJSDate();
+  }
+
+  return null;
+};
+
+const applyVariance = (nextExecution: DateTime, varianceAmount: number, varianceUnit: string): DateTime => {
+  const variance = Math.floor(Math.random() * varianceAmount);
+  return nextExecution.plus({ [varianceUnit]: variance });
 };

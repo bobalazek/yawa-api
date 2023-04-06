@@ -2,7 +2,7 @@ import { ActionDto } from '../dtos/action.dto';
 import { getNextReminderExecutionDate } from './action.utils';
 
 describe('getNextReminderExecutionDate', () => {
-  const baseAction: ActionDto = {
+  const baseActionDto: ActionDto = {
     id: '12345',
     template: null,
     name: 'Test Action',
@@ -15,7 +15,7 @@ describe('getNextReminderExecutionDate', () => {
     reminderEnabled: true,
     reminderIntervalType: 'only_once' as const,
     reminderStartDate: '2023-04-01T00:00:00.000Z',
-    reminderEndDate: '2023-04-30T00:00:00.000Z',
+    reminderEndDate: null,
     reminderStartTime: null,
     reminderEndTime: null,
     reminderRecurrenceIntervalAmount: 1,
@@ -32,7 +32,7 @@ describe('getNextReminderExecutionDate', () => {
 
   test('Reminder is disabled', () => {
     const actionDto: ActionDto = {
-      ...baseAction,
+      ...baseActionDto,
       reminderEnabled: false,
     };
 
@@ -41,7 +41,7 @@ describe('getNextReminderExecutionDate', () => {
 
   test('Reminder without startDate', () => {
     const actionDto: ActionDto = {
-      ...baseAction,
+      ...baseActionDto,
       reminderIntervalType: 'only_once',
     };
 
@@ -52,7 +52,7 @@ describe('getNextReminderExecutionDate', () => {
 
   test('Reminder with only_once type', () => {
     const actionDto: ActionDto = {
-      ...baseAction,
+      ...baseActionDto,
       reminderIntervalType: 'only_once',
       reminderStartDate: '2023-05-01',
       reminderStartTime: '13:00',
@@ -60,12 +60,12 @@ describe('getNextReminderExecutionDate', () => {
 
     const currentDate = new Date('2023-04-30T14:00:00');
 
-    expect(getNextReminderExecutionDate(actionDto, currentDate)).toMatchObject(new Date('2023-05-01T13:00:00'));
+    expect(getNextReminderExecutionDate(actionDto, currentDate)).toEqual(new Date('2023-05-01T13:00:00'));
   });
 
   test('Reminder with only_once type and past date', () => {
     const actionDto: ActionDto = {
-      ...baseAction,
+      ...baseActionDto,
       reminderIntervalType: 'only_once',
       reminderStartDate: '2023-04-01',
       reminderStartTime: '08:00',
@@ -78,7 +78,7 @@ describe('getNextReminderExecutionDate', () => {
 
   test('Reminder with recurring_every_x_y type', () => {
     const actionDto: ActionDto = {
-      ...baseAction,
+      ...baseActionDto,
       reminderIntervalType: 'recurring_every_x_y',
       reminderStartDate: '2023-04-01',
       reminderStartTime: '08:00',
@@ -88,12 +88,12 @@ describe('getNextReminderExecutionDate', () => {
 
     const currentDate = new Date('2023-04-02T09:00:00');
 
-    expect(getNextReminderExecutionDate(actionDto, currentDate)).toMatchObject(new Date('2023-04-03T08:00:00'));
+    expect(getNextReminderExecutionDate(actionDto, currentDate)).toEqual(new Date('2023-04-03T08:00:00'));
   });
 
   test('Reminder with recurring_every_x_y type and past endDate', () => {
     const actionDto: ActionDto = {
-      ...baseAction,
+      ...baseActionDto,
       reminderIntervalType: 'recurring_every_x_y',
       reminderStartDate: '2023-04-01',
       reminderStartTime: '08:00',
@@ -105,12 +105,12 @@ describe('getNextReminderExecutionDate', () => {
 
     const currentDate = new Date('2023-04-06T10:00:00');
 
-    expect(getNextReminderExecutionDate(actionDto, currentDate)).toBeNull();
+    expect(getNextReminderExecutionDate(actionDto, currentDate)).toEqual(new Date('2023-04-05T18:00:00'));
   });
 
   test('Reminder with recurring_x_times_per_y type', () => {
     const actionDto: ActionDto = {
-      ...baseAction,
+      ...baseActionDto,
       reminderIntervalType: 'recurring_x_times_per_y',
       reminderStartDate: '2023-04-01',
       reminderStartTime: '08:00',
@@ -122,12 +122,12 @@ describe('getNextReminderExecutionDate', () => {
 
     const currentDate = new Date('2023-04-02T09:00:00');
 
-    expect(getNextReminderExecutionDate(actionDto, currentDate)).toMatchObject(new Date('2023-04-03T08:00:00'));
+    expect(getNextReminderExecutionDate(actionDto, currentDate)).toEqual(new Date('2023-04-03T08:00:00'));
   });
 
   test('Reminder with recurring_x_times_per_y type and all occurrences complete', () => {
     const actionDto: ActionDto = {
-      ...baseAction,
+      ...baseActionDto,
       reminderIntervalType: 'recurring_x_times_per_y',
       reminderStartDate: '2023-04-01',
       reminderStartTime: '08:00',
@@ -144,7 +144,7 @@ describe('getNextReminderExecutionDate', () => {
 
   test('Reminder with recurring_x_times_per_y type and an endDate', () => {
     const actionDto: ActionDto = {
-      ...baseAction,
+      ...baseActionDto,
       reminderIntervalType: 'recurring_every_x_y',
       reminderStartDate: '2023-04-01',
       reminderStartTime: '08:00',
@@ -156,6 +156,25 @@ describe('getNextReminderExecutionDate', () => {
 
     const currentDate = new Date('2023-04-02T09:00:00');
 
-    expect(getNextReminderExecutionDate(actionDto, currentDate)).toBe(null);
+    expect(getNextReminderExecutionDate(actionDto, currentDate)).toEqual(new Date('2023-04-03T07:00:00'));
+  });
+
+  test('Reminder with recurring_every_x_y type and variance', () => {
+    const actionDto: ActionDto = {
+      ...baseActionDto,
+      reminderIntervalType: 'recurring_every_x_y',
+      reminderStartDate: '2023-04-02',
+      reminderStartTime: '08:00',
+      reminderRecurrenceIntervalAmount: 1,
+      reminderRecurrenceIntervalUnit: 'day',
+      reminderRecurrenceVarianceAmount: 15,
+      reminderRecurrenceVarianceUnit: 'minute',
+    };
+
+    const currentDate = new Date('2023-04-02T09:00:00');
+    const nextExecution = getNextReminderExecutionDate(actionDto, currentDate);
+
+    expect(nextExecution.getTime()).toBeGreaterThanOrEqual(new Date('2023-04-03T08:00:00').getTime());
+    expect(nextExecution.getTime()).toBeLessThanOrEqual(new Date('2023-04-03T08:15:00').getTime());
   });
 });
