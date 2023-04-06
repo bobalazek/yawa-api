@@ -100,5 +100,9 @@ export class ActionDto extends AbstractDto {
 
   @ApiProperty()
   @Expose()
+  readonly goalNextPeriodExpiresAt: Date | null;
+
+  @ApiProperty()
+  @Expose()
   readonly enteredAt: Date | null;
 }

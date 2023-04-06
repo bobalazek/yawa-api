@@ -25,6 +25,7 @@ describe('getNextReminderExecutionDate', () => {
     reminderLastExecutedAt: null,
     reminderNextExecutesAt: null,
     reminderMuteEndsAt: null,
+    goalNextPeriodExpiresAt: null,
     enteredAt: null,
     createdAt: new Date('2021-01-01T00:00:00.000Z'),
     updatedAt: new Date('2021-01-01T00:00:00.000Z'),

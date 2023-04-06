@@ -1,4 +1,4 @@
-import { DateTime, Duration } from 'luxon';
+import { DateTime, Duration, DurationLikeObject } from 'luxon';
 
 import { isValidTimeShort } from '../../common/utils/time.utils';
 import { ActionDto } from '../dtos/action.dto';
@@ -270,7 +270,11 @@ export const getNextReminderExecutionDate = (dto: ActionDto, currentDate: Date =
   return null;
 };
 
-const applyVariance = (nextExecution: DateTime, varianceAmount: number, varianceUnit: string): DateTime => {
+const applyVariance = (
+  nextExecution: DateTime,
+  varianceAmount: number,
+  varianceUnit: keyof DurationLikeObject
+): DateTime => {
   const variance = Math.floor(Math.random() * varianceAmount);
   return nextExecution.plus({ [varianceUnit]: variance });
 };
