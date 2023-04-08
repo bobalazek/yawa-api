@@ -39,6 +39,16 @@ export class Goal {
   })
   areas: string[];
 
+  /**
+   * Technically entered and created should be the same,
+   * but in case we want to import data from somewhere else,
+   * we can set this value to the date when the action was entered.
+   */
+  @Column({
+    nullable: true,
+  })
+  enteredAt: Date | null;
+
   @CreateDateColumn()
   createdAt: Date;
 

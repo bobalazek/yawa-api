@@ -69,7 +69,7 @@ export class ActionsController {
     }
 
     const action = await this._actionsService.findOneForUser(id, req.user.id);
-    if (!action || action.userId !== req.user.id) {
+    if (!action) {
       throw new Error('Action not found');
     }
 
@@ -83,7 +83,7 @@ export class ActionsController {
   @Patch('/:id')
   async delete(@Param('id') id: string, @Req() req: Request): Promise<{ message: string }> {
     const action = await this._actionsService.findOneForUser(id, req.user.id);
-    if (!action || action.userId !== req.user.id) {
+    if (!action) {
       throw new Error('Action not found');
     }
 
