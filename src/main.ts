@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { useContainer } from 'class-validator';
 import { join } from 'path';
 
 import { AppModule } from './app.module';
@@ -22,6 +23,8 @@ async function bootstrap() {
   app.useGlobalFilters(new ErrorFilter());
 
   // Validation
+  useContainer(app.select(AppModule), { fallbackOnErrors: true });
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,

@@ -243,4 +243,13 @@ export class AuthService {
 
     return userAccessToken.user;
   }
+
+  async getUserByEmail(email: string): Promise<User> {
+    const user = await this._usersService.findOneByEmail(email);
+    if (!user) {
+      throw new Error(`A user with this email not found`);
+    }
+
+    return user;
+  }
 }
