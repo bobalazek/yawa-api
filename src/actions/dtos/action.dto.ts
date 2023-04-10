@@ -88,21 +88,21 @@ export class ActionDto extends AbstractDto {
 
   @ApiProperty()
   @Expose()
-  readonly reminderLastExecutedAt: Date | null;
+  readonly reminderLastExecutedAt: string | null;
 
   @ApiProperty()
   @Expose()
-  readonly reminderNextExecutesAt: Date | null;
+  readonly reminderNextExecutesAt: string | null;
 
   @ApiProperty()
   @Expose()
-  readonly reminderMuteEndsAt: Date | null;
+  readonly reminderMuteEndsAt: string | null;
 
   @ApiProperty()
   @Expose()
-  readonly goalNextPeriodExpiresAt: Date | null;
+  readonly goalNextPeriodExpiresAt: string | null;
 
   @ApiProperty()
   @Expose()
-  readonly enteredAt: Date | null;
+  readonly enteredAt: string | null;
 }

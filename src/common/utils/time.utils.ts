@@ -36,8 +36,3 @@ export const convertToSeconds = (amount: number, unit: string): number => {
 
   return amount * multiplier;
 };
-
-export const isValidTimeShort = (value: string): boolean => {
-  const regex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
-  return regex.test(value);
-};

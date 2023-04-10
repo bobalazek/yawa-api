@@ -1,6 +1,5 @@
 import { DateTime, Duration, DurationLikeObject } from 'luxon';
 
-import { isValidTimeShort } from '../../common/utils/time.utils';
 import { ActionDto } from '../dtos/action.dto';
 import { CreateActionDto } from '../dtos/create-action.dto';
 import { UpdateActionDto } from '../dtos/update-action.dto';
@@ -22,19 +21,31 @@ export const validateAction = (dto: CreateActionDto | UpdateActionDto): true | {
 
   /* ========== Goal ========== */
   if (!GOAL_TYPES.includes(dto.goalType)) {
-    errors.push({ field: 'goalType', message: `goalType must be either: ${GOAL_TYPES.join(', ')}` });
+    errors.push({
+      field: 'goalType',
+      message: `goalType must be either: ${GOAL_TYPES.join(', ')}`,
+    });
   }
 
   if (typeof dto.goalAmount !== 'undefined' && dto.goalAmount !== null) {
     if (dto.goalAmount <= 0) {
-      errors.push({ field: 'goalAmount', message: `goalAmount must be greater than 0` });
+      errors.push({
+        field: 'goalAmount',
+        message: `goalAmount must be greater than 0`,
+      });
     } else if (dto.goalAmount >= 1000) {
-      errors.push({ field: 'goalAmount', message: `goalAmount must be less than 1000` });
+      errors.push({
+        field: 'goalAmount',
+        message: `goalAmount must be less than 1000`,
+      });
     }
   }
 
   if (dto.goalUnit && dto.goalUnit.length > 24) {
-    errors.push({ field: 'goalUnit', message: `goalUnit must be less than 24 characters` });
+    errors.push({
+      field: 'goalUnit',
+      message: `goalUnit must be less than 24 characters`,
+    });
   }
 
   if (!GOAL_INTERVAL_UNITS.includes(dto.goalIntervalUnit)) {
@@ -53,17 +64,31 @@ export const validateAction = (dto: CreateActionDto | UpdateActionDto): true | {
       });
     }
 
-    if (dto.reminderStartDate === '') {
+    if (dto.reminderStartDate && DateTime.fromFormat(dto.reminderStartDate, 'yyyy-MM-dd').isValid === false) {
       errors.push({
         field: 'reminderStartDate',
-        message: `reminderStartDate must either be null or a valid date`,
+        message: `reminderStartDate must be a valid yyyy-MM-dd date`,
       });
     }
 
-    if (dto.reminderEndDate === '') {
+    if (dto.reminderStartTime && DateTime.fromFormat(dto.reminderStartDate, 'yyyy-MM-dd').isValid === false) {
+      errors.push({
+        field: 'reminderStartTime',
+        message: `reminderStartTime must be a valid HH:mm time`,
+      });
+    }
+
+    if (dto.reminderEndDate && DateTime.fromFormat(dto.reminderStartDate, 'yyyy-MM-dd').isValid === false) {
       errors.push({
         field: 'reminderEndDate',
-        message: `reminderEndDate must either be null or a valid date`,
+        message: `reminderEndDate must be a valid yyyy-MM-dd date`,
+      });
+    }
+
+    if (dto.reminderEndTime && DateTime.fromFormat(dto.reminderEndTime, 'yyyy-MM-dd').isValid === false) {
+      errors.push({
+        field: 'reminderEndTime',
+        message: `reminderEndTime must be a valid HH:mm time`,
       });
     }
 
@@ -90,16 +115,11 @@ export const validateAction = (dto: CreateActionDto | UpdateActionDto): true | {
       }
 
       if (!dto.reminderRecurrenceIntervalUnit) {
-        errors.push({ field: 'reminderRecurrenceIntervalUnit', message: `reminderRecurrenceIntervalUnit is required` });
+        errors.push({
+          field: 'reminderRecurrenceIntervalUnit',
+          message: `reminderRecurrenceIntervalUnit is required`,
+        });
       }
-    }
-
-    if (dto.reminderStartTime && !isValidTimeShort(dto.reminderStartTime)) {
-      errors.push({ field: 'reminderStartTime', message: `reminderStartTime is not a valid time` });
-    }
-
-    if (dto.reminderEndTime && !isValidTimeShort(dto.reminderEndTime)) {
-      errors.push({ field: 'reminderEndTime', message: `reminderEndTime is not a valid time` });
     }
 
     if (!dto.reminderStartDate && dto.reminderStartTime) {
@@ -110,7 +130,10 @@ export const validateAction = (dto: CreateActionDto | UpdateActionDto): true | {
     }
 
     if (!dto.reminderEndDate && dto.reminderEndTime) {
-      errors.push({ field: 'reminderEndDate', message: `reminderEndDate is required when reminderEndTime is set` });
+      errors.push({
+        field: 'reminderEndDate',
+        message: `reminderEndDate is required when reminderEndTime is set`,
+      });
     }
 
     if (dto.reminderStartDate && dto.reminderEndDate) {
@@ -123,9 +146,12 @@ export const validateAction = (dto: CreateActionDto | UpdateActionDto): true | {
 
       const startDate = new Date(startDateString);
       const endDate = new Date(endDateString);
-
+      console.log(dto);
       if (startDate > endDate) {
-        errors.push({ field: 'reminderEndTime', message: `reminderEndTime must be after reminderStartDate` });
+        errors.push({
+          field: 'reminderEndTime',
+          message: `reminderEndTime must be after reminderStartDate`,
+        });
       }
     }
 
@@ -134,13 +160,6 @@ export const validateAction = (dto: CreateActionDto | UpdateActionDto): true | {
         errors.push({
           field: 'reminderRecurrenceIntervalUnit',
           message: `reminderRecurrenceIntervalUnit must be either: ${REMINDER_RECURRENCE_INTERVAL_UNITS.join(', ')}`,
-        });
-      }
-
-      if (!dto.reminderRecurrenceIntervalAmount) {
-        errors.push({
-          field: 'reminderRecurrenceIntervalAmount',
-          message: `reminderRecurrenceIntervalAmount is required when reminderRecurrenceIntervalUnit is set`,
         });
       }
     }

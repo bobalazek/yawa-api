@@ -46,7 +46,13 @@ export class ActionsService {
   }
 
   save(action: DeepPartial<Action>) {
-    return this._actionsRepository.save(action);
+    return this._actionsRepository.save({
+      ...action,
+      reminderStartDate: action.reminderStartDate || undefined,
+      reminderEndDate: action.reminderEndDate || undefined,
+      reminderStartTime: action.reminderStartTime || undefined,
+      reminderEndTime: action.reminderEndTime || undefined,
+    });
   }
 
   delete(id: string) {
