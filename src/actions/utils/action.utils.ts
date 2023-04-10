@@ -64,28 +64,28 @@ export const validateAction = (dto: CreateActionDto | UpdateActionDto): true | {
       });
     }
 
-    if (dto.reminderStartDate && DateTime.fromFormat(dto.reminderStartDate, 'yyyy-MM-dd').isValid === false) {
+    if (dto.reminderStartDate && !DateTime.fromFormat(dto.reminderStartDate, 'yyyy-MM-dd').isValid) {
       errors.push({
         field: 'reminderStartDate',
         message: `reminderStartDate must be a valid yyyy-MM-dd date`,
       });
     }
 
-    if (dto.reminderStartTime && DateTime.fromFormat(dto.reminderStartDate, 'yyyy-MM-dd').isValid === false) {
+    if (dto.reminderStartTime && !DateTime.fromFormat(dto.reminderStartTime, 'HH:mm').isValid) {
       errors.push({
         field: 'reminderStartTime',
         message: `reminderStartTime must be a valid HH:mm time`,
       });
     }
 
-    if (dto.reminderEndDate && DateTime.fromFormat(dto.reminderStartDate, 'yyyy-MM-dd').isValid === false) {
+    if (dto.reminderEndDate && !DateTime.fromFormat(dto.reminderStartDate, 'yyyy-MM-dd').isValid) {
       errors.push({
         field: 'reminderEndDate',
         message: `reminderEndDate must be a valid yyyy-MM-dd date`,
       });
     }
 
-    if (dto.reminderEndTime && DateTime.fromFormat(dto.reminderEndTime, 'yyyy-MM-dd').isValid === false) {
+    if (dto.reminderEndTime && !DateTime.fromFormat(dto.reminderEndTime, 'HH:mm').isValid) {
       errors.push({
         field: 'reminderEndTime',
         message: `reminderEndTime must be a valid HH:mm time`,
