@@ -1,37 +1,37 @@
 import { ActionDto } from '../dtos/action.dto';
 import { getNextReminderExecutionDate } from './action.utils';
 
-describe('getNextReminderExecutionDate', () => {
-  const baseActionDto: ActionDto = {
-    id: '12345',
-    template: null,
-    name: 'Test Action',
-    description: null,
-    iconUrl: null,
-    goalType: 'binary' as const,
-    goalAmount: null,
-    goalUnit: null,
-    goalIntervalUnit: 'day' as const,
-    reminderEnabled: true,
-    reminderIntervalType: 'only_once' as const,
-    reminderStartDate: '2023-04-01T00:00:00.000Z',
-    reminderEndDate: null,
-    reminderStartTime: null,
-    reminderEndTime: null,
-    reminderRecurrenceIntervalAmount: 1,
-    reminderRecurrenceIntervalUnit: 'day' as const,
-    reminderRecurrenceVarianceAmount: null,
-    reminderRecurrenceVarianceUnit: 'minute' as const,
-    reminderLastExecutedAt: null,
-    reminderNextExecutesAt: null,
-    reminderMuteEndsAt: null,
-    goalNextPeriodExpiresAt: null,
-    enteredAt: null,
-    createdAt: new Date('2021-01-01T00:00:00.000Z'),
-    updatedAt: new Date('2021-01-01T00:00:00.000Z'),
-  };
+const baseActionDto: ActionDto = {
+  id: '12345',
+  template: null,
+  name: 'Test Action',
+  description: null,
+  iconUrl: null,
+  goalType: 'binary' as const,
+  goalAmount: null,
+  goalUnit: null,
+  goalIntervalUnit: 'day' as const,
+  reminderEnabled: true,
+  reminderIntervalType: 'only_once' as const,
+  reminderStartDate: '2023-04-01T00:00:00.000Z',
+  reminderEndDate: null,
+  reminderStartTime: null,
+  reminderEndTime: null,
+  reminderRecurrenceIntervalAmount: 1,
+  reminderRecurrenceIntervalUnit: 'day' as const,
+  reminderRecurrenceVarianceAmount: null,
+  reminderRecurrenceVarianceUnit: 'minute' as const,
+  reminderLastExecutedAt: null,
+  reminderNextExecutesAt: null,
+  reminderMuteEndsAt: null,
+  goalNextPeriodExpiresAt: null,
+  enteredAt: null,
+  createdAt: new Date('2021-01-01T00:00:00.000Z'),
+  updatedAt: new Date('2021-01-01T00:00:00.000Z'),
+};
 
-  test('Reminder is disabled', () => {
+describe('getNextReminderExecutionDate', () => {
+  it('returns null when reminder is disabled', () => {
     const actionDto: ActionDto = {
       ...baseActionDto,
       reminderEnabled: false,
@@ -40,7 +40,7 @@ describe('getNextReminderExecutionDate', () => {
     expect(getNextReminderExecutionDate(actionDto)).toBeNull();
   });
 
-  test('Reminder without startDate', () => {
+  it('returns null when reminder without startDate', () => {
     const actionDto: ActionDto = {
       ...baseActionDto,
       reminderIntervalType: 'only_once',
@@ -51,7 +51,7 @@ describe('getNextReminderExecutionDate', () => {
     expect(getNextReminderExecutionDate(actionDto, currentDate)).toBeNull();
   });
 
-  test('Reminder with only_once type', () => {
+  it('returns correct date when reminder with only_once type', () => {
     const actionDto: ActionDto = {
       ...baseActionDto,
       reminderIntervalType: 'only_once',
@@ -64,7 +64,7 @@ describe('getNextReminderExecutionDate', () => {
     expect(getNextReminderExecutionDate(actionDto, currentDate)).toEqual(new Date('2023-05-01T13:00:00'));
   });
 
-  test('Reminder with only_once type and past date', () => {
+  it('returns null when reminder with only_once type and past date', () => {
     const actionDto: ActionDto = {
       ...baseActionDto,
       reminderIntervalType: 'only_once',
@@ -77,7 +77,7 @@ describe('getNextReminderExecutionDate', () => {
     expect(getNextReminderExecutionDate(actionDto, currentDate)).toBeNull();
   });
 
-  test('Reminder with recurring_every_x_y type', () => {
+  it('returns correct date when reminder with recurring_every_x_y type', () => {
     const actionDto: ActionDto = {
       ...baseActionDto,
       reminderIntervalType: 'recurring_every_x_y',
@@ -92,7 +92,7 @@ describe('getNextReminderExecutionDate', () => {
     expect(getNextReminderExecutionDate(actionDto, currentDate)).toEqual(new Date('2023-04-03T08:00:00'));
   });
 
-  test('Reminder with recurring_every_x_y type and past endDate', () => {
+  it('returns last occurrence date when reminder with recurring_every_x_y type and past endDate', () => {
     const actionDto: ActionDto = {
       ...baseActionDto,
       reminderIntervalType: 'recurring_every_x_y',
@@ -109,7 +109,7 @@ describe('getNextReminderExecutionDate', () => {
     expect(getNextReminderExecutionDate(actionDto, currentDate)).toEqual(new Date('2023-04-05T18:00:00'));
   });
 
-  test('Reminder with recurring_x_times_per_y type', () => {
+  it('returns correct date when reminder with recurring_x_times_per_y type', () => {
     const actionDto: ActionDto = {
       ...baseActionDto,
       reminderIntervalType: 'recurring_x_times_per_y',
@@ -126,7 +126,7 @@ describe('getNextReminderExecutionDate', () => {
     expect(getNextReminderExecutionDate(actionDto, currentDate)).toEqual(new Date('2023-04-03T08:00:00'));
   });
 
-  test('Reminder with recurring_x_times_per_y type and all occurrences complete', () => {
+  it('returns null when reminder with recurring_x_times_per_y type and all occurrences complete', () => {
     const actionDto: ActionDto = {
       ...baseActionDto,
       reminderIntervalType: 'recurring_x_times_per_y',
@@ -143,7 +143,7 @@ describe('getNextReminderExecutionDate', () => {
     expect(getNextReminderExecutionDate(actionDto, currentDate)).toBeNull();
   });
 
-  test('Reminder with recurring_x_times_per_y type and an endDate', () => {
+  it('returns correct date when reminder with recurring_x_times_per_y type and an endDate', () => {
     const actionDto: ActionDto = {
       ...baseActionDto,
       reminderIntervalType: 'recurring_every_x_y',
@@ -160,7 +160,7 @@ describe('getNextReminderExecutionDate', () => {
     expect(getNextReminderExecutionDate(actionDto, currentDate)).toEqual(new Date('2023-04-03T07:00:00'));
   });
 
-  test('Reminder with recurring_every_x_y type and variance', () => {
+  it('returns correct date within variance range when reminder with recurring_every_x_y type and variance', () => {
     const actionDto: ActionDto = {
       ...baseActionDto,
       reminderIntervalType: 'recurring_every_x_y',
