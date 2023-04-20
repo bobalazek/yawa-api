@@ -49,11 +49,11 @@ export class GoalsService {
     return this._goalTemplates;
   }
 
-  save(goal: DeepPartial<Goal>) {
+  async save(goal: DeepPartial<Goal>) {
     return this._goalsRepository.save(goal);
   }
 
-  delete(id: string) {
+  async delete(id: string) {
     return this._goalsRepository.delete(id);
   }
 }

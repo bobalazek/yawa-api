@@ -13,7 +13,7 @@ import { RegisterDto } from '../dtos/register.dto';
 import { AuthenticatedGuard } from '../guards/authenticated.guard';
 import { AuthService } from '../services/auth.service';
 
-@ApiTags('Auth (API v1)')
+@ApiTags('Auth (v1)')
 @Controller('/api/v1/auth')
 export class AuthController {
   constructor(private readonly _authService: AuthService) {}

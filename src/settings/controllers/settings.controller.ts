@@ -8,7 +8,7 @@ import { ChangePasswordSettingsDto } from '../dtos/change-password-settings.dto'
 import { ProfileSettingsDto } from '../dtos/profile-settings.dto';
 import { SettingsService } from '../services/settings.service';
 
-@ApiTags('Settings (API v1)')
+@ApiTags('Settings (v1)')
 @Controller('/api/v1/settings')
 export class SettingsController {
   constructor(private readonly _settingsService: SettingsService) {}

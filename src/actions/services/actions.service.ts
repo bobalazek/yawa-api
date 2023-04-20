@@ -45,7 +45,7 @@ export class ActionsService {
     return this._actionTemplates;
   }
 
-  save(action: DeepPartial<Action>) {
+  async save(action: DeepPartial<Action>) {
     return this._actionsRepository.save({
       ...action,
       reminderStartDate: action.reminderStartDate || undefined,
@@ -55,7 +55,7 @@ export class ActionsService {
     });
   }
 
-  delete(id: string) {
+  async delete(id: string) {
     return this._actionsRepository.delete(id);
   }
 }

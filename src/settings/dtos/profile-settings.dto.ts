@@ -1,43 +1,43 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsOptional, IsString, Validate } from 'class-validator';
-import { BirthdayConstraint } from 'src/common/constraints/birthday.constraint';
 
+import { BirthdayConstraint } from '../../common/constraints/birthday.constraint';
 import { LanaugageCodeConstraint } from '../../common/constraints/language-code.constraint';
 import { MeasurementSystemConstraint } from '../../common/constraints/measurement-system.constraint';
 import { TimezoneConstraint } from '../../common/constraints/timezone.constraint';
 
 export class ProfileSettingsDto {
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsEmail()
   @IsOptional()
-  readonly email: string | null;
+  readonly email: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsString()
   @IsOptional()
-  readonly firstName: string | null;
+  readonly firstName: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @Validate(LanaugageCodeConstraint)
   @IsString()
   @IsOptional()
-  readonly languageCode: string | null;
+  readonly languageCode: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @Validate(TimezoneConstraint)
   @IsString()
   @IsOptional()
-  readonly timezone: string | null;
+  readonly timezone: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @Validate(MeasurementSystemConstraint)
   @IsString()
   @IsOptional()
-  readonly measurementSystem: string | null;
+  readonly measurementSystem: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @Validate(BirthdayConstraint)
   @IsString()
   @IsOptional()
-  readonly birthday: string | null;
+  readonly birthday: string;
 }

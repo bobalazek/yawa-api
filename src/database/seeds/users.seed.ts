@@ -8,6 +8,7 @@ const usersSeed: DeepPartial<User[]> = [
     password: 'password',
     firstName: 'Admin',
     roles: ['ROLE_ADMIN'],
+    emailConfirmedAt: new Date(),
   },
 ];
 

@@ -1,17 +1,18 @@
-import { Body, Controller, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { ApiHeader, ApiTags } from '@nestjs/swagger';
 import { plainToClass } from 'class-transformer';
 import { Request } from 'express';
 
 import { API_HEADER_X_AUTHORIZATION } from '../../auth/auth.constants';
 import { AuthenticatedGuard } from '../../auth/guards/authenticated.guard';
+import { IdDto } from '../../common/dtos/id.dto';
 import { CreateGoalDto } from '../dtos/create-goal.dto';
 import { GoalTemplateDto } from '../dtos/goal-template.dto';
 import { GoalDto } from '../dtos/goal.dto';
 import { UpdateGoalDto } from '../dtos/update-goal.dto';
 import { GoalsService } from '../services/goals.service';
 
-@ApiTags('Goals (API v1)')
+@ApiTags('Goals (v1)')
 @Controller('/api/v1/goals')
 export class GoalsController {
   constructor(private readonly _goalsService: GoalsService) {}
@@ -41,8 +42,8 @@ export class GoalsController {
   @ApiHeader(API_HEADER_X_AUTHORIZATION)
   @UseGuards(AuthenticatedGuard)
   @Get('/:id')
-  async view(@Param('id') id: string, @Req() req: Request): Promise<GoalDto> {
-    const goal = await this._goalsService.findOneForUser(id, req.user.id);
+  async view(@Query() idDto: IdDto, @Req() req: Request): Promise<GoalDto> {
+    const goal = await this._goalsService.findOneForUser(idDto.id, req.user.id);
 
     return plainToClass(GoalDto, goal);
   }
@@ -50,8 +51,8 @@ export class GoalsController {
   @ApiHeader(API_HEADER_X_AUTHORIZATION)
   @UseGuards(AuthenticatedGuard)
   @Patch('/:id')
-  async update(@Param('id') id: string, @Body() updateGoalDto: UpdateGoalDto, @Req() req: Request): Promise<GoalDto> {
-    const goal = await this._goalsService.findOneForUser(id, req.user.id);
+  async update(@Query() idDto: IdDto, @Body() updateGoalDto: UpdateGoalDto, @Req() req: Request): Promise<GoalDto> {
+    const goal = await this._goalsService.findOneForUser(idDto.id, req.user.id);
     if (!goal) {
       throw new Error('Goal not found');
     }
@@ -64,13 +65,13 @@ export class GoalsController {
   @ApiHeader(API_HEADER_X_AUTHORIZATION)
   @UseGuards(AuthenticatedGuard)
   @Patch('/:id')
-  async delete(@Param('id') id: string, @Req() req: Request): Promise<{ message: string }> {
-    const goal = await this._goalsService.findOneForUser(id, req.user.id);
+  async delete(@Query() idDto: IdDto, @Req() req: Request): Promise<{ message: string }> {
+    const goal = await this._goalsService.findOneForUser(idDto.id, req.user.id);
     if (!goal) {
       throw new Error('Goal not found');
     }
 
-    await this._goalsService.delete(id);
+    await this._goalsService.delete(idDto.id);
 
     return { message: 'The goal was successfully deleted' };
   }

@@ -6,8 +6,8 @@ export class CreateGoalDto {
   @IsString()
   readonly name: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsString()
   @IsOptional()
-  readonly description: string | null;
+  readonly description: string;
 }

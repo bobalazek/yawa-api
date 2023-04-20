@@ -47,6 +47,7 @@
     "luxon": "^3.3.0",
     "nest-commander": "^3.6.1",
     "nestjs-pino": "^3.1.2",
+    "nestjs-typeorm-paginate": "^4.0.3",
     "nodemailer": "^6.9.1",
     "pg": "^8.10.0",
     "pino": "^8.11.0",

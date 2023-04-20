@@ -10,40 +10,40 @@ import {
 } from '../entities/action.entity';
 
 export class CreateActionDto {
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsString()
   @IsOptional()
-  readonly template: string | null;
+  readonly template?: string;
 
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
   readonly name: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsString()
   @IsOptional()
-  readonly description: string | null;
+  readonly description?: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsString()
   @IsOptional()
-  readonly iconUrl: string | null;
+  readonly iconUrl?: string;
 
   // Goal
   @ApiProperty()
   @IsEnum(GOAL_TYPES)
   readonly goalType: (typeof GOAL_TYPES)[number];
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsNumber()
   @IsOptional()
-  readonly goalAmount: number | null;
+  readonly goalAmount?: number;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsString()
   @IsOptional()
-  readonly goalUnit: string | null;
+  readonly goalUnit?: string;
 
   @ApiProperty()
   @IsEnum(GOAL_INTERVAL_UNITS)
@@ -59,43 +59,43 @@ export class CreateActionDto {
   @IsOptional()
   readonly reminderIntervalType: (typeof REMINDER_INTERVAL_TYPES)[number] | null;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsString()
   @IsOptional()
-  readonly reminderStartDate: string | null;
+  readonly reminderStartDate: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsString()
   @IsOptional()
-  readonly reminderEndDate: string | null;
+  readonly reminderEndDate: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsString()
   @IsOptional()
-  readonly reminderStartTime: string | null;
+  readonly reminderStartTime: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsString()
   @IsOptional()
-  readonly reminderEndTime: string | null;
+  readonly reminderEndTime: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsNumber()
   @IsOptional()
-  readonly reminderRecurrenceIntervalAmount: number | null;
+  readonly reminderRecurrenceIntervalAmount: number;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsEnum(REMINDER_RECURRENCE_INTERVAL_UNITS)
   @IsOptional()
-  readonly reminderRecurrenceIntervalUnit: (typeof REMINDER_RECURRENCE_INTERVAL_UNITS)[number] | null;
+  readonly reminderRecurrenceIntervalUnit: (typeof REMINDER_RECURRENCE_INTERVAL_UNITS)[number];
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsNumber()
   @IsOptional()
-  readonly reminderRecurrenceVarianceAmount: number | null;
+  readonly reminderRecurrenceVarianceAmount: number;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
   @IsEnum(REMINDER_RECURRENCE_VARIANCE_UNITS)
   @IsOptional()
-  readonly reminderRecurrenceVarianceUnit: (typeof REMINDER_RECURRENCE_VARIANCE_UNITS)[number] | null;
+  readonly reminderRecurrenceVarianceUnit: (typeof REMINDER_RECURRENCE_VARIANCE_UNITS)[number];
 }

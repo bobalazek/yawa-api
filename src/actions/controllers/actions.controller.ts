@@ -1,10 +1,11 @@
-import { Body, Controller, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { ApiHeader, ApiTags } from '@nestjs/swagger';
 import { plainToClass } from 'class-transformer';
 import { Request } from 'express';
-import { API_HEADER_X_AUTHORIZATION } from 'src/auth/auth.constants';
 
+import { API_HEADER_X_AUTHORIZATION } from '../../auth/auth.constants';
 import { AuthenticatedGuard } from '../../auth/guards/authenticated.guard';
+import { IdDto } from '../../common/dtos/id.dto';
 import { ActionTemplateDto } from '../dtos/action-template.dto';
 import { ActionDto } from '../dtos/action.dto';
 import { CreateActionDto } from '../dtos/create-action.dto';
@@ -12,7 +13,7 @@ import { UpdateActionDto } from '../dtos/update-action.dto';
 import { ActionsService } from '../services/actions.service';
 import { validateAction } from '../utils/action.utils';
 
-@ApiTags('Actions (API v1)')
+@ApiTags('Actions (v1)')
 @Controller('/api/v1/actions')
 export class ActionsController {
   constructor(private readonly _actionsService: ActionsService) {}
@@ -49,8 +50,8 @@ export class ActionsController {
   @ApiHeader(API_HEADER_X_AUTHORIZATION)
   @UseGuards(AuthenticatedGuard)
   @Get('/:id')
-  async view(@Param('id') id: string, @Req() req: Request): Promise<ActionDto> {
-    const action = await this._actionsService.findOneForUser(id, req.user.id);
+  async view(@Query() idDto: IdDto, @Req() req: Request): Promise<ActionDto> {
+    const action = await this._actionsService.findOneForUser(idDto.id, req.user.id);
 
     return plainToClass(ActionDto, action);
   }
@@ -59,7 +60,7 @@ export class ActionsController {
   @UseGuards(AuthenticatedGuard)
   @Patch('/:id')
   async update(
-    @Param('id') id: string,
+    @Query() idDto: IdDto,
     @Body() updateActionDto: UpdateActionDto,
     @Req() req: Request
   ): Promise<ActionDto> {
@@ -68,7 +69,7 @@ export class ActionsController {
       throw new Error(isActionValid.errors.map((e) => e.message).join('; '));
     }
 
-    const action = await this._actionsService.findOneForUser(id, req.user.id);
+    const action = await this._actionsService.findOneForUser(idDto.id, req.user.id);
     if (!action) {
       throw new Error('Action not found');
     }
@@ -81,13 +82,13 @@ export class ActionsController {
   @ApiHeader(API_HEADER_X_AUTHORIZATION)
   @UseGuards(AuthenticatedGuard)
   @Patch('/:id')
-  async delete(@Param('id') id: string, @Req() req: Request): Promise<{ message: string }> {
-    const action = await this._actionsService.findOneForUser(id, req.user.id);
+  async delete(@Query() idDto: IdDto, @Req() req: Request): Promise<{ message: string }> {
+    const action = await this._actionsService.findOneForUser(idDto.id, req.user.id);
     if (!action) {
       throw new Error('Action not found');
     }
 
-    await this._actionsService.delete(id);
+    await this._actionsService.delete(idDto.id);
 
     return { message: 'The action was successfully deleted' };
   }

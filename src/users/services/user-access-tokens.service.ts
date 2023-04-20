@@ -10,19 +10,19 @@ export class UserAccessTokensService {
     @InjectRepository(UserAccessToken) private readonly _userAccessTokensRepository: Repository<UserAccessToken>
   ) {}
 
-  findOneById(id: string): Promise<UserAccessToken | null> {
+  async findOneById(id: string): Promise<UserAccessToken | null> {
     return this._userAccessTokensRepository.findOneBy({ id });
   }
 
-  findOneByToken(token: string): Promise<UserAccessToken | null> {
+  async findOneByToken(token: string): Promise<UserAccessToken | null> {
     return this._userAccessTokensRepository.findOneBy({ token });
   }
 
-  findOneByTokenWithUser(token: string): Promise<UserAccessToken | null> {
+  async findOneByTokenWithUser(token: string): Promise<UserAccessToken | null> {
     return this._userAccessTokensRepository.findOne({ where: { token }, relations: ['user'] });
   }
 
-  save(userAccessToken: DeepPartial<UserAccessToken>) {
+  async save(userAccessToken: DeepPartial<UserAccessToken>) {
     return this._userAccessTokensRepository.save(userAccessToken);
   }
 }
