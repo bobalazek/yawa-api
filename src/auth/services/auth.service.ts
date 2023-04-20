@@ -82,6 +82,7 @@ export class AuthService {
         ...processedRegisterDto,
         password: await generateHash(processedRegisterDto.password),
         emailConfirmationToken: uuidv4(),
+        roles: ['ROLE_USER'],
       });
     } catch (err) {
       if (err.code === '23505') {

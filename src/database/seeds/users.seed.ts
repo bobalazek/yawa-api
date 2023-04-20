@@ -7,6 +7,7 @@ const usersSeed: DeepPartial<User[]> = [
     email: 'admin@yawa.com',
     password: 'password',
     firstName: 'Admin',
+    roles: ['ROLE_ADMIN'],
   },
 ];
 

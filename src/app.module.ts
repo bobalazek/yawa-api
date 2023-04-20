@@ -7,6 +7,7 @@ import * as Joi from 'joi';
 import { LoggerModule } from 'nestjs-pino';
 
 import { ActionsModule } from './actions/actions.module';
+import { AdminModule } from './admin/admin.module';
 import { AreasModule } from './areas/areas.module';
 import { AuthModule } from './auth/auth.module';
 import { env } from './common/env';
@@ -60,6 +61,7 @@ import { UsersModule } from './users/users.module';
     AuthModule,
     SettingsModule,
     UsersModule,
+    AdminModule,
   ],
   providers: [
     {

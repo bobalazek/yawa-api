@@ -55,6 +55,11 @@ export class User {
   })
   birthday: Date | null;
 
+  @Column({
+    type: 'jsonb',
+  })
+  roles: string[];
+
   @Index({
     unique: true,
   })

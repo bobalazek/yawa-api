@@ -2,15 +2,17 @@
 
 This is the API for our app
 
+## Getting started
+
+- Install dependencies with `npm install`
+
 ## Commands
 
-- Run: `npm run start:dev`
-  - That will the development server. You can view the docs on <http://localhost:3000/api-docs>
-- Run: `npm run typeorm:generate-migration src/database/migrations/{CamelCasedMigrationName}`
-  - That will create a new diff migration. It will take your current database schema and compare it to the schema you want, depending on your models
-- Run: `npm run typeorm:run-migrations`
-  - That will create run the migration on the database
+- `npm run start:dev` - this will start the development server. You will be able to view the docs on [http://localhost:3000/api-docs](http://localhost:3000/api-docs)
 
-## TODO
+### Database
 
-- Before pushing to production, it would probably be good to validate that all ejs and yaml files are valid?
+- `npm run typeorm:generate-migration src/database/migrations/{migrationNameLowerCase}` - this will create a new diff migration. It will take your current database schema and compare it to the schema you want, depending on your models
+- `npm run typeorm:run-migrations` - this will run the migrations on the database
+- `npm run cli database:insert-seed-data` - this will enter the seed data
+- `npm run typeorm:drop-schema` - this will drop the database schema

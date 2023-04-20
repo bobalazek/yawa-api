@@ -2,7 +2,7 @@ import { Global, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { GenerateSeedsCommand } from './commands/generate-seeds.command';
+import { InsertSeedDataCommand } from './commands/insert-seed-data.command';
 
 @Global()
 @Module({
@@ -18,6 +18,6 @@ import { GenerateSeedsCommand } from './commands/generate-seeds.command';
       }),
     }),
   ],
-  providers: [GenerateSeedsCommand],
+  providers: [InsertSeedDataCommand],
 })
 export class DatabaseModule {}

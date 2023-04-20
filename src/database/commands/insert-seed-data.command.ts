@@ -5,8 +5,8 @@ import { DataSource } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { usersSeed } from '../seeds/users.seed';
 
-@Command({ name: 'database:generate-seeds', description: 'Generate the seeds for the database' })
-export class GenerateSeedsCommand extends CommandRunner {
+@Command({ name: 'database:insert-seed-data', description: 'Inserts the seeds for the database' })
+export class InsertSeedDataCommand extends CommandRunner {
   constructor(private readonly _dataSource: DataSource, private readonly _logger: PinoLogger) {
     super();
   }
