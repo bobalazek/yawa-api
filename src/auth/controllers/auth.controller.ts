@@ -6,6 +6,7 @@ import { Request } from 'express';
 import { TokenDto } from '../../common/dtos/token.dto';
 import { UserDto } from '../../users/dtos/user.dto';
 import { API_HEADER_X_AUTHORIZATION } from '../auth.constants';
+import { AuthResponseDto } from '../dtos/auth-response.dto';
 import { LoginDto } from '../dtos/login.dto';
 import { PasswordResetRequestDto } from '../dtos/password-reset-request.dto';
 import { PasswordResetDto } from '../dtos/password-reset.dto';
@@ -19,17 +20,17 @@ export class AuthController {
   constructor(private readonly _authService: AuthService) {}
 
   @Post('/login')
-  async login(@Body() loginDto: LoginDto): Promise<TokenDto> {
-    const token = await this._authService.loginUser(loginDto);
+  async login(@Body() loginDto: LoginDto): Promise<AuthResponseDto> {
+    const response = await this._authService.loginUser(loginDto);
 
-    return { token };
+    return response;
   }
 
   @Post('/register')
-  async register(@Body() registerDto: RegisterDto): Promise<TokenDto> {
-    const token = await this._authService.registerUser(registerDto);
+  async register(@Body() registerDto: RegisterDto): Promise<AuthResponseDto> {
+    const response = await this._authService.registerUser(registerDto);
 
-    return { token };
+    return response;
   }
 
   @Post('/logout')
@@ -69,12 +70,22 @@ export class AuthController {
     return { message: 'Password was successfully reset' };
   }
 
+  @Post('/refresh-token')
+  async refreshToken(@Body() tokenDto: TokenDto): Promise<AuthResponseDto> {
+    const response = await this._authService.refreshToken(tokenDto.token);
+
+    return response;
+  }
+
   @ApiHeader(API_HEADER_X_AUTHORIZATION)
   @UseGuards(AuthenticatedGuard)
   @Get('/profile')
   async profile(@Req() req: Request): Promise<UserDto> {
     const user = await this._authService.getUserById(req.user.id);
 
-    return plainToClass(UserDto, { ...user, avatarUrl: 'https://randomuser.me/api/portraits/men/18.jpg' });
+    return plainToClass(UserDto, {
+      ...user,
+      avatarUrl: 'https://randomuser.me/api/portraits/men/18.jpg', // TODO: replace with actual placeholder avatar
+    });
   }
 }

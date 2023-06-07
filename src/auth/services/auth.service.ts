@@ -8,6 +8,7 @@ import { MailerService } from '../../notifications/services/mailer.service';
 import { User } from '../../users/entities/user.entity';
 import { UserAccessTokensService } from '../../users/services/user-access-tokens.service';
 import { UsersService } from '../../users/services/users.service';
+import { AuthResponseDto } from '../dtos/auth-response.dto';
 import { LoginDto } from '../dtos/login.dto';
 import { PasswordResetRequestDto } from '../dtos/password-reset-request.dto';
 import { PasswordResetDto } from '../dtos/password-reset.dto';
@@ -21,16 +22,16 @@ export class AuthService {
     private readonly _mailerService: MailerService
   ) {}
 
-  async loginUser(loginDto: LoginDto): Promise<string> {
+  async loginUser(loginDto: LoginDto): Promise<AuthResponseDto> {
     const user = await this.validateUser(loginDto);
 
     try {
-      const userAccessToken = await this._userAccessTokensService.save({
-        user,
-        token: uuidv4(),
-      });
+      const userAccessToken = await this.createNewAccessToken(user);
 
-      return userAccessToken.token;
+      return {
+        token: userAccessToken.token,
+        refreshToken: userAccessToken.refreshToken,
+      };
     } catch (err) {
       // In the very, VERY unlikely scenario the uuid would be a duplicate, just prompt the user to login again
       throw new Error(`Something went wrong. Try logging in again`);
@@ -53,6 +54,33 @@ export class AuthService {
     return true;
   }
 
+  async refreshToken(refreshToken: string): Promise<AuthResponseDto> {
+    const userAccessToken = await this._userAccessTokensService.findOneByRefreshToken(refreshToken);
+    if (!userAccessToken) {
+      throw new UnauthorizedException(`Invalid refresh token`);
+    }
+
+    if (userAccessToken.refreshTokenClaimedAt) {
+      throw new UnauthorizedException(`Refresh token already used`);
+    }
+
+    try {
+      userAccessToken.expiresAt = new Date();
+      userAccessToken.refreshTokenClaimedAt = new Date();
+
+      await this._userAccessTokensService.save(userAccessToken);
+
+      const newUserAccessToken = await this.createNewAccessToken(userAccessToken.user);
+
+      return {
+        token: newUserAccessToken.token,
+        refreshToken: newUserAccessToken.refreshToken,
+      };
+    } catch (err) {
+      throw new Error(`Something went wrong. Try refreshing the token again`);
+    }
+  }
+
   async validateUser(loginDto: LoginDto): Promise<User> {
     const user = await this._usersService.findOneByEmail(loginDto.email);
     if (!user) {
@@ -67,7 +95,7 @@ export class AuthService {
     return user;
   }
 
-  async registerUser(registerDto: RegisterDto): Promise<string> {
+  async registerUser(registerDto: RegisterDto): Promise<AuthResponseDto> {
     const password = await generateHash(registerDto.password);
     const processedRegisterDto = {
       ...registerDto,
@@ -252,5 +280,13 @@ export class AuthService {
     }
 
     return user;
+  }
+
+  async createNewAccessToken(user: User) {
+    return this._userAccessTokensService.save({
+      user,
+      token: uuidv4(),
+      refreshToken: uuidv4(),
+    });
   }
 }

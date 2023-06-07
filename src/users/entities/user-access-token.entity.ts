@@ -13,6 +13,17 @@ export class UserAccessToken {
   @Column()
   token: string;
 
+  @Index({
+    unique: true,
+  })
+  @Column()
+  refreshToken: string;
+
+  @Column({
+    nullable: true,
+  })
+  refreshTokenClaimedAt: Date | null;
+
   @Column({
     nullable: true,
   })

@@ -18,8 +18,16 @@ export class UserAccessTokensService {
     return this._userAccessTokensRepository.findOneBy({ token });
   }
 
+  async findOneByRefreshToken(refreshToken: string): Promise<UserAccessToken | null> {
+    return this._userAccessTokensRepository.findOneBy({ refreshToken });
+  }
+
   async findOneByTokenWithUser(token: string): Promise<UserAccessToken | null> {
     return this._userAccessTokensRepository.findOne({ where: { token }, relations: ['user'] });
+  }
+
+  async findOneByRefreshTokenWithUser(refreshToken: string): Promise<UserAccessToken | null> {
+    return this._userAccessTokensRepository.findOne({ where: { refreshToken }, relations: ['user'] });
   }
 
   async save(userAccessToken: DeepPartial<UserAccessToken>) {
