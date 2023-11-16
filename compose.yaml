@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  postgres:
+    container_name: yawa_postgres
+    image: postgres:15.4
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=database
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    networks:
+      - yawa-network
+
+networks:
+  yawa-network:
+    name: yawa_network
+    driver: bridge
+
+volumes:
+  postgres-data:
